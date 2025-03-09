@@ -15,7 +15,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_05_044544) do
   enable_extension "plpgsql"
 
   create_table "events", force: :cascade do |t|
-    t.string "title"
+    t.string "title", null: false
+    t.datetime "start_time", precision: nil, null: false
+    t.datetime "end_time", precision: nil, null: false
+    t.datetime "deadline", precision: nil
+    t.string "location"
+    t.text "description"
+    t.integer "capacity", comment: "Maximum number of participants"
+    t.integer "host_user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

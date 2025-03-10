@@ -13,14 +13,63 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body>
-    <%= render 'shared/header' %>
+<body class="flex">
+  <%= render 'shared/header' %>
+  
+  <% unless controller.controller_name == 'static_pages' %>
+    <div class="w-64 bg-gray-800 text-white h-screen fixed top-0 left-0 p-6 pt-20 shadow-lg rounded-lg">
+      <h2 class="text-2xl font-extrabold text-center text-indigo-400 mb-8">メニュー</h2>
+      <ul class="space-y-6">
+        <li>
+          <%= link_to events_path, class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+            <i class="fas fa-calendar-alt"></i>
+            <span>オフ会一覧</span>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+            <i class="fas fa-plus-circle"></i>
+            <span>企画する</span>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+            <i class="fas fa-list-ul"></i>
+            <span>企画・参加リスト</span>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+            <i class="fas fa-heart"></i>
+            <span>気になるリスト</span>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+            <i class="fas fa-user"></i>
+            <span>マイページ</span>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+            <i class="fas fa-question-circle"></i>
+            <span>使い方</span>
+          <% end %>
+        </li>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="flex-1 <%= 'ml-64' unless controller.controller_name == 'static_pages' %> pt-20 pb-24">
     <%= yield %>
-    <%= render 'shared/footer' %>
-  </body>
+  </div>
+
+  <%= render 'shared/footer' %>
+</body>
 </html>

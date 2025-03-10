@@ -28,3 +28,91 @@ Event.create!(
   capacity: 30,
   host_user_id: 2  # 仮のユーザーIDを指定（例えば、2）
 )
+
+Event.create!(
+  title: "サンプルイベント3",
+  start_time: "2025-03-20 09:00:00",
+  end_time: "2025-03-20 11:00:00",
+  deadline: "2025-03-19 23:59:59",
+  location: "イベント会場3",
+  description: "テストイベントその3です。",
+  capacity: 40,
+  host_user_id: 3
+)
+
+Event.create!(
+  title: "サンプルイベント4",
+  start_time: "2025-03-25 13:00:00",
+  end_time: "2025-03-25 15:00:00",
+  deadline: "2025-03-24 23:59:59",
+  location: "イベント会場4",
+  description: "サンプルイベント4です。",
+  capacity: 20,
+  host_user_id: 4
+)
+
+Event.create!(
+  title: "サンプルイベント5",
+  start_time: "2025-03-30 10:00:00",
+  end_time: "2025-03-30 12:00:00",
+  deadline: "2025-03-29 23:59:59",
+  location: "イベント会場5",
+  description: "イベント5の説明です。",
+  capacity: 50,
+  host_user_id: 5
+)
+
+Event.create!(
+  title: "サンプルイベント6",
+  start_time: "2025-04-05 14:00:00",
+  end_time: "2025-04-05 16:00:00",
+  deadline: "2025-04-04 23:59:59",
+  location: "イベント会場6",
+  description: "イベント6のテスト。",
+  capacity: 100,
+  host_user_id: 6
+)
+
+Event.create!(
+  title: "サンプルイベント7",
+  start_time: "2025-04-10 18:00:00",
+  end_time: "2025-04-10 20:00:00",
+  deadline: "2025-04-09 23:59:59",
+  location: "イベント会場7",
+  description: "サンプルイベント7。",
+  capacity: 75,
+  host_user_id: 7
+)
+
+Event.create!(
+  title: "サンプルイベント8",
+  start_time: "2025-04-15 09:00:00",
+  end_time: "2025-04-15 11:00:00",
+  deadline: "2025-04-14 23:59:59",
+  location: "イベント会場8",
+  description: "テストイベント8。",
+  capacity: 60,
+  host_user_id: 8
+)
+
+Event.create!(
+  title: "サンプルイベント9",
+  start_time: "2025-04-20 11:00:00",
+  end_time: "2025-04-20 13:00:00",
+  deadline: "2025-04-19 23:59:59",
+  location: "イベント会場9",
+  description: "サンプルイベント9。",
+  capacity: 80,
+  host_user_id: 9
+)
+
+Event.create!(
+  title: "サンプルイベント10",
+  start_time: "2025-04-25 12:00:00",
+  end_time: "2025-04-25 14:00:00",
+  deadline: "2025-04-24 23:59:59",
+  location: "イベント会場10",
+  description: "テストイベント10です。",
+  capacity: 150,
+  host_user_id: 10
+)

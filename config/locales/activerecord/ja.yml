@@ -1,0 +1,11 @@
+ja:
+  activerecord:
+    attributes:
+      event:
+        title: "タイトル"
+        start_time: "開始日時"
+        end_time: "終了日時"
+        deadline: "期限"
+        location: "場所"
+        description: "内容"
+        capacity: "上限人数"

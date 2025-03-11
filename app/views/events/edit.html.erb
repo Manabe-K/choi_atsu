@@ -1,10 +1,8 @@
-<% content_for :title, "Editing event" %>
+<!-- app/views/events/edit.html.erb -->
+<h1 class="text-3xl font-bold text-center mb-6"><%= t('application.edit') %></h1>
 
-<div class="md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">Editing event</h1>
+<%= render 'form' %>
 
-  <%= render "form", event: @event %>
-
-  <%= link_to "Show this event", @event, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to events", events_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+<div class="text-center mt-4">
+  <%= link_to t('edit.back_to_show'), event_path(@event), class: "text-blue-500 hover:underline" %>
 </div>

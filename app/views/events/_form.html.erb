@@ -1,22 +1,52 @@
-<%= form_with(model: event, class: "contents") do |form| %>
-  <% if event.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(event.errors.count, "error") %> prohibited this event from being saved:</h2>
-
-      <ul class="list-disc ml-6">
-        <% event.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+<!-- app/views/events/_form.html.erb -->
+<%= form_with(model: @event, local: true, class: "max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md") do |form| %>
+  <% if @event.errors.any? %>
+    <div id="error_explanation" class="bg-red-100 border border-red-500 text-red-700 p-4 rounded mb-6">
+      <h2 class="font-semibold text-xl"><%= pluralize(@event.errors.count, "error") %> prohibited this event from being saved:</h2>
+      <ul class="mt-2">
+        <% @event.errors.full_messages.each do |message| %>
+          <li class="text-sm"><%= message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :title %>
-    <%= form.text_field :title, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": event.errors[:title].none?, "border-red-400 focus:outline-red-600": event.errors[:title].any?}] %>
+  <div class="mb-4">
+    <%= form.label :title, class: "block text-lg font-semibold text-gray-700" %>
+    <%= form.text_field :title, id: :event_title, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
   </div>
 
-  <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+  <div class="mb-4">
+    <%= form.label :start_time, class: "block text-lg font-semibold text-gray-700" %>
+    <%= form.datetime_local_field :start_time, id: :event_start_time, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :end_time, class: "block text-lg font-semibold text-gray-700" %>
+    <%= form.datetime_local_field :end_time, id: :event_end_time, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :deadline, class: "block text-lg font-semibold text-gray-700" %>
+    <%= form.datetime_local_field :deadline, id: :event_deadline, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :location, class: "block text-lg font-semibold text-gray-700" %>
+    <%= form.text_field :location, id: :event_location, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :description, class: "block text-lg font-semibold text-gray-700" %>
+    <%= form.text_area :description, id: :event_description, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
+  </div>
+
+  <div class="mb-6">
+    <%= form.label :capacity, class: "block text-lg font-semibold text-gray-700" %>
+    <%= form.number_field :capacity, id: :event_capacity, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
+  </div>
+
+  <div class="flex justify-end">
+    <%= form.submit @event.new_record? ? t('application.new') : t('application.update'), class: "px-6 py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300" %>
   </div>
 <% end %>

@@ -30,7 +30,7 @@ events = Event.create!(
       deadline: "2025-03-09 23:59:59".to_time + (i * 5).days,
       location: "イベント会場#{i + 1}",
       description: "テスト用のイベント#{i + 1}です。",
-      capacity: [30, 50, 75, 100, 150].sample,
+      capacity: [ 30, 50, 75, 100, 150 ].sample,
       host_user_id: users[i].id
     }
   end

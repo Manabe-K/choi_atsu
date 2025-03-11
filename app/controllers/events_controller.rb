@@ -3,12 +3,15 @@ class EventsController < ApplicationController
 
   # GET /events or /events.json
   def index
-    @events = Event.all
+    if params[:tag].present?
+      @events = Event.joins(:tags).where(tags: { name: params[:tag] })
+    else
+      @events = Event.all
+    end
+      @tags = Tag.all
   end
 
-  # GET /events/1 or /events/1.json
-  def show
-  end
+  def show; end
 
   # GET /events/new
   def new
@@ -16,21 +19,17 @@ class EventsController < ApplicationController
   end
 
   # GET /events/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /events or /events.json
   def create
     @event = Event.new(event_params)
+    @event.host_user_id = 1  # 仮にホストユーザーIDとして1を設定
 
-    respond_to do |format|
-      if @event.save
-        format.html { redirect_to @event, notice: "Event was successfully created." }
-        format.json { render :show, status: :created, location: @event }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
-      end
+    if @event.save
+      redirect_to @event, notice: "Event was successfully created."
+    else
+      render :new
     end
   end
 
@@ -57,14 +56,14 @@ class EventsController < ApplicationController
     end
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_event
-      @event = Event.find(params[:id])
-    end
+private
+  # Use callbacks to share common setup or constraints between actions.
+  def set_event
+    @event = Event.find(params[:id])
+  end
 
-    # Only allow a list of trusted parameters through.
-    def event_params
-      params.require(:event).permit(:title, :start_time, :end_time, :deadline, :location, :description, :capacity, :host_user_id)
-    end
+  # Only allow a list of trusted parameters through.
+  def event_params
+    params.require(:event).permit(:title, :start_time, :end_time, :deadline, :location, :description, :capacity)
+  end
 end

@@ -9,7 +9,7 @@ class CreateEvents < ActiveRecord::Migration[7.2]
       t.text :description
       t.integer :capacity, comment: 'Maximum number of participants'
       t.integer :host_user_id, null: false
-      
+
       t.timestamps
     end
   end

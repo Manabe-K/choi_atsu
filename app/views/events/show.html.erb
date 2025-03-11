@@ -1,17 +1,61 @@
-<% content_for :title, "Showing event" %>
+<!-- app/views/events/show.html.erb -->
 
-<div class="md:w-2/3 w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
+<% content_for :title, @event.title %>
 
-  <h1 class="font-bold text-4xl">Showing event</h1>
+<div class="container mx-auto px-4 py-8">
+  <!-- イベント詳細 -->
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <div class="p-6">
+      <!-- イベントタイトル -->
+      <h1 class="text-3xl font-bold text-gray-900 mb-3"><%= @event.title %></h1>
 
-  <%= render @event %>
+      <!-- タグ -->
+      <% if @event.tags.any? %>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <% @event.tags.each do |tag| %>
+            <%= link_to "<i class='fas fa-tag'></i> #{tag.name}".html_safe, events_path(tag: tag.name), class: "text-sm px-3 py-1 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300" %>
+          <% end %>
+        </div>
+      <% end %>
 
-  <%= link_to "Edit this event", edit_event_path(@event), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to events", events_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <div class="sm:inline-block mt-2 sm:mt-0 sm:ml-2">
-    <%= button_to "Destroy this event", @event, method: :delete, class: "w-full rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
+      <!-- 日時・場所 -->
+      <div class="text-sm text-gray-600 mb-4">
+        <p><i class="far fa-calendar-alt"></i> <%= @event.start_time.strftime('%Y-%m-%d %H:%M') %></p>
+        <p><i class="fas fa-map-marker-alt"></i> <%= @event.location %></p>
+      </div>
+
+      <!-- 期限 -->
+      <% if @event.deadline.present? %>
+        <div class="text-sm text-gray-600 mb-4">
+          <p><i class="fas fa-hourglass-half"></i> <%= @event.deadline.strftime('%Y-%m-%d') %></p>
+        </div>
+      <% end %>
+
+      <!-- 参加人数 -->
+      <div class="flex justify-between text-sm text-gray-600 mb-4">
+        <p><i class="fas fa-users"></i> 2名 / <%= @event.capacity %>名</p>
+      </div>
+
+      <!-- イベント詳細説明 -->
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-3">イベント詳細</h2>
+        <p class="text-gray-700"><%= @event.description %></p>
+      </div>
+
+      <!-- 参加する・気になるボタン -->
+      <div class="p-4 bg-gray-100 text-center">
+        <%= button_to ("<i class='fas fa-user-plus'></i> " + t('buttons.join')).html_safe, "#", method: :post, class: "w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-2 rounded-lg shadow-md transition duration-300" %>
+        <%= button_to ("<i class='fas fa-heart'></i> " + t('buttons.interested')).html_safe, "#", method: :post, class: "w-full bg-yellow-500 hover:bg-yellow-400 text-white font-semibold py-2 rounded-lg shadow-md transition duration-300 mt-2" %>
+      </div>
+
+      <!-- 編集、削除、戻るボタン -->
+      <div class="flex justify-between mt-6">
+        <%= link_to t('buttons.edit'), edit_event_path(@event), class: "bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
+        
+        <%= button_to t('buttons.delete'), @event, method: :delete, data: { confirm: t('events.confirm_delete') }, class: "bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
+
+        <%= link_to t('buttons.back'), events_path, class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
+      </div>
+    </div>
   </div>
 </div>

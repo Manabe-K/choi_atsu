@@ -1,0 +1,31 @@
+ja:
+  header:
+    icon: "アイコン"
+    login: "ログイン"
+  footer:
+    logo: "フッターロゴ"
+    contact_us: "お問い合わせ"
+    terms_of_service: "利用規約"
+    privacy_policy: "プライバシーポリシー"
+  application:
+    menu: "メニュー"
+    index: "オフ会一覧"
+    new: "企画する"
+    plan&participation_list: "企画・参加リスト"
+    interested_list: "気になるリスト"
+    my_page: "マイページ"
+    how_to_use: "使い方"
+    edit: "編集"
+    update: "更新"
+  index:
+    no_event: "現在、イベントはありません。"
+  buttons:
+    interested: "気になる"
+    join: "参加する"
+    delete: "削除"
+    edit: "編集する"
+    back: "一覧に戻る"
+  new:
+    back_to_index: "一覧に戻る"
+  edit:
+    back_to_show: "詳細に戻る"

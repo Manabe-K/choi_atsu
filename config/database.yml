@@ -81,7 +81,11 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  <<: *default
-  database: myapp_production
-  username: myapp
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  database: <%= ENV["MYAPP_DATABASE_NAME"] %>
+  username: <%= ENV["MYAPP_DATABASE_USER"] %>
   password: <%= ENV["MYAPP_DATABASE_PASSWORD"] %>
+  host: <%= ENV["MYAPP_DATABASE_HOST"] %>
+  port: 5432

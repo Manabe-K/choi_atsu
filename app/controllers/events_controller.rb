@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   before_action :set_event, only: %i[ show edit update destroy ]
-
+  before_action :require_login
   # GET /events or /events.json
   def index
     if params[:tag].present?
@@ -65,5 +65,11 @@ private
   # Only allow a list of trusted parameters through.
   def event_params
     params.require(:event).permit(:title, :start_time, :end_time, :deadline, :location, :description, :capacity)
+  end
+
+  def require_login
+    unless current_user
+      redirect_to root_path, alert: "ログインが必要です"
+    end
   end
 end

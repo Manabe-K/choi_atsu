@@ -1,0 +1,21 @@
+<div class="min-h-screen bg-gray-100 flex flex-col justify-center items-center px-4 py-8">
+  <!-- メインメッセージ -->
+  <div class="text-center mb-8">
+    <h1 class="text-4xl font-bold text-gray-800 mb-4">ようこそ！</h1>
+    <p class="text-lg text-gray-600">このサイトではGitHubアカウントを使ってログインできます。</p>
+  </div>
+
+  <!-- GitHubでログインボタン -->
+<div class="mb-8">
+  <%= link_to "/auth/github", class: "uk-button uk-button-primary", data: { turbo: false } do %>
+    <i class="fa-brands fa-github"></i>
+    <span class="normal-case">GitHubでログイン</span>
+  <% end %>
+</div>
+
+  <!-- 使い方の枠 -->
+  <div class="w-full max-w-lg p-6 bg-white shadow-lg rounded-lg border border-gray-300">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">使い方</h2>
+    <p class="text-gray-600">1. GitHubでログインします。<br>2. 必要な操作を行います。<br>3. ログアウト後も安全にご利用いただけます。</p>
+  </div>
+</div>

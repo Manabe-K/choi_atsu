@@ -1,6 +1,6 @@
 class TagsController < ApplicationController
   before_action :set_tag, only: %i[ show edit update destroy ]
-
+  before_action :require_login
   # GET /tags or /tags.json
   def index
     @tags = Tag.all
@@ -66,5 +66,11 @@ class TagsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def tag_params
       params.require(:tag).permit(:name)
+    end
+
+    def require_login
+      unless current_user
+        redirect_to root_path, alert: "ログインが必要です"
+      end
     end
 end

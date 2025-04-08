@@ -21,57 +21,59 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-<body class="flex">
-  <%= render 'shared/header' %>
-  
-  <% unless controller.controller_name == 'static_pages' %>
-    <div class="w-64 bg-gray-800 text-white h-screen fixed top-0 left-0 p-6 pt-20 shadow-lg rounded-lg">
-      <h2 class="text-2xl font-extrabold text-center text-indigo-400 mb-8"><%= t('application.menu') %></h2>
-      <ul class="space-y-6">
-        <li>
-          <%= link_to events_path, class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
-            <i class="fas fa-calendar-alt"></i>
-            <span><%= t('application.index') %></span>
-          <% end %>
-        </li>
-        <li>
-          <%= link_to new_event_path, class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
-            <i class="fas fa-plus-circle"></i>
-            <span><%= t('application.new') %></span>
-          <% end %>
-        </li>
-        <li>
-          <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
-            <i class="fas fa-list-ul"></i>
-            <span><%= t('application.plan&participation_list') %></span>
-          <% end %>
-        </li>
-        <li>
-          <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
-            <i class="fas fa-heart"></i>
-            <span><%= t('application.interested_list') %></span>
-          <% end %>
-        </li>
-        <li>
-          <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
-            <i class="fas fa-user"></i>
-            <span><%= t('application.my_page') %></span>
-          <% end %>
-        </li>
-        <li>
-          <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
-            <i class="fas fa-question-circle"></i>
-            <span><%= t('application.how_to_use') %></span>
-          <% end %>
-        </li>
-      </ul>
+  <body class="flex">
+    <%= render 'shared/header' %>
+
+    <% unless controller.controller_name == 'sessions' && controller.action_name == 'new' %>
+      <!-- メニュー部分 -->
+      <div class="w-64 bg-gray-800 text-white h-screen fixed top-0 left-0 p-6 pt-20 shadow-lg rounded-lg">
+        <h2 class="text-2xl font-extrabold text-center text-indigo-400 mb-8"><%= t('application.menu') %></h2>
+        <ul class="space-y-6">
+          <li>
+            <%= link_to events_path, class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+              <i class="fas fa-calendar-alt"></i>
+              <span><%= t('application.index') %></span>
+            <% end %>
+          </li>
+          <li>
+            <%= link_to new_event_path, class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+              <i class="fas fa-plus-circle"></i>
+              <span><%= t('application.new') %></span>
+            <% end %>
+          </li>
+          <li>
+            <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+              <i class="fas fa-list-ul"></i>
+              <span><%= t('application.plan&participation_list') %></span>
+            <% end %>
+          </li>
+          <li>
+            <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+              <i class="fas fa-heart"></i>
+              <span><%= t('application.interested_list') %></span>
+            <% end %>
+          </li>
+          <li>
+            <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+              <i class="fas fa-user"></i>
+              <span><%= t('application.my_page') %></span>
+            <% end %>
+          </li>
+          <li>
+            <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+              <i class="fas fa-question-circle"></i>
+              <span><%= t('application.how_to_use') %></span>
+            <% end %>
+          </li>
+        </ul>
+      </div>
+    <% end %>
+
+    <!-- メインコンテンツ -->
+    <div class="flex-1 <%= 'ml-64' unless controller.controller_name == 'sessions' && controller.action_name == 'new' %> pt-15 pb-24">
+      <%= yield %>
     </div>
-  <% end %>
 
-  <div class="flex-1 <%= 'ml-64' unless controller.controller_name == 'static_pages' %> pt-15 pb-24">
-    <%= yield %>
-  </div>
-
-  <%= render 'shared/footer' %>
-</body>
+    <%= render 'shared/footer' %>
+  </body>
 </html>

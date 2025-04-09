@@ -18,7 +18,6 @@ class SessionsController < ApplicationController
       if @user.persisted?
         # 既に登録済み → ログイン状態にしてリダイレクト
         session[:user_id] = @user.id
-        Rails.logger.info "✅ session[:user_id] set to: #{session[:user_id]}"
         redirect_to events_path, notice: "ログインしました。"
       else
         # 新規ユーザー → セッションに一時保存して登録画面へ
@@ -28,7 +27,6 @@ class SessionsController < ApplicationController
           github_token: @user.github_token,
           profile_picture: @user.profile_picture
         }
-        Rails.logger.info "📝 session[:user_registration] set: #{session[:user_registration].inspect}"
         redirect_to new_user_path
       end
     else

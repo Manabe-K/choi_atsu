@@ -6,13 +6,15 @@ document.addEventListener('turbo:load', function() {
   const profileButton = document.getElementById('profile-button');
   const dropdownMenu = document.getElementById('dropdown-menu');
 
-  profileButton.addEventListener('click', function() {
-    dropdownMenu.classList.toggle('hidden');
-  });
+  if (profileButton && dropdownMenu) {
+    profileButton.addEventListener('click', function() {
+      dropdownMenu.classList.toggle('hidden');
+    });
 
-  document.addEventListener('click', function(event) {
-    if (!profileButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
-      dropdownMenu.classList.add('hidden');
-    }
-  });
+    document.addEventListener('click', function(event) {
+      if (!profileButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+        dropdownMenu.classList.add('hidden');
+      }
+    });
+  }
 });

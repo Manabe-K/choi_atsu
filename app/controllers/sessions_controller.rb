@@ -6,8 +6,9 @@ class SessionsController < ApplicationController
 
   def omniauth_callback
     auth_info = request.env["omniauth.auth"]
-
+    Rails.logger.debug "Auth Info: #{auth_info.inspect}" # ここでログを出力
     @user = User.find_or_initialize_by(github_uid: auth_info["uid"])
+    Rails.logger.debug "User: #{@user.inspect}" # ユーザー情報のログ
     @user.assign_attributes(
       name: auth_info["info"]["name"],
       github_token: auth_info["credentials"]["token"],

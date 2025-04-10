@@ -12,7 +12,6 @@ class SessionsController < ApplicationController
       github_token: auth_info["credentials"]["token"],
       profile_picture: auth_info["info"]["image"]
     )
-
     if user_is_member_of_runteq?(@user.github_token)
       if @user.persisted?
         # 既に登録済み → ログイン状態にしてリダイレクト

@@ -41,7 +41,17 @@ class SessionsController < ApplicationController
 
   def back_to_users
     session.delete(:user_registration)
-    redirect_to root_path  # 例: ログイン画面へ
+    redirect_to root_path
+  end
+
+  def guest_login
+    guest_user = User.find_by(github_uid: "guest")
+    if guest_user
+      session[:user_id] = guest_user.id
+      redirect_to events_path, notice: "ゲストユーザーとしてログインしました"
+    else
+      redirect_to root_path, alert: "ゲストユーザーが見つかりません"
+    end
   end
 
   private

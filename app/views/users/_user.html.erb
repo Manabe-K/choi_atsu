@@ -4,11 +4,11 @@
     <%= user.name %>
   </div>
   <div>
-    <strong class="block font-medium mb-1">Uid:</strong>
-    <%= user.uid %>
+    <strong class="block font-medium mb-1">Github UID:</strong>
+    <%= user.github_uid %>
   </div>
   <div>
     <strong class="block font-medium mb-1">Profile picture:</strong>
-    <%= user.profile_picture %>
+    <%= image_tag(user.profile_picture, alt: 'Profile Picture', class: 'w-16 h-16 rounded-full object-cover') if user.profile_picture.present? %>
   </div>
 </div>

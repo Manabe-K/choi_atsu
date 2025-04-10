@@ -1,11 +1,12 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show edit update destroy ]
+  before_action :set_user, only: %i[show edit update destroy]
 
   def index
     @users = User.all
   end
 
-  def show;end
+  def show
+  end
 
   def new
     unless session[:user_registration]
@@ -26,6 +27,12 @@ class UsersController < ApplicationController
     else
       render :new
     end
+  end
+
+  def edit
+    # ここでユーザーを取得するので、ログイン済みのユーザーが編集対象となる
+    # ログインユーザーの情報を編集する場合、current_user で取得する方法もあり
+    @user = current_user
   end
 
   def update

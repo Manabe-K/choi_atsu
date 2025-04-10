@@ -5,6 +5,7 @@ class SessionsController < ApplicationController
     @user.assign_attributes(
       name: auth_info["info"]["name"],
       github_token: auth_info["credentials"]["token"],
+      profile_picture: auth_info["info"]["image"]
     )
 
     if user_is_member_of_runteq?(@user.github_token)
@@ -13,9 +14,15 @@ class SessionsController < ApplicationController
         session[:user_id] = @user.id
         redirect_to events_path, notice: "ログインしました。"
       else
-        # 新規ユーザー登録画面に遷移
-        session[:user_registration] = @user.slice(:github_uid, :name, :github_token)
-        redirect_to new_user_path
+        # 新規ユーザー登録処理
+        if @user.save
+          # 登録完了後にuser#editにリダイレクトして詳細情報の編集を受け付ける
+          session[:user_id] = @user.id
+          redirect_to edit_user_path(@user), notice: "ユーザー登録が完了しました。詳細情報を入力してください。"
+        else
+          flash[:error] = "ユーザー登録に失敗しました。"
+          redirect_to root_path
+        end
       end
     else
       flash[:error] = "You must be a member of RunTeq to register."

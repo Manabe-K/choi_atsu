@@ -36,6 +36,9 @@ class SessionsController < ApplicationController
 
   def destroy
     session[:user_id] = nil
+    session.delete(:user_id) # 明示的にセッションを削除
+    session[:user_registration] = nil
+    session.delete(:user_registration) # ユーザー登録情報も削除
     redirect_to root_path, notice: "ログアウトしました"
   end
 

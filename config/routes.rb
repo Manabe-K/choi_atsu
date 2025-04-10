@@ -8,8 +8,6 @@ Rails.application.routes.draw do
   get "login" => "sessions#new"
   delete "logout" => "sessions#destroy"
   post "back_to_users", to: "sessions#back_to_users"
-  # サンプルユーザー用のログイン
-  get "guest_login", to: "sessions#guest_login"
 
   # その他のリソース
   resources :tags

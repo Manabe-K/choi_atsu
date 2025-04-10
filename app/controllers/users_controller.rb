@@ -5,11 +5,15 @@ class UsersController < ApplicationController
     @users = User.all
   end
 
-  def show
-  end
+  def show;end
 
   def new
-    @user = session[:user_registration] ? User.new(session[:user_registration]) : User.new
+    unless session[:user_registration]
+      redirect_to root_path, alert: "不正なアクセスです。"
+      return
+    end
+
+    @user = User.new(session[:user_registration])
   end
 
   def create

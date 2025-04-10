@@ -20,10 +20,9 @@
   <%= form.hidden_field :github_uid, value: @user.github_uid %> 
 
 <div class="my-5">
-  <%= form.label :profile_picture, "Profile Picture" %>
+  <%= form.label :profile_picture, "Profile Picture URL" %>
   <div class="flex items-center">
-    <%= image_tag(@user.profile_picture, alt: 'Profile Picture', class: 'w-16 h-16 rounded-full object-cover mr-4') if @user.profile_picture.present? %>
-    <%= form.text_field :profile_picture, class: "block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", value: @user.profile_picture, readonly: true %>
+    <%= form.text_field :profile_picture, class: "block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", value: @user.profile_picture, placeholder: "Enter image URL" %>
   </div>
 </div>
 

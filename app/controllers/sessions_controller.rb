@@ -5,7 +5,6 @@ class SessionsController < ApplicationController
     @user.assign_attributes(
       name: auth_info["info"]["name"],
       github_token: auth_info["credentials"]["token"],
-      profile_picture: auth_info["info"]["image"]
     )
 
     if user_is_member_of_runteq?(@user.github_token)
@@ -15,7 +14,7 @@ class SessionsController < ApplicationController
         redirect_to events_path, notice: "ログインしました。"
       else
         # 新規ユーザー登録画面に遷移
-        session[:user_registration] = @user.slice(:github_uid, :name, :github_token, :profile_picture)
+        session[:user_registration] = @user.slice(:github_uid, :name, :github_token)
         redirect_to new_user_path
       end
     else

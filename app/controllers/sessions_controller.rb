@@ -41,7 +41,7 @@ class SessionsController < ApplicationController
 
   def back_to_users
     session.delete(:user_registration)
-    redirect_to root_path  # 例: ログイン画面へ
+    redirect_to root_path
   end
 
   def guest_login

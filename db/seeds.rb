@@ -20,9 +20,9 @@ else
       start_time: Time.current + (i + 1).days,
       end_time: Time.current + (i + 1).days + 2.hours,
       deadline: Time.current + i.days + 12.hours,
-      location: ["オンライン", "渋谷", "大阪"].sample,
+      location: [ "オンライン", "渋谷", "大阪" ].sample,
       description: "これはサンプルイベント#{i + 1}の説明です。",
-      capacity: [10, 20, 30].sample,
+      capacity: [ 10, 20, 30 ].sample,
       host_user_id: guest_user.id
     )
 

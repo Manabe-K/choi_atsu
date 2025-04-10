@@ -5,6 +5,12 @@ class SessionsController < ApplicationController
   end
 
   def omniauth_callback
+    if session[:user_id].present? && User.find(session[:user_id]).github_uid == "guest_uid"
+      # ゲストユーザーがログインしている場合は、GitHub認証をスキップ
+      redirect_to events_path, notice: "ゲストユーザーとしてログイン中です。"
+      return
+    end
+  
     auth_info = request.env["omniauth.auth"]
     @user = User.find_or_initialize_by(github_uid: auth_info["uid"])
     @user.assign_attributes(
@@ -12,7 +18,6 @@ class SessionsController < ApplicationController
       github_token: auth_info["credentials"]["token"],
       profile_picture: auth_info["info"]["image"]
     )
-
     if user_is_member_of_runteq?(@user.github_token)
       if @user.persisted?
         # 既に登録済み → ログイン状態にしてリダイレクト
@@ -51,6 +56,7 @@ class SessionsController < ApplicationController
     guest_user = User.find_by(github_uid: "guest_uid")
     if guest_user
       session[:user_id] = guest_user.id
+      session.delete(:user_registration) # ゲストユーザーの場合は他の情報をクリア
       redirect_to events_path, notice: "ゲストユーザーとしてログインしました"
     else
       redirect_to root_path, alert: "ゲストユーザーが見つかりません"

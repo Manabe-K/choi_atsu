@@ -20,7 +20,7 @@ class SessionsController < ApplicationController
       end
     else
       flash[:error] = "You must be a member of RunTeq to register."
-      redirect_to events_path
+      redirect_to root_path
     end
   end
 

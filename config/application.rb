@@ -29,5 +29,6 @@ module Myapp
       g.test_framework nil
     end
     config.i18n.default_locale = :ja
+    config.session_store :active_record_store, key: "_choi_atsu_session"
   end
 end

@@ -1,12 +1,15 @@
 if Rails.env.production?
-  load Rails.root.join('db/seeds/guest_user.rb')
+  load Rails.root.join('db/seeds/guest_user.rb')  # 本番環境用のseedsを読み込む
 else
-
-  # ゲストユーザー
-  guest_user = User.find_or_create_by!(name: "ゲストユーザー") do |user|
-    user.github_uid = "guest_uid"
-    user.profile_picture = "https://example.com/guest.png"
-    user.github_token = "dummy_token"
+  begin
+    guest_user = User.find_or_create_by!(name: "ゲストユーザー") do |user|
+      user.github_uid = "guest_uid"
+      user.profile_picture = "https://example.com/guest.png"
+      user.github_token = "dummy_token"
+    end
+    puts "ゲストユーザーが作成されました: #{guest_user.inspect}"
+  rescue ActiveRecord::RecordInvalid => e
+    puts "ゲストユーザーの作成中にエラーが発生しました: #{e.message}"
   end
 
   # タグ

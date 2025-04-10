@@ -7,4 +7,8 @@ class ApplicationController < ActionController::Base
   def current_user
     @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
   end
+
+  def after_sign_in_path_for(resource_or_scope)
+    events_path  # ログイン後にリダイレクトするパス
+  end
 end

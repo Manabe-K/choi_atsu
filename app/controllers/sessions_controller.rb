@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
       redirect_to events_path, notice: "ゲストユーザーとしてログイン中です。"
       return
     end
-  
+
     auth_info = request.env["omniauth.auth"]
     @user = User.find_or_initialize_by(github_uid: auth_info["uid"])
     @user.assign_attributes(

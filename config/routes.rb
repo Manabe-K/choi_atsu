@@ -10,7 +10,6 @@ Rails.application.routes.draw do
 
   get "demo_login", to: "sessions#demo_login"
 
-  # その他のリソース
   resources :tags
   resources :users
   resources :events

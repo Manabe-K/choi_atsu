@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_10_160402) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_13_072620) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -34,6 +34,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_10_160402) do
     t.integer "host_user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_sample"
+    t.integer "demo_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|

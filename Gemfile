@@ -11,9 +11,9 @@ gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem "jsbundling-rails"
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
+# Hotwire"s SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
+# Hotwire"s modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
 # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
 gem "tailwindcss-rails", "~> 4.2.2"
@@ -66,4 +66,4 @@ gem "omniauth-rails_csrf_protection"
 gem "omniauth-github", "~> 2.0.0"
 
 gem "activerecord-session_store", "~> 2.2"
-gem 'whenever', require: false
+gem "whenever", require: false

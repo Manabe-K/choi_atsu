@@ -1,68 +1,64 @@
 class EventsController < ApplicationController
   before_action :set_event, only: %i[ show edit update destroy ]
   before_action :require_login
-  # GET /events or /events.json
+
   def index
-    if params[:tag].present?
-      @events = Event.joins(:tags).where(tags: { name: params[:tag] })
+    base_scope = Event.includes(:host_user)
+
+    if current_user.demo?
+      @events = base_scope.select do |event|
+        event.host_user&.github_uid == "demo_seed_user" || event.host_user == current_user
+      end
     else
-      @events = Event.all
+      @events = base_scope.reject do |event|
+        event.host_user&.github_uid&.start_with?("demo_")
+      end
     end
-      @tags = Tag.all
+
+    if params[:tag].present?
+      @events = @events.select { |event| event.tags.map(&:name).include?(params[:tag]) }
+    end
+
+    @tags = Tag.all
   end
 
   def show; end
 
-  # GET /events/new
   def new
     @event = Event.new
   end
 
-  # GET /events/1/edit
   def edit; end
 
-  # POST /events or /events.json
   def create
     @event = Event.new(event_params)
-    @event.host_user_id = 1  # 仮にホストユーザーIDとして1を設定
+    @event.host_user = current_user
 
     if @event.save
-      redirect_to @event, notice: "Event was successfully created."
+      redirect_to @event, notice: "イベントを作成しました"
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /events/1 or /events/1.json
   def update
-    respond_to do |format|
-      if @event.update(event_params)
-        format.html { redirect_to @event, notice: "Event was successfully updated." }
-        format.json { render :show, status: :ok, location: @event }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
-      end
+    if @event.update(event_params)
+      redirect_to @event, notice: "イベントを更新しました"
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /events/1 or /events/1.json
   def destroy
-    @event.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to events_path, status: :see_other, notice: "Event was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    @event.destroy
+    redirect_to events_path, notice: "イベントを削除しました", status: :see_other
   end
 
 private
-  # Use callbacks to share common setup or constraints between actions.
   def set_event
     @event = Event.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
   def event_params
     params.require(:event).permit(:title, :start_time, :end_time, :deadline, :location, :description, :capacity)
   end

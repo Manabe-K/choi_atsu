@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   delete "logout" => "sessions#destroy"
   post "back_to_users", to: "sessions#back_to_users"
 
+  get "demo_login", to: "sessions#demo_login"
+
   # その他のリソース
   resources :tags
   resources :users

@@ -27,12 +27,28 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    session[:user_id] = nil
+    if current_user&.demo?
+      current_user.hosted_events.destroy_all
+      current_user.destroy
+    end
+    reset_session
     redirect_to root_path, notice: "ログアウトしました"
   end
 
   def back_to_users
     session.delete(:user_registration)
     redirect_to root_path, notice: "ユーザー登録をキャンセルしました。"
+  end
+
+  # sessions_controller.rb
+  def demo_login
+    demo_user = User.create!(
+      name: "デモユーザー",
+      github_uid: "demo_#{SecureRandom.hex(10)}",
+      github_token: SecureRandom.hex(20),
+      profile_picture: ActionController::Base.helpers.asset_path("demo_image.png")
+    )
+    session[:user_id] = demo_user.id
+    redirect_to events_path, notice: "デモモードでログインしました"
   end
 end

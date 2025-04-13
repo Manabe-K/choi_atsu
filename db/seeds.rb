@@ -11,11 +11,11 @@ end
   Tag.find_or_create_by!(name: "タグ#{i}")
 end
 
-# ここでタグIDを取得しておく！
+# ここでタグIDを取得しておく
 sample_tags = Tag.pluck(:id)
 
-# ここからイベント作成
-if Event.where(host_user: demo_host, is_sample: true).count < 10
+# ここからイベント作成（is_sampleは使わない）
+if Event.where(host_user: demo_host).count < 10
   puts "✅ サンプルイベントを作成します"
 
   10.times do |i|
@@ -23,15 +23,14 @@ if Event.where(host_user: demo_host, is_sample: true).count < 10
     end_time = start_time + (1 + rand(2)).hours
 
     event = Event.create!(
-      title: "サンプルイベント#{i + 1}:#{[ "ランチ会", "勉強会", "雑談会" ].sample}",
+      title: "サンプルイベント#{i + 1}:#{['ランチ会', '勉強会', '雑談会'].sample}",
       start_time: start_time,
       end_time: end_time,
       deadline: start_time - 1.day,
-      location: [ "オンライン", "渋谷", "大阪" ].sample,
+      location: ['オンライン', '渋谷', '大阪'].sample,
       description: "これはデモ用イベントです。",
       capacity: rand(5..15),
-      host_user: demo_host,
-      is_sample: true
+      host_user: demo_host
     )
 
     # タグを1〜3個ランダムに付ける（必ず1個以上）

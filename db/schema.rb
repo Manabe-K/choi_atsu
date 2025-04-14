@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_10_160402) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_14_060814) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "curious_lists", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "event_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_curious_lists_on_event_id"
+    t.index ["user_id", "event_id"], name: "index_curious_lists_on_user_id_and_event_id", unique: true
+    t.index ["user_id"], name: "index_curious_lists_on_user_id"
+  end
 
   create_table "event_tags", force: :cascade do |t|
     t.bigint "event_id", null: false
@@ -34,6 +44,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_10_160402) do
     t.integer "host_user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "participants", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "event_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_participants_on_event_id"
+    t.index ["user_id", "event_id"], name: "index_participants_on_user_id_and_event_id", unique: true
+    t.index ["user_id"], name: "index_participants_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -62,6 +82,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_10_160402) do
     t.index ["github_uid"], name: "index_users_on_github_uid", unique: true
   end
 
+  add_foreign_key "curious_lists", "events"
+  add_foreign_key "curious_lists", "users"
   add_foreign_key "event_tags", "events"
   add_foreign_key "event_tags", "tags"
+  add_foreign_key "participants", "events"
+  add_foreign_key "participants", "users"
 end

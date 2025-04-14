@@ -23,11 +23,11 @@ if Event.where(host_user: demo_host).count < 10
     end_time = start_time + (1 + rand(2)).hours
 
     event = Event.create!(
-      title: "サンプルイベント#{i + 1}:#{['ランチ会', '勉強会', '雑談会'].sample}",
+      title: "サンプルイベント#{i + 1}:#{[ 'ランチ会', '勉強会', '雑談会' ].sample}",
       start_time: start_time,
       end_time: end_time,
       deadline: start_time - 1.day,
-      location: ['オンライン', '渋谷', '大阪'].sample,
+      location: [ 'オンライン', '渋谷', '大阪' ].sample,
       description: "これはデモ用イベントです。",
       capacity: rand(5..15),
       host_user: demo_host

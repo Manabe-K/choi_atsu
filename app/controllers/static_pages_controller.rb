@@ -8,8 +8,7 @@ class StaticPagesController < ApplicationController
   private
 
   def redirect_if_logged_in
-    if current_user
-      redirect_to events_path, notice: "すでにログインしています。"
-    end
+    return unless current_user
+    redirect_to events_path, notice: "すでにログインしています。"
   end
 end

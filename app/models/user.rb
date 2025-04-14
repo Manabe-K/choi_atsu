@@ -4,16 +4,6 @@ class User < ApplicationRecord
   validates :name, presence: true
   validates :profile_picture, presence: true
 
-  # GitHub認証後のコールバック処理
-  def self.from_omniauth(auth)
-    user = User.where(github_uid: auth.uid).first_or_initialize
-    user.name = auth.info.name
-    user.profile_picture = auth.info.image
-    user.github_token = auth.credentials.token
-    user.save
-    user
-  end
-
   def demo?
     github_uid&.start_with?("demo_")
   end

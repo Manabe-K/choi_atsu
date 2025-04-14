@@ -3,22 +3,13 @@ class EventsController < ApplicationController
   before_action :require_login
 
   def index
-    base_scope = Event.includes(:host_user)
-
-    if current_user.demo?
-      @events = base_scope.select do |event|
-        event.host_user&.github_uid == "demo_seed_user" || event.host_user == current_user
-      end
-    else
-      @events = base_scope.reject do |event|
-        event.host_user&.github_uid&.start_with?("demo_")
-      end
-    end
+    @events = current_user.demo? ? Event.demo_visible_to(current_user) : Event.exclude_demo_users
 
     if params[:tag].present?
-      @events = @events.select { |event| event.tags.map(&:name).include?(params[:tag]) }
+      @events = @events.joins(:tags).where(tags: { name: params[:tag] })
     end
 
+    @events = @events.includes(:host_user).distinct
     @tags = Tag.all
   end
 

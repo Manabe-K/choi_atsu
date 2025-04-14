@@ -44,8 +44,8 @@
 
       <!-- 参加する・気になるボタン -->
       <div class="p-4 bg-gray-100 text-center">
-        <%= button_to ("<i class='fas fa-user-plus'></i> " + t('buttons.join')).html_safe, "#", method: :post, class: "w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-2 rounded-lg shadow-md transition duration-300" %>
-        <%= button_to ("<i class='fas fa-heart'></i> " + t('buttons.interested')).html_safe, "#", method: :post, class: "w-full bg-yellow-500 hover:bg-yellow-400 text-white font-semibold py-2 rounded-lg shadow-md transition duration-300 mt-2" %>
+        <%= participation_button(@event, current_user) %>
+<%= curious_button(@event, current_user) %>
       </div>
 
       <!-- 編集、削除、戻るボタン -->

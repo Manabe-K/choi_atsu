@@ -9,9 +9,12 @@ Rails.application.routes.draw do
   get    "demo_login",              to: "sessions#demo_login"
 
   # リソース系（必要なアクションだけ許可）
-  resources :users, except: [:index]
-  resources :events
-  resources :tags, only: [:index, :show] # 必要に応じて :new, :create, :edit, :update, :destroy を追加
+  resources :users, except: [ :index ]
+  resources :events do
+    resource :participant, only: [ :create, :destroy ]
+    resource :curious_list, only: [ :create, :destroy ]
+  end
+  resources :tags, only: [ :index, :show ] # 必要に応じて :new, :create, :edit, :update, :destroy を追加
 
   # sessionの定期的な削除
   get "/clear_sessions/:token", to: "maintenance#clear_sessions", as: :secure_clear_sessions

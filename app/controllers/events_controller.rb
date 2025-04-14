@@ -9,7 +9,7 @@ class EventsController < ApplicationController
       @events = @events.joins(:tags).where(tags: { name: params[:tag] })
     end
 
-    @events = @events.includes(:host_user).distinct
+    @events = @events.includes(:host_user, :participant_users).distinct
     @tags = Tag.all
   end
 

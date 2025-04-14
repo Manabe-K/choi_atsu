@@ -8,6 +8,7 @@ class MaintenanceController < ApplicationController
     expired_sessions.delete_all
 
     User.where("github_uid LIKE ?", "demo_%")
+        .where.not(github_uid: "demo_seed_user")
         .where(id: expired_user_ids)
         .find_each do |user|
       user.hosted_events.destroy_all

@@ -49,7 +49,7 @@
                 <!-- 締切・人数 -->
                 <div class="flex justify-between text-xs text-gray-500 mt-2">
                   <span><i class="fas fa-hourglass-half mr-1"></i><%= event.deadline&.strftime('%Y-%m-%d') %></span>
-                  <span><i class="fas fa-users mr-1"></i><%= joined_count(event) %>名 / <%= event.capacity || "制限なし" %></span>
+                  <span><i class="fas fa-users mr-1"></i><%= joined_count(event) %>名 / <%= event.capacity.present? ? "#{event.capacity}名" : "制限なし" %></span>
                 </div>
               </div>
             </div>

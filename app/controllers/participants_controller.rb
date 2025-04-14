@@ -5,10 +5,10 @@ class ParticipantsController < ApplicationController
     event = Event.find(params[:event_id])
 
     if event.participant_users.exists?(current_user.id)
-      redirect_to event_path(event), alert: "すでに参加済みです"
+      redirect_to events_path, alert: "すでに参加済みです"
     else
       Participant.create!(user: current_user, event: event)
-      redirect_to event_path(event), notice: "イベントに参加しました！"
+      redirect_to events_path, notice: "イベントに参加しました！"
     end
   end
 
@@ -18,9 +18,9 @@ class ParticipantsController < ApplicationController
 
     if participant
       participant.destroy
-      redirect_to event_path(event), notice: "参加をキャンセルしました"
+      redirect_to events_path, notice: "参加をキャンセルしました"
     else
-      redirect_to event_path(event), alert: "参加情報が見つかりません"
+      redirect_to events_path, alert: "参加情報が見つかりません"
     end
   end
 

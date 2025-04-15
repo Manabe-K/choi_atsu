@@ -1,0 +1,17 @@
+<%= turbo_stream.replace dom_id(@event, :participation_button) do %>
+  <%= participation_button(@event, current_user) %>
+<% end %>
+
+<%= turbo_stream.replace dom_id(@event, :participant_count) do %>
+  <%= participation_count(@event) %>
+<% end %>
+
+<% if request.referrer&.include?(participating_events_path) && (params[:from] == "participating") %>
+  <%= turbo_stream.remove dom_id(@event, :card) %>
+
+  <% if current_user.joined_events.reload.empty? %>
+    <%= turbo_stream.append "events_list" do %>
+      <%= content_tag(:p, "参加中のイベントはありません。", class: "text-center text-lg text-gray-600") %>
+    <% end %>
+  <% end %>
+<% end %>

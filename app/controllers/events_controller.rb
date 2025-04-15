@@ -57,6 +57,7 @@ class EventsController < ApplicationController
   end
 
 private
+
   def set_event
     @event = Event.find(params[:id])
   end
@@ -66,8 +67,6 @@ private
   end
 
   def require_login
-    unless current_user
-      redirect_to root_path, alert: "ログインが必要です"
-    end
+    redirect_to root_path, alert: "ログインが必要です" unless current_user
   end
 end

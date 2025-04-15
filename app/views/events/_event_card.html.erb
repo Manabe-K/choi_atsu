@@ -1,8 +1,8 @@
-<div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+<div id="events_list" class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
   <% if events.any? %>
     <% events.each do |event| %>
-      <div class="relative bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition duration-300 <%= 'opacity-50' if event_full?(event) %>">
-        <%= link_to event_path(event) do %>
+      <div id="<%= dom_id(event, :card) %>" class="relative bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition duration-300 <%= 'opacity-50' if event_full?(event) %>">
+        <%= link_to event_path(event, return_to: request.fullpath) do %>
           <div class="p-4 flex gap-4">
             <div>
               <%= image_tag event.host_user.profile_picture, alt: event.host_user.name, class: "w-14 h-14 rounded-full border border-gray-300" %>
@@ -26,7 +26,7 @@
 
               <div class="flex justify-between text-xs text-gray-500 mt-2">
                 <span><i class="fas fa-hourglass-half mr-1"></i><%= event.deadline&.strftime('%Y-%m-%d') %></span>
-                <span><i class="fas fa-users mr-1"></i><%= joined_count(event) %>名 / <%= event.capacity.present? ? "#{event.capacity}名" : "制限なし" %></span>
+                <%= participation_count(event) %>
               </div>
             </div>
           </div>

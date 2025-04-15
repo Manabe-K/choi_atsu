@@ -4,5 +4,7 @@
 <%= render 'form' %>
 
 <div class="text-center mt-4">
-  <%= link_to t('edit.back_to_show'), event_path(@event), class: "text-blue-500 hover:underline" %>
+  <%= link_to t('edit.back_to_show'),
+              event_path(@event, return_to: safe_return_to_path),
+              class: "text-blue-500 hover:underline" %>
 </div>

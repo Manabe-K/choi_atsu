@@ -45,8 +45,8 @@
         <% end %>
 
         <% if event_full?(event) %>
-          <div class="absolute inset-0 bg-gray-700 bg-opacity-75 flex items-center justify-center text-white text-xl font-bold">
-            募集終了
+          <div class="absolute inset-0 bg-gray-700/40 flex items-center justify-center text-white text-xl font-bold z-10 before:content-[''] before:absolute before:inset-0 before:bg-[repeating-linear-gradient(45deg,_rgba(255,255,255,0.1)_0px,_rgba(255,255,255,0.1)_2px,_transparent_2px,_transparent_6px)]">
+            <span style="text-shadow: 1px 1px 2px rgba(0,0,0,0.6);">募集終了</span>
           </div>
         <% end %>
       </div>

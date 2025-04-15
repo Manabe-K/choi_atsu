@@ -3,19 +3,28 @@ class ParticipantsController < ApplicationController
 
   def create
     @event = Event.find(params[:event_id])
-
+  
     if @event.participant_users.exists?(current_user.id)
       respond_to do |format|
         format.turbo_stream { head :conflict }
         format.html { redirect_to events_path, alert: "すでに参加済みです" }
       end
-    else
-      Participant.create!(user: current_user, event: @event)
+      return
+    end
 
+    if @event.participant_users.count + 1 > @event.capacity
       respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to events_path, notice: "イベントに参加しました！" }
+        format.turbo_stream { head :unprocessable_entity }
+        format.html { redirect_to events_path, alert: "このイベントは満席です" }
       end
+      return
+    end
+
+    Participant.create!(user: current_user, event: @event)
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to events_path, notice: "イベントに参加しました！" }
     end
   end
 

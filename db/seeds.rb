@@ -22,9 +22,8 @@ demo_users = (1..5).map do |i|
   end
 end
 
-# タグ作成（すでにある場合はスキップ）
+# タグ作成
 puts "🏷️ タグを作成・確認します"
-
 (1..10).each do |i|
   tag_name = "タグ#{i}"
   tag = Tag.find_by(name: tag_name)
@@ -40,81 +39,55 @@ end
 sample_tags = Tag.pluck(:id)
 
 # イベントタイプ定義
-event_types = %w[
-  available
-  full
-  closed
-  full_and_closed
-  almost_full
-  past
-]
+event_types = %w[available full closed full_and_closed almost_full past]
 
-# イベント作成判定（既に作成済みならスキップしたい場合はここで判定）
+# 作成済み判定
 existing_event_count = Event.joins(:host_user).where("users.github_uid LIKE ?", "demo_seed_user%").count
 
 if existing_event_count > 0
   puts "⚠️ すでにデモイベントが存在するため、作成をスキップしました（#{existing_event_count}件）"
 else
   puts "🛠️ デモイベントを作成します"
-
   created_events = []
 
-  # 各タイプを最低2件ずつ作成（12件）
-  event_types.each do |type|
-    2.times { created_events << type }
-  end
-
-  # 残り8件はランダムで補充して20件にする
-  remaining = 20 - created_events.size
-  created_events += Array.new(remaining) { event_types.sample }
+  event_types.each { |type| 2.times { created_events << type } }
+  created_events += Array.new(20 - created_events.size) { event_types.sample }
 
   created_events.each_with_index do |type, i|
     host = demo_users.sample
 
+    # イベント基本情報
+    start_time, end_time, deadline = nil
     case type
-    when "available"
+    when "available", "full", "closed", "full_and_closed", "almost_full"
       start_time = Time.current + rand(1..5).days
       end_time = start_time + rand(1..3).hours
-      deadline = start_time - 1.day
-      capacity = rand(5..10)
-      participants = rand(0..(capacity - 1))
-
-    when "full"
-      start_time = Time.current + rand(1..5).days
-      end_time = start_time + rand(1..3).hours
-      deadline = start_time - 1.day
-      capacity = rand(3..6)
-      participants = capacity
-
-    when "closed"
-      start_time = Time.current + rand(2..5).days
-      end_time = start_time + rand(1..3).hours
-      deadline = Time.current - rand(1..2).days
-      capacity = rand(5..10)
-      participants = rand(0..(capacity - 1))
-
-    when "full_and_closed"
-      start_time = Time.current + rand(2..5).days
-      end_time = start_time + rand(1..3).hours
-      deadline = Time.current - 1.day
-      capacity = rand(3..6)
-      participants = capacity
-
-    when "almost_full"
-      start_time = Time.current + rand(2..5).days
-      end_time = start_time + rand(1..3).hours
-      deadline = start_time - 1.day
-      capacity = rand(2..5)
-      participants = capacity - 1
-
     when "past"
       start_time = Time.current - rand(2..10).days
       end_time = start_time + rand(1..3).hours
-      deadline = start_time - 1.day
-      capacity = rand(5..10)
-      participants = rand(0..capacity)
     end
 
+    deadline =
+      case type
+      when "closed", "full_and_closed"
+        Time.current - 1.day
+      when "past"
+        start_time - 1.day
+      else
+        start_time - 1.day
+      end
+
+    capacity =
+      case type
+      when "full", "full_and_closed"
+        rand(3..6)
+      when "almost_full"
+        rand(2..5)
+      else
+        rand(5..10)
+      end
+
+    # イベント作成
     event = Event.create!(
       title: "デモイベント#{i + 1}:#{['交流会', 'もくもく会', '雑談'].sample}",
       start_time: start_time,
@@ -128,12 +101,44 @@ else
 
     event.tag_ids = sample_tags.sample(rand(1..3))
 
-    participants_users = demo_users.reject { |u| u == host }.sample(participants)
-    participants_users.each do |user|
-      Participant.find_or_create_by!(event: event, user: user)
+    # 参加者数を状態別に制御（主催者含むので -1 まで）
+    participants_to_register =
+      case type
+      when "full", "full_and_closed"
+        capacity - 1
+      when "almost_full"
+        [capacity - 2, 0].max
+      when "available"
+        rand(0..[capacity - 3, 0].max)
+      when "closed", "past"
+        rand(0..[capacity - 1, 0].max)
+      end
+
+    selected_users = demo_users.reject { |u| u == host }.sample(participants_to_register)
+    registered_count = 0
+
+    selected_users.each do |user|
+      begin
+        Participant.create!(event: event, user: user)
+        registered_count += 1
+      rescue ActiveRecord::RecordInvalid => e
+        puts "⚠️ 参加登録失敗: #{user.name} → #{e.message}"
+      end
     end
 
-    puts "✅ イベント#{i + 1}（#{type}）を作成しました"
+    total_attendees = registered_count + 1 # +1 は主催者分
+
+    # 表示用の状態文字列
+    status_label =
+      if total_attendees == capacity
+        "満席"
+      elsif total_attendees == capacity - 1
+        "あと1名"
+      else
+        "余裕あり"
+      end
+
+    puts "✅ イベント#{i + 1}（#{type}）作成：参加者#{registered_count}名 + 主催者1名 / 定員#{capacity}名（#{status_label}）"
   end
 
   puts "🎉 合計 #{created_events.size}件のデモイベントが作成されました"

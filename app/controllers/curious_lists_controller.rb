@@ -2,16 +2,24 @@ class CuriousListsController < ApplicationController
   before_action :require_login
 
   def create
-    event = Event.find(params[:event_id])
-    CuriousList.find_or_create_by(user: current_user, event: event)
-    redirect_back fallback_location: events_path, notice: "気になるに追加しました"
+    @event = Event.find(params[:event_id])
+    CuriousList.find_or_create_by(user: current_user, event: @event)
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_back fallback_location: events_path, notice: "気になるに追加しました" }
+    end
   end
 
   def destroy
-    event = Event.find(params[:event_id])
-    curious = CuriousList.find_by(user: current_user, event: event)
+    @event = Event.find(params[:event_id])
+    curious = CuriousList.find_by(user: current_user, event: @event)
     curious&.destroy
-    redirect_back fallback_location: events_path, notice: "気になるを解除しました"
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_back fallback_location: events_path, notice: "気になるを解除しました" }
+    end
   end
 
   private

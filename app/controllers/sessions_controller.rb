@@ -24,7 +24,7 @@ class SessionsController < ApplicationController
       name: "デモユーザー",
       github_uid: "demo_#{SecureRandom.hex(10)}",
       github_token: SecureRandom.hex(20),
-      profile_picture: ActionController::Base.helpers.asset_path("demo_image.png")
+      profile_picture: "demo_image_#{rand(6..10)}.png"
     )
     login(demo_user)
     redirect_to events_path, notice: "デモモードでログインしました"

@@ -22,4 +22,5 @@ Rails.application.routes.draw do
   resources :tags, only: [ :index, :show ] # 必要に応じて :new, :create, :edit, :update, :destroy を追加
   # sessionの定期的な削除
   get "/clear_sessions/:token", to: "maintenance#clear_sessions", as: :secure_clear_sessions
+  get "/maintenance/reset_demo_data", to: "maintenance#reset_demo_data", as: :reset_demo_data
 end

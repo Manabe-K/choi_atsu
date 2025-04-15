@@ -2,7 +2,7 @@
   <%= curious_button(@event, current_user) %>
 <% end %>
 
-<% if params[:from] == "interested" %>
+<% if request.referrer&.include?(interested_events_path) && params[:from] == "interested" %>
   <%= turbo_stream.remove dom_id(@event, :card) %>
 
   <% if current_user.curious_events.reload.empty? %>

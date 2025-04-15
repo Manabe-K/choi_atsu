@@ -1,6 +1,8 @@
 class EventsController < ApplicationController
   before_action :set_event, only: %i[ show edit update destroy ]
   before_action :require_login
+  before_action :store_return_path, only: %i[index participating interested]
+  before_action :load_return_path, only: [:show]
 
   def index
     @events = current_user.demo? ? Event.demo_visible_to(current_user) : Event.exclude_demo_users
@@ -69,5 +71,15 @@ private
     unless current_user
       redirect_to root_path, alert: "ログインが必要です"
     end
+  end
+
+  def store_return_path
+    if request.referer.present? && URI(request.referer).host == request.host
+      cookies[:return_to] = request.fullpath
+    end
+  end
+
+  def load_return_path
+    @return_to = cookies[:return_to]
   end
 end

@@ -51,15 +51,15 @@
       <!-- 編集・削除・戻るボタン -->
       <% if @event.host_user == current_user %>
         <div class="flex justify-between mt-6">
-          <%= link_to t('buttons.edit'), edit_event_path(@event, return_to: @return_to), class: "bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
+          <%= link_to t('buttons.edit'), edit_event_path(@event, return_to: request.fullpath), class: "bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
 
           <%= button_to t('buttons.delete'), @event, method: :delete, data: { confirm: t('events.confirm_delete') }, class: "bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
 
-          <%= link_to t("buttons.back"), url_for(cookies[:return_to] || events_path), class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
+          <%= link_to t("buttons.back"), (params[:return_to] || events_path), class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
         </div>
       <% else %>
         <div class="text-right mt-6">
-          <%= link_to t("buttons.back"), url_for(cookies[:return_to] || events_path), class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
+          <%= link_to t("buttons.back"), (params[:return_to] || events_path), class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
         </div>
       <% end %>
     </div>

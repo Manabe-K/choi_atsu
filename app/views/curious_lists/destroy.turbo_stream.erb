@@ -1,3 +1,13 @@
 <%= turbo_stream.replace "curious_button_#{@event.id}" do %>
   <%= curious_button(@event, current_user) %>
 <% end %>
+
+<% if params[:from] == "interested" %>
+  <%= turbo_stream.remove dom_id(@event, :card) %>
+
+  <% if current_user.curious_events.reload.empty? %>
+    <%= turbo_stream.append "events_list" do %>
+      <%= content_tag(:p, "気になるイベントはまだありません", class: "text-center text-lg text-gray-600") %>
+    <% end %>
+  <% end %>
+<% end %>

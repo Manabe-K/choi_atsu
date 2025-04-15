@@ -19,7 +19,7 @@ module EventsHelper
     turbo_frame_tag dom_id(event, :participation_button) do
       if user_joined?(event, user)
         button_to "キャンセル",
-                  event_participant_path(event),
+                  event_participant_path(event, from: "participating"),
                   method: :delete,
                   form: { data: { turbo_stream: true } },
                   class: base_button_class + " bg-gray-400 hover:bg-gray-500"
@@ -45,7 +45,7 @@ module EventsHelper
     turbo_frame_tag "curious_button_#{event.id}" do
       if user_curious?(event, user)
         button_to "気になる解除",
-                  event_curious_list_path(event),
+                  event_curious_list_path(event, from: "interested"),
                   method: :delete,
                   form: { data: { turbo_stream: true } },
                   class: base_button_class(margin: true) + " bg-gray-400 hover:bg-gray-500"

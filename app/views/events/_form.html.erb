@@ -1,52 +1,93 @@
-<!-- app/views/events/_form.html.erb -->
-<%= form_with(model: @event, local: true, class: "max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md") do |form| %>
+<%= form_with(model: @event, local: true, class: "max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md space-y-8") do |form| %>
   <% if @event.errors.any? %>
-    <div id="error_explanation" class="bg-red-100 border border-red-500 text-red-700 p-4 rounded mb-6">
-      <h2 class="font-semibold text-xl"><%= pluralize(@event.errors.count, "error") %> prohibited this event from being saved:</h2>
-      <ul class="mt-2">
-        <% @event.errors.full_messages.each do |message| %>
-          <li class="text-sm"><%= message %></li>
+    <div class="bg-red-100 border border-red-400 text-red-700 p-4 rounded">
+      <h2 class="font-bold mb-2">
+        <%= pluralize(@event.errors.count, "件のエラー") %>があります
+      </h2>
+      <ul class="list-disc pl-5 text-sm">
+        <% @event.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="mb-4">
-    <%= form.label :title, class: "block text-lg font-semibold text-gray-700" %>
-    <%= form.text_field :title, id: :event_title, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
+  <!-- タイトル -->
+  <div>
+    <label class="block text-sm font-bold text-gray-700 mb-1">
+      <i class="fas fa-heading mr-2 text-gray-500"></i>タイトル
+    </label>
+    <%= form.text_field :title, placeholder: "例：もくもく会 in 渋谷", class: "w-full border border-gray-300 rounded p-3" %>
   </div>
 
-  <div class="mb-4">
-    <%= form.label :start_time, class: "block text-lg font-semibold text-gray-700" %>
-    <%= form.datetime_local_field :start_time, id: :event_start_time, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
+  <!-- 開催日時 -->
+  <div>
+    <label class="block text-sm font-bold text-gray-700 mb-2">
+      <i class="fas fa-calendar-alt mr-2 text-gray-500"></i>開催日時
+    </label>
+    <%= form.datetime_local_field :start_time,
+        class: "w-full border border-gray-300 rounded p-3 bg-white",
+        placeholder: "日付と時間を選択してください" %>
+
+    <div class="mt-2">
+      <%= form.datetime_local_field :end_time,
+          class: "w-full border border-gray-300 rounded p-3 bg-white",
+          placeholder: "終了日時を選択してください" %>
+    </div>
   </div>
 
-  <div class="mb-4">
-    <%= form.label :end_time, class: "block text-lg font-semibold text-gray-700" %>
-    <%= form.datetime_local_field :end_time, id: :event_end_time, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
+
+  <!-- 場所 -->
+  <div>
+    <label class="block text-sm font-bold text-gray-700 mb-1">
+      <i class="fas fa-map-marker-alt mr-2 text-gray-500"></i>開催場所
+    </label>
+    <%= form.text_field :location, placeholder: "例：渋谷コワーキングスペース", class: "w-full border border-gray-300 rounded p-3" %>
   </div>
 
-  <div class="mb-4">
-    <%= form.label :deadline, class: "block text-lg font-semibold text-gray-700" %>
-    <%= form.datetime_local_field :deadline, id: :event_deadline, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
+  <!-- 人数 -->
+  <div>
+    <label class="block text-sm font-bold text-gray-700 mb-1">
+      <i class="fas fa-user-friends mr-2 text-gray-500"></i>参加上限人数
+    </label>
+    <%= form.number_field :capacity, placeholder: "上限がある場合のみ", class: "w-full border border-gray-300 rounded p-3" %>
   </div>
 
-  <div class="mb-4">
-    <%= form.label :location, class: "block text-lg font-semibold text-gray-700" %>
-    <%= form.text_field :location, id: :event_location, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
+  <!-- 詳細 -->
+  <div>
+    <label class="block text-sm font-bold text-gray-700 mb-1">
+      <i class="fas fa-info-circle mr-2 text-gray-500"></i>イベントの詳細
+    </label>
+    <%= form.text_area :description, rows: 4, placeholder: "イベントの目的・対象者などをご記入ください", class: "w-full border border-gray-300 rounded p-3" %>
   </div>
 
-  <div class="mb-4">
-    <%= form.label :description, class: "block text-lg font-semibold text-gray-700" %>
-    <%= form.text_area :description, id: :event_description, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
+  <!-- 締切日時 -->
+  <div>
+    <label class="block text-sm font-bold text-gray-700 mb-2">
+      <i class="fas fa-calendar-times mr-2 text-gray-500"></i>申込締切日時
+    </label>
+    <%= form.datetime_local_field :deadline,
+        class: "w-full border border-gray-300 rounded p-3 bg-white",
+        placeholder: "締切日時を選択してください" %>
   </div>
 
-  <div class="mb-6">
-    <%= form.label :capacity, class: "block text-lg font-semibold text-gray-700" %>
-    <%= form.number_field :capacity, id: :event_capacity, class: "mt-1 p-3 border border-gray-300 rounded-md w-full" %>
+  <!-- 募集条件 -->
+  <div>
+    <label class="block text-sm font-bold text-gray-700 mb-1">
+      <i class="fas fa-filter mr-2 text-gray-500"></i>募集条件
+    </label>
+    <p class="text-sm text-gray-500">※ タグによる条件指定機能は現在準備中です</p>
   </div>
 
-  <div class="flex justify-end">
-    <%= form.submit @event.new_record? ? t('application.new') : t('application.update'), class: "px-6 py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300" %>
+  <!-- フッター -->
+  <div class="mt-6 text-center">
+    <div class="text-base text-gray-600 font-semibold mb-3">
+      <i class="fas fa-users mr-2 text-gray-500"></i>対象人数は ○○人です
+    </div>
+
+    <%= form.submit class: "bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-full shadow flex items-center justify-center gap-2" do %>
+      <i class="far fa-clipboard"></i>
+      <span>企画する</span>
+    <% end %>
   </div>
 <% end %>

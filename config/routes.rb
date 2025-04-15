@@ -11,11 +11,15 @@ Rails.application.routes.draw do
   # リソース系（必要なアクションだけ許可）
   resources :users, except: [ :index ]
   resources :events do
+    collection do
+      get :participating
+      get :interested
+    end
     resource :participant, only: [ :create, :destroy ]
     resource :curious_list, only: [ :create, :destroy ]
   end
-  resources :tags, only: [ :index, :show ] # 必要に応じて :new, :create, :edit, :update, :destroy を追加
 
+  resources :tags, only: [ :index, :show ] # 必要に応じて :new, :create, :edit, :update, :destroy を追加
   # sessionの定期的な削除
   get "/clear_sessions/:token", to: "maintenance#clear_sessions", as: :secure_clear_sessions
 end

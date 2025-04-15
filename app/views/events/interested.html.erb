@@ -1,0 +1,7 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold">気になるイベント</h1>
+  </div>
+
+  <%= render partial: "event_card", locals: { events: @events, current_user: current_user, hide_buttons: true, empty_message: "気になるイベントはまだありません" } %>
+</div>

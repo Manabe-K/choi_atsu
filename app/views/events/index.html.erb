@@ -1,75 +1,7 @@
-<% content_for :title, "オフ会一覧" %>
-
 <div class="container mx-auto px-4 py-8">
-  <!-- ヘッダー -->
   <div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold">オフ会一覧</h1>
-    <%= link_to "企画する", new_event_path, class: "bg-orange-500 hover:bg-orange-400 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
+    <h1 class="text-3xl font-bold">イベント一覧</h1>
   </div>
 
-  <!-- イベント一覧 -->
-  <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-    <% if @events.any? %>
-      <% @events.each do |event| %>
-        <div class="relative bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition duration-300 <%= 'opacity-50' if event_full?(event) %>">
-          <%= link_to event_path(event) do %>
-            <div class="p-4 flex gap-4">
-              <!-- 主催者アイコン -->
-              <div>
-                <%= image_tag event.host_user.profile_picture, alt: event.host_user.name, class: "w-14 h-14 rounded-full border border-gray-300" %>
-                <p class="text-xs text-gray-600 mt-1"><%= event.host_user.name %></p>
-              </div>
-
-              <!-- イベント情報 -->
-              <div class="flex-1">
-                <!-- タイトル -->
-                <h2 class="text-lg font-semibold text-gray-900 mb-2"><%= event.title %></h2>
-
-                <!-- タグ -->
-                <% if event.tags.any? %>
-                  <div class="flex flex-wrap gap-1 mb-2">
-                    <% event.tags.each do |tag| %>
-                      <span class="text-xs px-2 py-1 rounded-full text-white" style="background-color: #<%= tag_color(tag.name) %>">
-                        #<%= tag.name %>
-                      </span>
-                    <% end %>
-                  </div>
-                <% end %>
-
-                <!-- 日時・場所 -->
-                <p class="text-sm text-gray-600">
-                  <i class="far fa-calendar-alt mr-1"></i>
-                  <%= event.start_time.strftime('%Y-%m-%d %H:%M') %>
-                </p>
-                <p class="text-sm text-gray-600">
-                  <i class="fas fa-map-marker-alt mr-1"></i>
-                  <%= event.location %>
-                </p>
-
-                <!-- 締切・人数 -->
-                <div class="flex justify-between text-xs text-gray-500 mt-2">
-                  <span><i class="fas fa-hourglass-half mr-1"></i><%= event.deadline&.strftime('%Y-%m-%d') %></span>
-                  <span><i class="fas fa-users mr-1"></i><%= joined_count(event) %>名 / <%= event.capacity.present? ? "#{event.capacity}名" : "制限なし" %></span>
-                </div>
-              </div>
-            </div>
-          <% end %>
-
-          <div class="p-3 bg-gray-100 text-center">
-            <%= participation_button(event, current_user) %>
-            <%= curious_button(event, current_user) %>
-          </div>
-
-          <!-- 募集終了オーバーレイ -->
-          <% if event_full?(event) %>
-            <div class="absolute inset-0 bg-gray-700 bg-opacity-75 flex items-center justify-center text-white text-xl font-bold">
-              募集終了
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-    <% else %>
-      <p class="text-center text-lg text-gray-600">現在イベントはありません</p>
-    <% end %>
-  </div>
+  <%= render partial: "event_card", locals: { events: @events, current_user: current_user, hide_buttons: false, empty_message: "現在、イベントはありません" } %>
 </div>

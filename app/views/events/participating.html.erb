@@ -1,0 +1,75 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold text-indigo-700">Myイベント</h1>
+  </div>
+
+  <!-- タブ切り替え -->
+  <div class="flex space-x-4 mb-6">
+    <button data-tab="hosted"
+      class="tab-btn px-4 py-2 rounded-full font-semibold transition"
+      aria-selected="false">
+      企画イベント
+    </button>
+    <button data-tab="joined"
+      class="tab-btn px-4 py-2 bg-blue-200 text-blue-800 rounded-full font-semibold transition"
+      aria-selected="true">
+      参加イベント
+    </button>
+  </div>
+
+  <!-- コンテンツ -->
+  <div id="hosted" class="tab-content hidden">
+    <%= render partial: "event_card", locals: {
+      events: @hosted_events,
+      current_user: current_user,
+      show_participation_button: false,
+      show_curious_button: false,
+      empty_message: "企画中のイベントはありません。"
+    } %>
+  </div>
+
+  <div id="joined" class="tab-content block">
+    <%= render partial: "event_card", locals: {
+      events: @joined_events,
+      current_user: current_user,
+      show_participation_button: true,
+      show_curious_button: true,
+      empty_message: "参加中のイベントはありません。"
+    } %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("turbo:load", () => {
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const tabContents = document.querySelectorAll(".tab-content");
+
+    const updateTabs = (activeBtn) => {
+      tabButtons.forEach((btn) => {
+        btn.classList.remove("bg-pink-200", "text-pink-800", "bg-blue-200", "text-blue-800");
+        btn.setAttribute("aria-selected", "false");
+      });
+
+      const tab = activeBtn.dataset.tab;
+      if (tab === "hosted") {
+        activeBtn.classList.add("bg-pink-200", "text-pink-800");
+      } else if (tab === "joined") {
+        activeBtn.classList.add("bg-blue-200", "text-blue-800");
+      }
+      activeBtn.setAttribute("aria-selected", "true");
+
+      tabContents.forEach((content) => {
+        content.classList.toggle("hidden", content.id !== tab);
+      });
+    };
+
+    // イベントを再登録
+    tabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => updateTabs(btn));
+    });
+
+    // 初期表示（参加イベント）を選択状態に
+    const initialTab = Array.from(tabButtons).find(btn => btn.dataset.tab === "joined");
+    if (initialTab) updateTabs(initialTab);
+  });
+</script>

@@ -1,0 +1,57 @@
+<div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+  <% if events.any? %>
+    <% events.each do |event| %>
+      <div class="relative bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition duration-300 <%= 'opacity-50' if event_full?(event) %>">
+        <%= link_to event_path(event) do %>
+          <div class="p-4 flex gap-4">
+            <div>
+              <%= image_tag event.host_user.profile_picture, alt: event.host_user.name, class: "w-14 h-14 rounded-full border border-gray-300" %>
+              <p class="text-xs text-gray-600 mt-1"><%= event.host_user.name %></p>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-lg font-semibold text-gray-900 mb-2"><%= event.title %></h2>
+
+              <% if event.tags.any? %>
+                <div class="flex flex-wrap gap-1 mb-2">
+                  <% event.tags.each do |tag| %>
+                    <span class="text-xs px-2 py-1 rounded-full text-white" style="background-color: #<%= tag_color(tag.name) %>">
+                      #<%= tag.name %>
+                    </span>
+                  <% end %>
+                </div>
+              <% end %>
+
+              <p class="text-sm text-gray-600"><i class="far fa-calendar-alt mr-1"></i><%= event.start_time.strftime('%Y-%m-%d %H:%M') %></p>
+              <p class="text-sm text-gray-600"><i class="fas fa-map-marker-alt mr-1"></i><%= event.location %></p>
+
+              <div class="flex justify-between text-xs text-gray-500 mt-2">
+                <span><i class="fas fa-hourglass-half mr-1"></i><%= event.deadline&.strftime('%Y-%m-%d') %></span>
+                <span><i class="fas fa-users mr-1"></i><%= joined_count(event) %>名 / <%= event.capacity.present? ? "#{event.capacity}名" : "制限なし" %></span>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <% unless event.host_user == current_user %>
+          <div class="p-3 bg-gray-100 text-center">
+            <% if defined?(show_participation_button) ? show_participation_button : true %>
+              <%= participation_button(event, current_user) %>
+            <% end %>
+
+            <% if defined?(show_curious_button) ? show_curious_button : true %>
+              <%= curious_button(event, current_user) %>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% if event_full?(event) %>
+          <div class="absolute inset-0 bg-gray-700 bg-opacity-75 flex items-center justify-center text-white text-xl font-bold">
+            募集終了
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="text-center text-lg text-gray-600"><%= empty_message %></p>
+  <% end %>
+</div>

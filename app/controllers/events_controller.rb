@@ -45,6 +45,17 @@ class EventsController < ApplicationController
     redirect_to events_path, notice: "イベントを削除しました", status: :see_other
   end
 
+  def participating
+    @hosted_events = current_user.hosted_events
+    @joined_events = current_user.joined_events.where.not(id: @hosted_events.pluck(:id))
+    render :participating
+  end
+
+  def interested
+    @events = current_user.curious_events.includes(:host_user)
+    render :interested
+  end
+
 private
   def set_event
     @event = Event.find(params[:id])

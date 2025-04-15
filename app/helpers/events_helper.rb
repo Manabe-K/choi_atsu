@@ -73,4 +73,17 @@ module EventsHelper
   def tag_color(_tag_name)
     "6c757d"  # Bootstrap風のグレー
   end
+
+  def safe_return_to_path
+    return_to = params[:return_to]
+
+    # ホスト名を含まない相対パスだけを許可
+    if return_to.present? && URI.parse(return_to).host.nil?
+      return_to
+    else
+      events_path
+    end
+  rescue URI::InvalidURIError
+    events_path
+  end
 end

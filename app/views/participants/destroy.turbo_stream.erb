@@ -6,6 +6,15 @@
   <%= participation_count(@event) %>
 <% end %>
 
+<%= turbo_stream.replace dom_id(@event, :card) do %>
+  <%= render partial: "events/event_card", locals: {
+    events: [@event],
+    current_user: current_user,
+    hide_buttons: false,
+    empty_message: nil
+  } %>
+<% end %>
+
 <% if request.referrer&.include?(participating_events_path) && (params[:from] == "participating") %>
   <%= turbo_stream.remove dom_id(@event, :card) %>
 

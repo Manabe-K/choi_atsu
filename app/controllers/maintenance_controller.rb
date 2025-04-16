@@ -23,7 +23,7 @@ class MaintenanceController < ApplicationController
     return head :unauthorized unless params[:token] == ENV["CRON_SECRET_TOKEN"]
 
     Event.joins(:host_user).where("users.github_uid LIKE ?", "demo_seed_user%").destroy_all
-    load Rails.root.join("db/seeds/demo_events.rb")
+    load Rails.root.join("db/seeds.rb")
 
     render plain: "✅ デモイベントをリセットして再生成しました"
   end

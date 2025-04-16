@@ -89,11 +89,11 @@ else
 
     # イベント作成
     event = Event.create!(
-      title: "デモイベント#{i + 1}:#{['交流会', 'もくもく会', '雑談'].sample}",
+      title: "デモイベント#{i + 1}:#{[ '交流会', 'もくもく会', '雑談' ].sample}",
       start_time: start_time,
       end_time: end_time,
       deadline: deadline,
-      location: %w[オンライン 渋谷 大阪 福岡 名古屋].sample,
+      location: %w[ オンライン 渋谷 大阪 福岡 名古屋 ].sample,
       description: "これはランダム生成された#{type}イベントです。",
       capacity: capacity,
       host_user: host
@@ -101,21 +101,24 @@ else
 
     event.tag_ids = sample_tags.sample(rand(1..3))
 
-    # 参加者数を状態別に制御（主催者含むので -1 まで）
+    # ✅ 主催者を参加者として登録
+    Participant.create!(event: event, user: host)
+
+    # 残りの参加者を登録
     participants_to_register =
       case type
       when "full", "full_and_closed"
         capacity - 1
       when "almost_full"
-        [capacity - 2, 0].max
+        [ capacity - 2, 0 ].max
       when "available"
-        rand(0..[capacity - 3, 0].max)
+        rand(0..[ capacity - 3, 0 ].max)
       when "closed", "past"
-        rand(0..[capacity - 1, 0].max)
+        rand(0..[ capacity - 1, 0 ].max)
       end
 
     selected_users = demo_users.reject { |u| u == host }.sample(participants_to_register)
-    registered_count = 0
+    registered_count = 1 # ← 主催者1名を含む
 
     selected_users.each do |user|
       begin
@@ -126,19 +129,17 @@ else
       end
     end
 
-    total_attendees = registered_count + 1 # +1 は主催者分
-
-    # 表示用の状態文字列
+    # 表示用
     status_label =
-      if total_attendees == capacity
+      if registered_count == capacity
         "満席"
-      elsif total_attendees == capacity - 1
+      elsif registered_count == capacity - 1
         "あと1名"
       else
         "余裕あり"
       end
 
-    puts "✅ イベント#{i + 1}（#{type}）作成：参加者#{registered_count}名 + 主催者1名 / 定員#{capacity}名（#{status_label}）"
+    puts "✅ イベント#{i + 1}（#{type}）作成：参加者#{registered_count}名 / 定員#{capacity}名（#{status_label}）"
   end
 
   puts "🎉 合計 #{created_events.size}件のデモイベントが作成されました"

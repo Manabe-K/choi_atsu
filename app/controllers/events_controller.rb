@@ -26,6 +26,7 @@ class EventsController < ApplicationController
     @event.host_user = current_user
 
     if @event.save
+      Participant.create!(user: current_user, event: @event)
       redirect_to @event, notice: "イベントを作成しました"
     else
       render :new, status: :unprocessable_entity

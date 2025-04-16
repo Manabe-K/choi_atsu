@@ -1,6 +1,6 @@
 module EventsHelper
   def joined_count(event)
-    event.participant_users.count + 1
+    event.participant_users.count
   end
 
   def event_full?(event)
@@ -35,9 +35,7 @@ module EventsHelper
 
   def participation_count(event)
     turbo_frame_tag dom_id(event, :participant_count) do
-      content_tag :p, class: "text-sm text-gray-600" do
-        raw "<i class='fas fa-users mr-1'></i>#{joined_count(event)}名 / #{event.capacity.present? ? "#{event.capacity}名" : "制限なし"}"
-      end
+      raw "<i class='fas fa-users mr-1'></i>#{joined_count(event)}名 / #{event.capacity.present? ? "#{event.capacity}名" : "制限なし"}"
     end
   end
 
@@ -85,5 +83,22 @@ module EventsHelper
     end
   rescue URI::InvalidURIError
     events_path
+  end
+
+  def event_status(event)
+    return "開催済み" if event.end_time < Time.current
+    return "締切終了" if event.deadline.present? && event.deadline < Time.current
+    return "満員" if event_full?(event)
+    "募集中"
+  end
+
+  def event_status_class(status)
+    case status
+    when "募集中" then "bg-green-500"
+    when "満員" then "bg-red-500"
+    when "締切終了" then "bg-yellow-500"
+    when "開催済み" then "bg-gray-500"
+    else "bg-gray-300"
+    end
   end
 end

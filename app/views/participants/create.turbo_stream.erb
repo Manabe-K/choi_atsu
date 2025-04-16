@@ -5,3 +5,20 @@
 <%= turbo_stream.replace dom_id(@event, :participant_count) do %>
   <%= participation_count(@event) %>
 <% end %>
+
+<%= turbo_stream.replace dom_id(@event, :card) do %>
+  <%= render partial: "events/event_card", locals: {
+    events: [@event],
+    current_user: current_user,
+    hide_buttons: false,
+    empty_message: nil
+  } %>
+<% end %>
+
+<%= turbo_stream.replace "show_card_event_#{@event.id}" do %>
+  <%= render partial: "events/show_card", locals: { event: @event, current_user: current_user } %>
+<% end %>
+
+<%= turbo_stream.replace "show_#{dom_id(@event, :participants)}" do %>
+  <%= render partial: "events/participants", locals: { event: @event } %>
+<% end %>

@@ -1,6 +1,7 @@
 import "@hotwired/turbo-rails"
 import "./controllers"
 import './menu_toggle'
+import "./event_card_click";
 
 document.addEventListener('turbo:load', function() {
   const profileButton = document.getElementById('profile-button');

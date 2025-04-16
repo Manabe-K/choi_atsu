@@ -3,7 +3,7 @@ class ParticipantsController < ApplicationController
 
   def create
     @event = Event.find(params[:event_id])
-  
+
     if @event.participant_users.exists?(current_user.id)
       respond_to do |format|
         format.turbo_stream { head :conflict }
@@ -22,6 +22,8 @@ class ParticipantsController < ApplicationController
 
     Participant.create!(user: current_user, event: @event)
 
+    @event.reload
+
     respond_to do |format|
       format.turbo_stream
       format.html { redirect_to events_path, notice: "イベントに参加しました！" }
@@ -30,10 +32,21 @@ class ParticipantsController < ApplicationController
 
   def destroy
     @event = Event.find(params[:event_id])
+
+    if @event.host_user == current_user
+      respond_to do |format|
+        format.turbo_stream { head :forbidden }
+        format.html { redirect_to events_path, alert: "主催者はキャンセルできません" }
+      end
+      return
+    end
+
     participant = Participant.find_by(user: current_user, event: @event)
 
     if participant
       participant.destroy
+
+      @event.reload
 
       respond_to do |format|
         format.turbo_stream

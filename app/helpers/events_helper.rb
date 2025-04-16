@@ -1,6 +1,6 @@
 module EventsHelper
   def joined_count(event)
-    event.participant_users.count + 1
+    event.participant_users.count
   end
 
   def event_full?(event)
@@ -35,9 +35,7 @@ module EventsHelper
 
   def participation_count(event)
     turbo_frame_tag dom_id(event, :participant_count) do
-      content_tag :p, class: "text-sm text-gray-600" do
-        raw "<i class='fas fa-users mr-1'></i>#{joined_count(event)}名 / #{event.capacity.present? ? "#{event.capacity}名" : "制限なし"}"
-      end
+      raw "<i class='fas fa-users mr-1'></i>#{joined_count(event)}名 / #{event.capacity.present? ? "#{event.capacity}名" : "制限なし"}"
     end
   end
 

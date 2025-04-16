@@ -1,52 +1,70 @@
-<div id="events_list" class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+<div id="events_list" class="space-y-4">
   <% if events.any? %>
     <% events.each do |event| %>
-      <div id="<%= dom_id(event, :card) %>" class="relative bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition duration-300 <%= 'opacity-50' if event_full?(event) %>">
-        <%= link_to event_path(event, return_to: request.fullpath) do %>
-          <div class="p-4 flex gap-4">
-            <div>
-              <%= image_tag event.host_user.profile_picture, alt: event.host_user.name, class: "w-14 h-14 rounded-full border border-gray-300" %>
-              <p class="text-xs text-gray-600 mt-1"><%= event.host_user.name %></p>
-            </div>
-            <div class="flex-1">
-              <h2 class="text-lg font-semibold text-gray-900 mb-2"><%= event.title %></h2>
+      <% is_full = event_full?(event) %>
+      <% is_joined = user_joined?(event, current_user) %>
+      <% card_classes = is_full ? "bg-gray-200" : "bg-white" %>
 
-              <% if event.tags.any? %>
-                <div class="flex flex-wrap gap-1 mb-2">
-                  <% event.tags.each do |tag| %>
-                    <span class="text-xs px-2 py-1 rounded-full text-white" style="background-color: #<%= tag_color(tag.name) %>">
-                      #<%= tag.name %>
-                    </span>
-                  <% end %>
-                </div>
-              <% end %>
+      <div id="<%= dom_id(event, :card) %>" class="relative flex items-center <%= card_classes %> rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
 
-              <p class="text-sm text-gray-600"><i class="far fa-calendar-alt mr-1"></i><%= event.start_time.strftime('%Y-%m-%d %H:%M') %></p>
-              <p class="text-sm text-gray-600"><i class="fas fa-map-marker-alt mr-1"></i><%= event.location %></p>
+        <!-- アイコン -->
+        <div class="flex-shrink-0 p-4">
+          <%= image_tag event.host_user.profile_picture, alt: event.host_user.name, class: "w-16 h-16 rounded-full border border-gray-300" %>
+          <p class="text-xs text-center text-gray-600 mt-1"><%= event.host_user.name %></p>
+        </div>
 
-              <div class="flex justify-between text-xs text-gray-500 mt-2">
-                <span><i class="fas fa-hourglass-half mr-1"></i><%= event.deadline&.strftime('%Y-%m-%d') %></span>
-                <%= participation_count(event) %>
-              </div>
-            </div>
+        <!-- イベント詳細 -->
+        <%= link_to event_path(event, return_to: request.fullpath), class: "flex-1 p-4 relative" do %>
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-semibold text-gray-900"><%= event.title %></h2>
+            <% if is_full %>
+              <span class="ml-2 px-2 py-1 text-s font-semibold text-white bg-red-500 rounded">募集終了</span>
+            <% end %>
           </div>
+
+          <% if event.tags.any? %>
+            <div class="flex flex-wrap gap-1 mt-1 mb-2">
+              <% event.tags.each do |tag| %>
+                <span class="text-xs px-2 py-1 rounded-full text-white" style="background-color: #<%= tag_color(tag.name) %>">
+                  #<%= tag.name %>
+                </span>
+              <% end %>
+            </div>
+          <% end %>
+
+          <p class="text-sm text-gray-600">
+            <i class="far fa-calendar-alt mr-1"></i>
+            <%= event.start_time.strftime('%Y-%m-%d %H:%M') %> 〜 <%= event.end_time.strftime('%H:%M') %>
+            &nbsp;|&nbsp;
+            <i class="fas fa-map-marker-alt mr-1"></i><%= event.location %>
+            &nbsp;|&nbsp;
+            <%= participation_count(event) %>
+          </p>
+
+          <p class="text-xs text-gray-500 mt-1">
+            <i class="fas fa-hourglass-half mr-1"></i><%= event.deadline&.strftime('%Y-%m-%d') %>
+          </p>
         <% end %>
 
+        <!-- アクションボタン -->
         <% unless event.host_user == current_user %>
-          <div class="p-3 bg-gray-100 text-center">
-            <% if defined?(show_participation_button) ? show_participation_button : true %>
-              <%= participation_button(event, current_user) %>
+          <div class="flex flex-col justify-center gap-2 p-4 w-50 text-center">
+
+            <%# 参加ボタンの切り替え %>
+            <% if is_full && !is_joined %>
+              <%= link_to event_path(event, return_to: request.fullpath),
+                          class: "block w-full text-white font-bold py-2 rounded bg-gray-600 text-m text-center transition" do %>
+                参加受付終了
+              <% end %>
+            <% else %>
+              <% if defined?(show_participation_button) ? show_participation_button : true %>
+                <%= participation_button(event, current_user) %>
+              <% end %>
             <% end %>
 
             <% if defined?(show_curious_button) ? show_curious_button : true %>
               <%= curious_button(event, current_user) %>
             <% end %>
-          </div>
-        <% end %>
-
-        <% if event_full?(event) %>
-          <div class="absolute inset-0 bg-gray-700/40 flex items-center justify-center text-white text-xl font-bold z-10 before:content-[''] before:absolute before:inset-0 before:bg-[repeating-linear-gradient(45deg,_rgba(255,255,255,0.1)_0px,_rgba(255,255,255,0.1)_2px,_transparent_2px,_transparent_6px)]">
-            <span style="text-shadow: 1px 1px 2px rgba(0,0,0,0.6);">募集終了</span>
           </div>
         <% end %>
       </div>

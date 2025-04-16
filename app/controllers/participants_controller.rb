@@ -30,11 +30,20 @@ class ParticipantsController < ApplicationController
 
   def destroy
     @event = Event.find(params[:event_id])
+  
+    # 主催者がキャンセルしようとしている場合は拒否
+    if @event.host_user == current_user
+      respond_to do |format|
+        format.turbo_stream { head :forbidden }
+        format.html { redirect_to events_path, alert: "主催者はキャンセルできません" }
+      end
+      return
+    end
+
     participant = Participant.find_by(user: current_user, event: @event)
 
     if participant
       participant.destroy
-
       respond_to do |format|
         format.turbo_stream
         format.html { redirect_to events_path, notice: "参加をキャンセルしました" }

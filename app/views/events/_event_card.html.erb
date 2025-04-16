@@ -15,7 +15,10 @@
         end
       %>
 
-      <div id="<%= dom_id(event, :card) %>" class="relative flex items-stretch <%= card_classes %> rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+      <!-- ✅ カード全体を clickable に -->
+      <div id="<%= dom_id(event, :card) %>"
+           class="event-card relative flex items-stretch <%= card_classes %> rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 cursor-pointer"
+           data-url="<%= event_path(event, return_to: request.fullpath) %>">
 
         <!-- 左：アイコン -->
         <div class="flex-shrink-0 p-4 flex flex-col items-center justify-center">
@@ -28,25 +31,24 @@
 
         <!-- 中央：イベント詳細 + タグ -->
         <div class="flex flex-col justify-between flex-1 p-4">
-          <%= link_to event_path(event, return_to: request.fullpath), class: "block" do %>
-            <div class="flex items-center justify-between min-h-[32px]">
-              <h2 class="text-base font-semibold text-gray-900"><%= event.title %></h2>
-            </div>
+          <div class="flex items-center justify-between min-h-[32px]">
+            <h2 class="text-base font-semibold text-gray-900"><%= event.title %></h2>
+          </div>
 
-            <p class="text-sm text-gray-600">
-              <i class="far fa-calendar-alt mr-1"></i>
-              <%= event.start_time.strftime('%Y-%m-%d %H:%M') %> 〜 <%= event.end_time.strftime('%H:%M') %>
-              &nbsp;|&nbsp;
-              <i class="fas fa-map-marker-alt mr-1"></i><%= event.location %>
-              &nbsp;|&nbsp;
-              <%= participation_count(event) %>
-            </p>
+          <p class="text-sm text-gray-600">
+            <i class="far fa-calendar-alt mr-1"></i>
+            <%= event.start_time.strftime('%Y-%m-%d %H:%M') %> 〜 <%= event.end_time.strftime('%H:%M') %>
+            &nbsp;|&nbsp;
+            <i class="fas fa-map-marker-alt mr-1"></i><%= event.location %>
+            &nbsp;|&nbsp;
+            <%= participation_count(event) %>
+          </p>
 
-            <p class="text-xs text-gray-500 mt-1">
-              <i class="fas fa-hourglass-half mr-1"></i><%= event.deadline&.strftime('%Y-%m-%d') %>まで
-            </p>
-          <% end %>
+          <p class="text-xs text-gray-500 mt-1">
+            <i class="fas fa-hourglass-half mr-1"></i><%= event.deadline&.strftime('%Y-%m-%d') %>まで
+          </p>
 
+          <!-- ✅ タグ（クリック可能） -->
           <% if event.tags.any? %>
             <div class="flex flex-wrap gap-1 mt-2">
               <% event.tags.each do |tag| %>
@@ -60,7 +62,7 @@
           <% end %>
         </div>
 
-        <!-- 右：アクション or メッセージ -->
+        <!-- 右：アクション -->
         <% unless event.host_user == current_user %>
           <div class="flex flex-col justify-center gap-2 p-4 w-50 text-center min-h-[4.5rem]">
             <% if status == "開催済み" %>

@@ -89,11 +89,11 @@ else
 
     # イベント作成
     event = Event.create!(
-      title: "デモイベント#{i + 1}:#{['交流会', 'もくもく会', '雑談'].sample}",
+      title: "デモイベント#{i + 1}:#{[ '交流会', 'もくもく会', '雑談' ].sample}",
       start_time: start_time,
       end_time: end_time,
       deadline: deadline,
-      location: %w[オンライン 渋谷 大阪 福岡 名古屋].sample,
+      location: %w[ オンライン 渋谷 大阪 福岡 名古屋 ].sample,
       description: "これはランダム生成された#{type}イベントです。",
       capacity: capacity,
       host_user: host
@@ -110,11 +110,11 @@ else
       when "full", "full_and_closed"
         capacity - 1
       when "almost_full"
-        [capacity - 2, 0].max
+        [ capacity - 2, 0 ].max
       when "available"
-        rand(0..[capacity - 3, 0].max)
+        rand(0..[ capacity - 3, 0 ].max)
       when "closed", "past"
-        rand(0..[capacity - 1, 0].max)
+        rand(0..[ capacity - 1, 0 ].max)
       end
 
     selected_users = demo_users.reject { |u| u == host }.sample(participants_to_register)

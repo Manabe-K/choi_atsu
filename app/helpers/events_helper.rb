@@ -87,11 +87,11 @@ module EventsHelper
 
   def event_status(event)
     return "開催済み" if event.end_time < Time.current
-    return "満員" if event_full?(event)
     return "締切終了" if event.deadline.present? && event.deadline < Time.current
+    return "満員" if event_full?(event)
     "募集中"
   end
-  
+
   def event_status_class(status)
     case status
     when "募集中" then "bg-green-500"

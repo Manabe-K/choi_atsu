@@ -24,3 +24,7 @@
     <% end %>
   <% end %>
 <% end %>
+
+<%= turbo_stream.replace "show_card_event_#{@event.id}" do %>
+  <%= render partial: "events/show_card", locals: { event: @event, current_user: current_user } %>
+<% end %>

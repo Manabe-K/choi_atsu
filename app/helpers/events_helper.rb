@@ -35,7 +35,8 @@ module EventsHelper
 
   def participation_count(event)
     turbo_frame_tag dom_id(event, :participant_count) do
-      raw "<i class='fas fa-users mr-1'></i>#{joined_count(event)}名 / #{event.capacity.present? ? "#{event.capacity}名" : "制限なし"}"
+      capacity_display = (event.capacity == 999) ? "制限なし" : "#{event.capacity}名"
+      raw "<i class='fas fa-users mr-1'></i>#{joined_count(event)}名 / #{capacity_display}"
     end
   end
 

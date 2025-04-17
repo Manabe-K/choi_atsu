@@ -22,7 +22,7 @@ class EventsController < ApplicationController
   def edit; end
 
   def create
-    @event = Event.new(event_params)
+    @event = Event.new(parsed_event_params)
     @event.host_user = current_user
 
     if @event.save
@@ -34,7 +34,7 @@ class EventsController < ApplicationController
   end
 
   def update
-    if @event.update(event_params)
+    if @event.update(parsed_event_params)
       redirect_to @event, notice: "イベントを更新しました"
     else
       render :edit, status: :unprocessable_entity
@@ -57,14 +57,35 @@ class EventsController < ApplicationController
     render :interested
   end
 
-private
+  private
 
   def set_event
     @event = Event.find(params[:id])
   end
 
+  def parsed_event_params
+    raw = event_params
+    raw[:start_time] = parse_datetime(raw[:start_time])
+    raw[:end_time]   = parse_datetime(raw[:end_time])
+    raw[:deadline]   = parse_datetime(raw[:deadline])
+    raw
+  end
+
+  def parse_datetime(str)
+    return nil if str.blank?
+    DateTime.strptime(str, "%m月%d日 %H:%M") rescue nil
+  end
+
   def event_params
-    params.require(:event).permit(:title, :start_time, :end_time, :deadline, :location, :description, :capacity)
+    params.require(:event).permit(
+      :title,
+      :start_time,
+      :end_time,
+      :deadline,
+      :location,
+      :description,
+      :capacity
+    )
   end
 
   def require_login

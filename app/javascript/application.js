@@ -4,72 +4,63 @@ import "./menu_toggle"
 import "./event_card_click"
 
 import flatpickr from "flatpickr"
-import "flatpickr/dist/themes/material_orange.css" // 🍊テーマ
-import { Japanese } from "flatpickr/dist/l10n/ja.js" // 🇯🇵日本語ロケール追加
+import "flatpickr/dist/themes/material_orange.css"
+import { Japanese } from "flatpickr/dist/l10n/ja.js"
 
-flatpickr.localize(Japanese) // グローバルで日本語化
+flatpickr.localize(Japanese)
 
 document.addEventListener("turbo:load", () => {
-  // ▼ メニュー開閉
-  const profileButton = document.getElementById("profile-button")
-  const dropdownMenu = document.getElementById("dropdown-menu")
+  const now = new Date()
+  const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000)
 
-  if (profileButton && dropdownMenu) {
-    profileButton.addEventListener("click", () => {
-      dropdownMenu.classList.toggle("hidden")
-    })
-
-    document.addEventListener("click", (event) => {
-      if (!profileButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
-        dropdownMenu.classList.add("hidden")
-      }
-    })
-  }
-
-  // ▼ flatpickr 初期化
   const startInput = document.querySelector("#event_start_time")
   const endInput = document.querySelector("#event_end_time")
   const deadlineInput = document.querySelector("#event_deadline")
 
-  const now = new Date()
-  const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000)
+  let endPicker, deadlinePicker
 
-  let endPicker
-  let deadlinePicker
+  // flatpickrの共通設定（altInputは使わない）
+  const baseOptions = {
+    enableTime: true,
+    altInput: false, // ✅ altInput無効化でStimulusの色変化を有効に
+    dateFormat: "m月d日 H:i", // ✅ 表示フォーマットを整える
+    time_24hr: true,
+    locale: Japanese,
+    onOpen(_, __, instance) {
+      instance.input.dispatchEvent(new Event("focus", { bubbles: true }))
+    },
+    onClose(_, __, instance) {
+      instance.input.dispatchEvent(new Event("blur", { bubbles: true }))
+    }
+  }
 
+  // 開始時間
   if (startInput) {
-    const startPicker = flatpickr(startInput, {
-      enableTime: true,
-      dateFormat: "m月d日 H:i",
-      time_24hr: true,
+    flatpickr(startInput, {
+      ...baseOptions,
       minDate: oneHourLater,
-      locale: Japanese,
-      onChange: function (selectedDates) {
+      onChange(selectedDates) {
         if (selectedDates.length > 0) {
-          const startDate = selectedDates[0]
-          if (endPicker) endPicker.set("minDate", startDate)
-          if (deadlinePicker) deadlinePicker.set("maxDate", startDate)
+          const start = selectedDates[0]
+          if (endPicker) endPicker.set("minDate", start)
+          if (deadlinePicker) deadlinePicker.set("maxDate", start)
         }
-      },
+      }
     })
+  }
 
-    if (endInput) {
-      endPicker = flatpickr(endInput, {
-        enableTime: true,
-        dateFormat: "m月d日 H:i",
-        time_24hr: true,
-        locale: Japanese,
-      })
-    }
+  // 終了時間
+  if (endInput) {
+    endPicker = flatpickr(endInput, {
+      ...baseOptions
+    })
+  }
 
-    if (deadlineInput) {
-      deadlinePicker = flatpickr(deadlineInput, {
-        enableTime: true,
-        dateFormat: "m月d日 H:i",
-        time_24hr: true,
-        minDate: oneHourLater,
-        locale: Japanese,
-      })
-    }
+  // 締切時間
+  if (deadlineInput) {
+    deadlinePicker = flatpickr(deadlineInput, {
+      ...baseOptions,
+      minDate: oneHourLater
+    })
   }
 })

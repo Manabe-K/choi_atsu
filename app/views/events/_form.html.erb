@@ -18,13 +18,12 @@
       <i class="fas fa-heading mr-2 text-gray-500"></i>どんなイベント？
     </label>
     <div class="relative flex-1">
-      <%= form.text_field :title,
-            placeholder: "例：もくもく会 in 渋谷",
-            class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 focus:bg-orange-50 focus:text-gray-900",
-            data: {
-              form_animation_target: "input",
-              action: "input->form-animation#handleInput change->form-animation#handleInput"
-            } %>
+      <%= form.text_field :title, placeholder: "例：もくもく会 in 渋谷",
+          class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300",
+          data: {
+            form_animation_target: "input",
+            action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
+          } %>
     </div>
   </div>
 
@@ -34,25 +33,23 @@
       <i class="fas fa-calendar-alt mr-2 text-gray-500"></i>開催する時間は？
     </label>
     <div class="flex items-center gap-3 flex-1">
-      <%= form.text_field :start_time,
-            id: "event_start_time",
-            placeholder: "開始時間をえらんでね",
-            class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 focus:bg-orange-50 focus:text-gray-900",
-            data: {
-              form_animation_target: "input",
-              action: "input->form-animation#handleInput change->form-animation#handleInput"
-            } %>
+      <%= form.text_field :start_time, id: "event_start_time",
+          placeholder: "開始時間をえらんでね",
+          class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 datetime-picker",
+          data: {
+            form_animation_target: "input",
+            action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
+          } %>
 
       <span class="text-gray-500">〜</span>
 
-      <%= form.text_field :end_time,
-            id: "event_end_time",
-            placeholder: "終了時間も忘れずに！",
-            class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 focus:bg-orange-50 focus:text-gray-900",
-            data: {
-              form_animation_target: "input",
-              action: "input->form-animation#handleInput change->form-animation#handleInput"
-            } %>
+      <%= form.text_field :end_time, id: "event_end_time",
+          placeholder: "終了時間も忘れずに！",
+          class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 datetime-picker",
+          data: {
+            form_animation_target: "input",
+            action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
+          } %>
     </div>
   </div>
 
@@ -62,71 +59,66 @@
       <i class="fas fa-map-marker-alt mr-2 text-gray-500"></i>どこでやる？
     </label>
     <div class="relative flex-1">
-      <%= form.text_field :location,
-            placeholder: "例：渋谷コワーキングスペース",
-            class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 focus:bg-orange-50 focus:text-gray-900",
-            data: {
-              form_animation_target: "input",
-              action: "input->form-animation#handleInput change->form-animation#handleInput"
-            } %>
+      <%= form.text_field :location, placeholder: "例：渋谷コワーキングスペース",
+          class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300",
+          data: {
+            form_animation_target: "input",
+            action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
+          } %>
     </div>
   </div>
 
-<!-- 参加情報 -->
-<div data-controller="form-capacity" class="flex items-start gap-6 relative">
-  <!-- ラベル -->
-  <label class="w-40 text-sm font-semibold text-gray-700 pt-3">
-    <i class="fas fa-user-friends mr-2 text-gray-500"></i>参加情報
-  </label>
+  <!-- 参加情報 -->
+  <div data-controller="form-capacity form-animation" class="flex items-start gap-6 relative">
+    <label class="w-40 text-sm font-semibold text-gray-700 pt-3">
+      <i class="fas fa-user-friends mr-2 text-gray-500"></i>参加情報
+    </label>
 
-  <!-- 内容 -->
-  <div class="flex-1 flex flex-col gap-5">
+    <div class="flex-1 flex flex-col gap-5">
+      <p class="text-sm text-gray-700 font-medium">参加する人は決まってる？</p>
 
-    <!-- サブ見出し -->
-    <p class="text-sm text-gray-700 font-medium">
-      参加する人は決まってる？
-    </p>
+      <%= form.text_field :user_search, placeholder: "一緒に参加する人の名前を検索",
+          class: "w-full border rounded-lg p-3 pr-10 text-sm transition-all duration-300",
+          data: {
+            form_animation_target: "input",
+            action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
+          } %>
 
-    <!-- ユーザー検索 -->
-    <%= form.text_field :user_search,
-          placeholder: "一緒に参加する人の名前を検索",
-          class: "w-full border rounded-lg p-3 pr-10 text-sm transition-all duration-300 focus:bg-orange-50 focus:text-gray-900" %>
+      <div class="flex flex-wrap items-center gap-6 text-sm text-gray-700">
+        <label class="flex items-center gap-2">
+          <%= form.radio_button :no_limit, true, id: "event_no_limit",
+                data: { action: "form-capacity#toggle" } %> 上限なしで募集する
+        </label>
 
-    <!-- 上限設定（横並び1行） -->
-    <div class="flex flex-wrap items-center gap-6 text-sm text-gray-700">
+        <span class="text-gray-400">／</span>
 
-      <!-- 上限なし -->
-      <label class="flex items-center gap-2">
-        <%= form.radio_button :no_limit, true,
-              id: "event_no_limit",
-              data: { action: "form-capacity#toggle" } %>
-        上限なしで募集する
-      </label>
+        <label class="flex items-center gap-2">
+          <%= form.radio_button :no_limit, false, id: "event_limit", checked: true,
+                data: { action: "form-capacity#toggle" } %> 上限人数を決める：
 
-      <!-- 区切り -->
-      <span class="text-gray-400">／</span>
+          <div data-form-capacity-target="capacityField" class="w-37 transition-all duration-300">
+            <%= form.number_field :capacity, placeholder: "例：5", min: 3,
+                class: "w-full border rounded-lg p-2 text-right",
+                data: {
+                  form_capacity_target: "capacityInput",
+                  form_animation_target: "input",
+                  action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
+                } %>
+          </div>
 
-      <!-- 上限あり + 入力 -->
-      <label class="flex items-center gap-2">
-        <%= form.radio_button :no_limit, false,
-              id: "event_limit",
-              checked: true,
-              data: { action: "form-capacity#toggle" } %>
-        上限人数を決める：
+          <!-- 上限なしが選ばれている時だけ見える「上限なし」表示＋ hidden -->
+          <div data-form-capacity-target="capacityText" class="text-gray-500 hidden">
+            上限なし
+          </div>
 
-        <div data-form-capacity-target="capacityField"
-             class="w-37 transition-all duration-300">
-          <%= form.number_field :capacity,
-                placeholder: "例：5",
-                min: 3,
-                class: "w-full border rounded-lg p-2 text-right focus:bg-orange-50 focus:text-gray-900" %>
-        </div>
-        <span class="text-gray-500">人</span>
-      </label>
+          <%= form.hidden_field :capacity, value: 999,
+              data: { form_capacity_target: "fallback" } %>
 
+          <span class="text-gray-500">人</span>
+        </label>
+      </div>
     </div>
   </div>
-</div>
 
   <!-- 詳細 -->
   <div data-controller="form-animation" class="flex items-start gap-6 relative">
@@ -134,13 +126,12 @@
       <i class="fas fa-info-circle mr-2 text-gray-500"></i>もう少し詳しく教えて！
     </label>
     <div class="relative flex-1">
-    <%= form.text_area :description,
-          rows: 5,
+      <%= form.text_area :description, rows: 5,
           placeholder: "イベントの目的や対象者など、自由に書いてね",
-          class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 focus:bg-orange-50 focus:text-gray-900",
+          class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300",
           data: {
             form_animation_target: "input",
-            action: "input->form-animation#handleInput change->form-animation#handleInput"
+            action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
           } %>
     </div>
   </div>
@@ -151,21 +142,19 @@
       <i class="fas fa-calendar-times mr-2 text-gray-500"></i>いつまで申し込める？
     </label>
     <div class="relative flex-1">
-      <%= form.text_field :deadline,
-            id: "event_deadline",
-            placeholder: "締切日時を選んでね",
-            class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 focus:bg-orange-50 focus:text-gray-900",
-            data: {
-              form_animation_target: "input",
-              action: "input->form-animation#handleInput change->form-animation#handleInput"
-            } %>
+      <%= form.text_field :deadline, id: "event_deadline",
+          placeholder: "締切日時を選んでね",
+          class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 datetime-picker",
+          data: {
+            form_animation_target: "input",
+            action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
+          } %>
     </div>
   </div>
 
   <!-- 送信 -->
   <div class="mt-10 text-center">
-    <%= form.submit class: "bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-full shadow transition duration-200" do %>
-      <i class="far fa-clipboard mr-2"></i>この内容で企画する！
-    <% end %>
+    <%= form.submit(@event.persisted? ? "この内容に変更する" : "この内容で企画する！",
+      class: "bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-full shadow transition duration-200") %>
   </div>
 <% end %>

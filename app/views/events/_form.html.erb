@@ -75,47 +75,67 @@
     </label>
 
     <div class="flex-1 flex flex-col gap-5">
-      <p class="text-sm text-gray-700 font-medium">参加する人は決まってる？</p>
+      <% initial_users =
+        @selected_users.presence || @event.participant_users.where.not(id: @event.host_user&.id)
+      %>
 
-      <%= form.text_field :user_search, placeholder: "一緒に参加する人の名前を検索",
-          class: "w-full border rounded-lg p-3 pr-10 text-sm transition-all duration-300",
+        <div id="form-user-search"
+            data-controller="form-user-search"
+            data-props="<%= {
+              eventId: @event.id,
+              initialUsers: initial_users.as_json(only: [:id, :name, :profile_picture]),
+              capacity: @event.capacity
+            }.to_json %>"
+            class="min-h-[180px]">
+        </div>
+      <div class="flex flex-wrap items-center gap-6 text-sm text-gray-700">
+<% no_limit = @event.capacity.to_i >= 999 %>
+
+<label class="flex items-center gap-2">
+  <%= form.radio_button :no_limit, true,
+        id: "event_no_limit",
+        value: true,
+        checked: no_limit,
+        data: { action: "form-capacity#toggle" } %>
+  上限なしで募集する
+</label>
+
+<span class="text-gray-400">／</span>
+
+<label class="flex items-center gap-2">
+  <%= form.radio_button :no_limit, false,
+        id: "event_limit",
+        value: false,
+        checked: !no_limit,
+        data: { action: "form-capacity#toggle" } %>
+  上限人数を決める：
+
+  <div class="flex items-center gap-1">
+    <div data-form-capacity-target="capacityField"
+         class="w-34 transition-all duration-300 <%= no_limit ? 'opacity-50 pointer-events-none' : '' %>">
+      <%= form.number_field :capacity,
+          placeholder: "例：5", min: 3,
+          value: no_limit ? nil : @event.capacity,
+          disabled: no_limit,
+          class: "w-full border rounded-lg p-2 text-right",
           data: {
+            form_capacity_target: "capacityInput",
             form_animation_target: "input",
             action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
           } %>
+    </div>
 
-      <div class="flex flex-wrap items-center gap-6 text-sm text-gray-700">
-        <label class="flex items-center gap-2">
-          <%= form.radio_button :no_limit, true, id: "event_no_limit",
-                data: { action: "form-capacity#toggle" } %> 上限なしで募集する
-        </label>
+    <span class="text-gray-500">人</span>
+  </div>
 
-        <span class="text-gray-400">／</span>
+  <!-- 上限なし表示（今回は中身なし） -->
+  <div data-form-capacity-target="capacityText"
+       class="text-gray-500 <%= no_limit ? '' : 'hidden' %> ml-2">
+  </div>
 
-        <label class="flex items-center gap-2">
-          <%= form.radio_button :no_limit, false, id: "event_limit", checked: true,
-                data: { action: "form-capacity#toggle" } %> 上限人数を決める：
-
-          <div data-form-capacity-target="capacityField" class="w-37 transition-all duration-300">
-            <%= form.number_field :capacity, placeholder: "例：5", min: 3,
-                class: "w-full border rounded-lg p-2 text-right",
-                data: {
-                  form_capacity_target: "capacityInput",
-                  form_animation_target: "input",
-                  action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
-                } %>
-          </div>
-
-          <!-- 上限なしが選ばれている時だけ見える「上限なし」表示＋ hidden -->
-          <div data-form-capacity-target="capacityText" class="text-gray-500 hidden">
-            上限なし
-          </div>
-
-          <%= form.hidden_field :capacity, value: 999,
-              data: { form_capacity_target: "fallback" } %>
-
-          <span class="text-gray-500">人</span>
-        </label>
+  <%= form.hidden_field :capacity, value: 999,
+      data: { form_capacity_target: "fallback" } %>
+</label>
       </div>
     </div>
   </div>
@@ -153,8 +173,11 @@
   </div>
 
   <!-- 送信 -->
-  <div class="mt-10 text-center">
-    <%= form.submit(@event.persisted? ? "この内容に変更する" : "この内容で企画する！",
-      class: "bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-full shadow transition duration-200") %>
-  </div>
+    <div class="mt-10 text-center">
+      <%= form.submit(@event.persisted? ? "この内容に変更する" : "この内容で企画する！",
+        id: "submit-button",
+        class: "bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-full shadow transition duration-200") %>
+
+      <p id="submit-warning" class="text-sm text-red-500 mt-2 font-semibold hidden"></p>
+    </div>
 <% end %>

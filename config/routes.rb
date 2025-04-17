@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get    "demo_login",              to: "sessions#demo_login"
 
   # リソース系（必要なアクションだけ許可）
+  get "/users/search", to: "users#search"
   resources :users, except: [ :index ]
   resources :events do
     collection do

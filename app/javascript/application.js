@@ -7,9 +7,14 @@ import flatpickr from "flatpickr"
 import "flatpickr/dist/themes/material_orange.css"
 import { Japanese } from "flatpickr/dist/l10n/ja.js"
 
+import React from "react"
+import ReactDOM from "react-dom/client"
+import FormUserSearch from "./components/FormUserSearch"
+
 flatpickr.localize(Japanese)
 
-document.addEventListener("turbo:load", () => {
+// ✅ flatpickr 初期化関数に切り出す
+function initializeFlatpickr() {
   const now = new Date()
   const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000)
 
@@ -19,11 +24,10 @@ document.addEventListener("turbo:load", () => {
 
   let endPicker, deadlinePicker
 
-  // flatpickrの共通設定（altInputは使わない）
   const baseOptions = {
     enableTime: true,
-    altInput: false, // ✅ altInput無効化でStimulusの色変化を有効に
-    dateFormat: "m月d日 H:i", // ✅ 表示フォーマットを整える
+    altInput: false,
+    dateFormat: "m月d日 H:i",
     time_24hr: true,
     locale: Japanese,
     onOpen(_, __, instance) {
@@ -34,7 +38,6 @@ document.addEventListener("turbo:load", () => {
     }
   }
 
-  // 開始時間
   if (startInput) {
     flatpickr(startInput, {
       ...baseOptions,
@@ -49,18 +52,39 @@ document.addEventListener("turbo:load", () => {
     })
   }
 
-  // 終了時間
   if (endInput) {
     endPicker = flatpickr(endInput, {
       ...baseOptions
     })
   }
 
-  // 締切時間
   if (deadlineInput) {
     deadlinePicker = flatpickr(deadlineInput, {
       ...baseOptions,
       minDate: oneHourLater
     })
   }
+}
+
+// ✅ turbo:load と turbo:render の両方で flatpickr を初期化
+document.addEventListener("turbo:load", initializeFlatpickr)
+document.addEventListener("turbo:render", initializeFlatpickr)
+
+// ✅ 既存のイベントも残してOK
+document.addEventListener("turbo:load", () => {
+  const profileButton = document.getElementById('profile-button');
+  const dropdownMenu = document.getElementById('dropdown-menu');
+
+  if (profileButton && dropdownMenu) {
+    profileButton.addEventListener('click', function() {
+      dropdownMenu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', function(event) {
+      if (!profileButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+        dropdownMenu.classList.add('hidden');
+      }
+    });
+  }
+
 })

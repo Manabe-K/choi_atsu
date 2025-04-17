@@ -44,6 +44,33 @@ class UsersController < ApplicationController
     redirect_to root_path, notice: "ユーザーが削除されました。"
   end
 
+  def search
+    query = params[:q].to_s.strip
+    return render json: [] if query.blank?
+
+    users = User.where("name ILIKE ?", "%#{query}%")
+
+    # 検索したのが demo ユーザーなら、通常ユーザーを除外
+    if current_user.github_uid&.start_with?("demo_")
+      users = users.where("github_uid LIKE ?", "demo_%")
+    else
+      # 検索したのが通常ユーザーなら、demoユーザーを除外
+      users = users.where.not("github_uid LIKE ?", "demo_%")
+    end
+
+    users = users.where.not(id: current_user.id).limit(10)
+
+    results = users.map do |user|
+    {
+    id: user.id,
+    name: user.name,
+    profile_picture: user.profile_picture.present? ? helpers.asset_url(user.profile_picture) : nil
+    }
+end
+
+render json: results
+  end
+
   private
 
   def set_user

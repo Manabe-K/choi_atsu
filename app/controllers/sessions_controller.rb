@@ -21,7 +21,7 @@ class SessionsController < ApplicationController
 
   def demo_login
     demo_user = User.create!(
-      name: "デモユーザー",
+      name: "デモユーザー_#{SecureRandom.hex(2)}",
       github_uid: "demo_#{SecureRandom.hex(10)}",
       github_token: SecureRandom.hex(20),
       profile_picture: "demo_image_#{rand(6..10)}.png"

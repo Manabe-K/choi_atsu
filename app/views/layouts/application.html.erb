@@ -38,13 +38,13 @@
             <% end %>
           </li>
           <li>
-            <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+            <%= link_to participating_events_path, class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
               <i class="fas fa-list-ul"></i>
               <span><%= t('application.plan&participation_list') %></span>
             <% end %>
           </li>
           <li>
-            <%= link_to "#", class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
+            <%= link_to interested_events_path, class: "flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-all duration-300" do %>
               <i class="fas fa-heart"></i>
               <span><%= t('application.interested_list') %></span>
             <% end %>

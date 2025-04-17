@@ -1,4 +1,4 @@
-<%= form_with(model: @event, local: true, class: "max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md space-y-8") do |form| %>
+<%= form_with(model: @event, local: true, class: "max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-md space-y-10") do |form| %>
   <% if @event.errors.any? %>
     <div class="bg-red-100 border border-red-400 text-red-700 p-4 rounded">
       <h2 class="font-bold mb-2">
@@ -13,81 +13,159 @@
   <% end %>
 
   <!-- タイトル -->
-  <div>
-    <label class="block text-sm font-bold text-gray-700 mb-1">
-      <i class="fas fa-heading mr-2 text-gray-500"></i>タイトル
+  <div data-controller="form-animation" class="flex items-start gap-6 relative">
+    <label class="w-40 text-sm font-semibold text-gray-700 pt-3">
+      <i class="fas fa-heading mr-2 text-gray-500"></i>どんなイベント？
     </label>
-    <%= form.text_field :title, placeholder: "例：もくもく会 in 渋谷", class: "w-full border border-gray-300 rounded p-3" %>
+    <div class="relative flex-1">
+      <%= form.text_field :title,
+            placeholder: "例：もくもく会 in 渋谷",
+            class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 focus:bg-orange-50 focus:text-gray-900",
+            data: {
+              form_animation_target: "input",
+              action: "input->form-animation#handleInput change->form-animation#handleInput"
+            } %>
+    </div>
   </div>
 
   <!-- 開催日時 -->
-  <div>
-    <label class="block text-sm font-bold text-gray-700 mb-2">
-      <i class="fas fa-calendar-alt mr-2 text-gray-500"></i>開催日時
+  <div data-controller="form-animation" class="flex items-start gap-6 relative">
+    <label class="w-40 text-sm font-semibold text-gray-700 pt-3">
+      <i class="fas fa-calendar-alt mr-2 text-gray-500"></i>開催する時間は？
     </label>
-    <%= form.datetime_local_field :start_time,
-        class: "w-full border border-gray-300 rounded p-3 bg-white",
-        placeholder: "日付と時間を選択してください" %>
+    <div class="flex items-center gap-3 flex-1">
+      <%= form.text_field :start_time,
+            id: "event_start_time",
+            placeholder: "開始時間をえらんでね",
+            class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 focus:bg-orange-50 focus:text-gray-900",
+            data: {
+              form_animation_target: "input",
+              action: "input->form-animation#handleInput change->form-animation#handleInput"
+            } %>
 
-    <div class="mt-2">
-      <%= form.datetime_local_field :end_time,
-          class: "w-full border border-gray-300 rounded p-3 bg-white",
-          placeholder: "終了日時を選択してください" %>
+      <span class="text-gray-500">〜</span>
+
+      <%= form.text_field :end_time,
+            id: "event_end_time",
+            placeholder: "終了時間も忘れずに！",
+            class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 focus:bg-orange-50 focus:text-gray-900",
+            data: {
+              form_animation_target: "input",
+              action: "input->form-animation#handleInput change->form-animation#handleInput"
+            } %>
     </div>
   </div>
 
-
-  <!-- 場所 -->
-  <div>
-    <label class="block text-sm font-bold text-gray-700 mb-1">
-      <i class="fas fa-map-marker-alt mr-2 text-gray-500"></i>開催場所
+  <!-- 開催場所 -->
+  <div data-controller="form-animation" class="flex items-start gap-6 relative">
+    <label class="w-40 text-sm font-semibold text-gray-700 pt-3">
+      <i class="fas fa-map-marker-alt mr-2 text-gray-500"></i>どこでやる？
     </label>
-    <%= form.text_field :location, placeholder: "例：渋谷コワーキングスペース", class: "w-full border border-gray-300 rounded p-3" %>
+    <div class="relative flex-1">
+      <%= form.text_field :location,
+            placeholder: "例：渋谷コワーキングスペース",
+            class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 focus:bg-orange-50 focus:text-gray-900",
+            data: {
+              form_animation_target: "input",
+              action: "input->form-animation#handleInput change->form-animation#handleInput"
+            } %>
+    </div>
   </div>
 
-  <!-- 人数 -->
-  <div>
-    <label class="block text-sm font-bold text-gray-700 mb-1">
-      <i class="fas fa-user-friends mr-2 text-gray-500"></i>参加上限人数
-    </label>
-    <%= form.number_field :capacity, placeholder: "上限がある場合のみ", class: "w-full border border-gray-300 rounded p-3" %>
+<!-- 参加情報 -->
+<div data-controller="form-capacity" class="flex items-start gap-6 relative">
+  <!-- ラベル -->
+  <label class="w-40 text-sm font-semibold text-gray-700 pt-3">
+    <i class="fas fa-user-friends mr-2 text-gray-500"></i>参加情報
+  </label>
+
+  <!-- 内容 -->
+  <div class="flex-1 flex flex-col gap-5">
+
+    <!-- サブ見出し -->
+    <p class="text-sm text-gray-700 font-medium">
+      参加する人は決まってる？
+    </p>
+
+    <!-- ユーザー検索 -->
+    <%= form.text_field :user_search,
+          placeholder: "一緒に参加する人の名前を検索",
+          class: "w-full border rounded-lg p-3 pr-10 text-sm transition-all duration-300 focus:bg-orange-50 focus:text-gray-900" %>
+
+    <!-- 上限設定（横並び1行） -->
+    <div class="flex flex-wrap items-center gap-6 text-sm text-gray-700">
+
+      <!-- 上限なし -->
+      <label class="flex items-center gap-2">
+        <%= form.radio_button :no_limit, true,
+              id: "event_no_limit",
+              data: { action: "form-capacity#toggle" } %>
+        上限なしで募集する
+      </label>
+
+      <!-- 区切り -->
+      <span class="text-gray-400">／</span>
+
+      <!-- 上限あり + 入力 -->
+      <label class="flex items-center gap-2">
+        <%= form.radio_button :no_limit, false,
+              id: "event_limit",
+              checked: true,
+              data: { action: "form-capacity#toggle" } %>
+        上限人数を決める：
+
+        <div data-form-capacity-target="capacityField"
+             class="w-37 transition-all duration-300">
+          <%= form.number_field :capacity,
+                placeholder: "例：5",
+                min: 3,
+                class: "w-full border rounded-lg p-2 text-right focus:bg-orange-50 focus:text-gray-900" %>
+        </div>
+        <span class="text-gray-500">人</span>
+      </label>
+
+    </div>
   </div>
+</div>
 
   <!-- 詳細 -->
-  <div>
-    <label class="block text-sm font-bold text-gray-700 mb-1">
-      <i class="fas fa-info-circle mr-2 text-gray-500"></i>イベントの詳細
+  <div data-controller="form-animation" class="flex items-start gap-6 relative">
+    <label class="w-40 text-sm font-semibold text-gray-700 pt-3">
+      <i class="fas fa-info-circle mr-2 text-gray-500"></i>もう少し詳しく教えて！
     </label>
-    <%= form.text_area :description, rows: 4, placeholder: "イベントの目的・対象者などをご記入ください", class: "w-full border border-gray-300 rounded p-3" %>
+    <div class="relative flex-1">
+    <%= form.text_area :description,
+          rows: 5,
+          placeholder: "イベントの目的や対象者など、自由に書いてね",
+          class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 focus:bg-orange-50 focus:text-gray-900",
+          data: {
+            form_animation_target: "input",
+            action: "input->form-animation#handleInput change->form-animation#handleInput"
+          } %>
+    </div>
   </div>
 
   <!-- 締切日時 -->
-  <div>
-    <label class="block text-sm font-bold text-gray-700 mb-2">
-      <i class="fas fa-calendar-times mr-2 text-gray-500"></i>申込締切日時
+  <div data-controller="form-animation" class="flex items-start gap-6 relative">
+    <label class="w-40 text-sm font-semibold text-gray-700 pt-3">
+      <i class="fas fa-calendar-times mr-2 text-gray-500"></i>いつまで申し込める？
     </label>
-    <%= form.datetime_local_field :deadline,
-        class: "w-full border border-gray-300 rounded p-3 bg-white",
-        placeholder: "締切日時を選択してください" %>
-  </div>
-
-  <!-- 募集条件 -->
-  <div>
-    <label class="block text-sm font-bold text-gray-700 mb-1">
-      <i class="fas fa-filter mr-2 text-gray-500"></i>募集条件
-    </label>
-    <p class="text-sm text-gray-500">※ タグによる条件指定機能は現在準備中です</p>
-  </div>
-
-  <!-- フッター -->
-  <div class="mt-6 text-center">
-    <div class="text-base text-gray-600 font-semibold mb-3">
-      <i class="fas fa-users mr-2 text-gray-500"></i>対象人数は ○○人です
+    <div class="relative flex-1">
+      <%= form.text_field :deadline,
+            id: "event_deadline",
+            placeholder: "締切日時を選んでね",
+            class: "w-full border rounded-lg p-3 pr-10 transition-all duration-300 focus:bg-orange-50 focus:text-gray-900",
+            data: {
+              form_animation_target: "input",
+              action: "input->form-animation#handleInput change->form-animation#handleInput"
+            } %>
     </div>
+  </div>
 
-    <%= form.submit class: "bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-full shadow flex items-center justify-center gap-2" do %>
-      <i class="far fa-clipboard"></i>
-      <span>企画する</span>
+  <!-- 送信 -->
+  <div class="mt-10 text-center">
+    <%= form.submit class: "bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-full shadow transition duration-200" do %>
+      <i class="far fa-clipboard mr-2"></i>この内容で企画する！
     <% end %>
   </div>
 <% end %>

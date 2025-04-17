@@ -49,7 +49,7 @@ class Event < ApplicationRecord
 
   def validate_capacity_limit
     return if no_limit
-  
+
     if participant_users.size > capacity.to_i
       errors.add(:base, "参加人数が上限（#{capacity}人）を超えています")
     end

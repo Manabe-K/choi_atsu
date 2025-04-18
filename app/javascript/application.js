@@ -13,7 +13,6 @@ import FormUserSearch from "./components/FormUserSearch"
 
 flatpickr.localize(Japanese)
 
-// ✅ flatpickr 初期化関数に切り出す
 function initializeFlatpickr() {
   const now = new Date()
   const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000)
@@ -66,25 +65,27 @@ function initializeFlatpickr() {
   }
 }
 
-// ✅ turbo:load と turbo:render の両方で flatpickr を初期化
-document.addEventListener("turbo:load", initializeFlatpickr)
-document.addEventListener("turbo:render", initializeFlatpickr)
-
-// ✅ 既存のイベントも残してOK
+// ✅ Turboページ遷移時に各種初期化
 document.addEventListener("turbo:load", () => {
-  const profileButton = document.getElementById('profile-button');
-  const dropdownMenu = document.getElementById('dropdown-menu');
+  initializeFlatpickr()
+
+  // イベントカードクリック再バインド
+  window.bindEventCardClicks && window.bindEventCardClicks()
+
+  // プロフィールメニューのトグル
+  const profileButton = document.getElementById('profile-button')
+  const dropdownMenu = document.getElementById('dropdown-menu')
 
   if (profileButton && dropdownMenu) {
-    profileButton.addEventListener('click', function() {
-      dropdownMenu.classList.toggle('hidden');
-    });
+    profileButton.addEventListener('click', function () {
+      dropdownMenu.classList.toggle('hidden')
+    })
 
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
       if (!profileButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
-        dropdownMenu.classList.add('hidden');
+        dropdownMenu.classList.add('hidden')
       }
-    });
+    })
   }
-
 })
+

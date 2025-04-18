@@ -5,25 +5,31 @@
     <%= participation_count(event) %>
   </div>
 
-  <!-- 横スクロール対応 -->
   <div class="flex items-center gap-3 overflow-x-auto px-1 py-2 scrollbar-hide">
     <% host = event.host_user %>
 
     <!-- 主催者 -->
-    <div class="flex items-center gap-2 text-sm bg-pink-50 px-3 py-2 rounded-xl border border-pink-200 shadow-sm h-12 min-w-[250px] max-w-[500px]">
+    <%= link_to (host == current_user ? mypage_path(return_to: request.fullpath) : user_path(host)),
+                data: { turbo: false },
+                class: "flex items-center gap-2 text-sm bg-pink-50 px-3 py-2 rounded-xl border border-pink-200 shadow-sm h-12 min-w-[250px] max-w-[500px] hover:bg-pink-100 transition" do %>
+
       <%= image_tag host.profile_picture, class: "w-8 h-8 rounded-full border border-pink-300" if host.profile_picture.present? %>
       <span class="font-semibold text-pink-800 truncate"><%= host.name %>（主催）</span>
-    </div>
+    <% end %>
 
     <!-- 区切り線 -->
     <div class="w-px bg-gray-300 self-stretch mx-1"></div>
 
     <!-- 参加者 -->
     <% event.participant_users.where.not(id: host.id).each do |user| %>
-      <div class="flex items-center gap-2 text-sm bg-white px-3 py-2 rounded-xl border border-gray-300 shadow-sm h-12 min-w-[200px] max-w-[500px]">
-        <%= image_tag user.profile_picture, class: "w-8 h-8 rounded-full border" if user.profile_picture.present? %>
+      <%= link_to (user == current_user ? mypage_path(return_to: request.fullpath) : user_path(user, return_to: request.fullpath)),
+                  data: { turbo: false },
+                  class: "flex items-center gap-2 text-sm bg-white px-3 py-2 rounded-xl border border-gray-300 shadow-sm h-12 min-w-[200px] max-w-[500px] hover:bg-gray-50 transition" do %>
+        <% if user.profile_picture.present? %>
+          <%= image_tag user.profile_picture, class: "w-8 h-8 rounded-full border" %>
+        <% end %>
         <%= user.name %>
-      </div>
+      <% end %>
     <% end %>
   </div>
 </div>

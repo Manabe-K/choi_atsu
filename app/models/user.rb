@@ -7,6 +7,9 @@ class User < ApplicationRecord
   has_many :curious_lists, dependent: :destroy
   has_many :curious_events, through: :curious_lists, source: :event
 
+  has_many :user_tags, dependent: :destroy
+  has_many :tags, through: :user_tags
+
   validates :github_uid, presence: true, uniqueness: true
   validates :name, :profile_picture, presence: true
 

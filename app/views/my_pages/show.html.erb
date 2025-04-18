@@ -1,0 +1,66 @@
+<div class="flex items-center justify-between max-w-2xl mx-auto mt-10 mb-8 px-4">
+  <% if @safe_return_to.present? %>
+    <%= link_to "← 戻る",
+                @safe_return_to,
+                class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md transition duration-300" %>
+  <% else %>
+    <!-- バランスを保つための空スペース -->
+    <div class="w-[110px]"></div>
+  <% end %>
+
+  <h1 class="text-2xl font-bold text-gray-800 text-center flex-1">
+    マイページ
+  </h1>
+
+  <!-- 右側にダミーで同じ幅確保 -->
+  <div class="w-[110px]"></div>
+</div>
+
+<div class="max-w-2xl mx-auto">
+
+  <!-- プロフィールカード -->
+  <div class="bg-white shadow-md rounded-xl p-6 relative flex items-center space-x-6 mb-10">
+    <!-- 編集ボタン -->
+    <%= button_to "編集",
+                  edit_user_path(@user),
+                  method: :get,
+                  form: { data: { turbo: false } },
+                  class: "absolute top-4 right-4 text-sm bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-md shadow-sm transition" %>
+
+    <div>
+      <% if @user.profile_picture.present? %>
+        <%= image_tag @user.profile_picture, alt: "プロフィール画像", class: "w-24 h-24 rounded-full border-4 border-orange-300 object-cover shadow-sm" %>
+      <% else %>
+        <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
+          No Image
+        </div>
+      <% end %>
+    </div>
+
+    <div class="flex-1">
+      <h2 class="text-xl font-semibold text-gray-800 mb-2">プロフィール</h2>
+      <p class="text-gray-700 mb-2"><strong>名前:</strong> <%= @user.name %></p>
+
+      <!-- 登録タグ -->
+      <div class="mb-2">
+        <p class="text-sm text-gray-600 font-semibold mb-1">登録タグ:</p>
+        <div class="flex flex-wrap gap-2">
+          <% if @user.tags.any? %>
+            <% @user.tags.each do |tag| %>
+              <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"><%= tag.name %></span>
+            <% end %>
+          <% else %>
+            <span class="text-gray-400 text-sm">タグ未登録</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 参加イベントへのリンク -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <%= link_to "企画・参加リスト", participating_events_path, class: "text-center bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-3 rounded-md text-sm shadow-sm transition" %>
+    <%= link_to "気になるリスト", interested_events_path, class: "text-center bg-yellow-500 hover:bg-yellow-400 text-white px-4 py-3 rounded-md text-sm shadow-sm transition" %>
+  </div>
+
+</div>

@@ -1,34 +1,27 @@
 <%= form_with(model: @user, class: "contents") do |form| %>
-  <% if @user.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+  <!-- 名前・画像など省略 -->
 
-      <ul class="list-disc ml-6">
-        <% @user.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
+  <!-- タグ追加フォーム -->
   <div class="my-5">
-    <%= form.label :name %>
-    <%= form.text_field :name, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": @user.errors[:name].none?, "border-red-400 focus:outline-red-600": @user.errors[:name].any?}] %>
+    <%= label_tag :name, "タグを追加" %>
+    <%= form_with url: user_tags_path, method: :post, local: true, class: "flex gap-2 mt-2" do %>
+      <%= text_field_tag :name, nil, placeholder: "タグ名を入力", class: "flex-1 px-3 py-2 border rounded-md" %>
+      <%= submit_tag "追加", class: "bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md" %>
+    <% end %>
   </div>
 
-  <!-- GitHub_uid は hidden で渡す -->
-  <%= form.hidden_field :github_uid, value: @user.github_uid %> 
-
-<div class="my-5">
-  <%= form.label :profile_picture, "Profile Picture" %>
-  <div class="flex items-center">
-    <%= image_tag(@user.profile_picture, alt: 'Profile Picture', class: 'w-16 h-16 rounded-full object-cover mr-4') if @user.profile_picture.present? %>
-    <%= form.text_field :profile_picture, class: "block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", value: @user.profile_picture, readonly: true %>
+  <!-- タグ一覧表示 -->
+  <div class="my-5">
+    <p class="mb-2 font-semibold">登録済みのタグ:</p>
+    <div class="flex flex-wrap gap-2">
+      <% current_user.tags.each do |tag| %>
+        <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full inline-flex items-center">
+          <span><%= tag.name %></span>
+          <%= button_to "✕", user_tag_path(tag_id: tag.id), method: :delete, class: "ml-2 text-xs text-red-600" %>
+        </div>
+      <% end %>
+    </div>
   </div>
-</div>
-
-  <!-- GitHub Token は hidden で渡す -->
-  <%= form.hidden_field :github_token %>
 
   <div class="inline">
     <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>

@@ -3,7 +3,9 @@
     <div class="flex justify-between items-center">
       <!-- 左側: アイコン -->
       <div class="flex items-center space-x-4">
-        <span class="font-bold text-xl"><%= t('header.icon') %></span>
+        <%= link_to root_path, class: "block hover:opacity-80 transition" do %>
+          <%= image_tag "header_icon.png", alt: "ちょいあつ", class: "h-10" %>
+        <% end %>
       </div>
 
       <!-- 右側: ログイン/ログアウト -->

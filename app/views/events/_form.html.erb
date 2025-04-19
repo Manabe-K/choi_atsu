@@ -38,6 +38,7 @@
             placeholder: "開始時間をえらんでね",
             class: "w-full border rounded-lg p-2.5 pr-10 transition-all duration-300 datetime-picker",
             data: {
+              controller: "flatpickr",
               form_animation_target: "input",
               action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
             } %>
@@ -48,6 +49,7 @@
             placeholder: "終了時間も忘れずに！",
             class: "w-full border rounded-lg p-2.5 pr-10 transition-all duration-300 datetime-picker",
             data: {
+              controller: "flatpickr",
               form_animation_target: "input",
               action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
             } %>
@@ -175,6 +177,7 @@ profile_picture: user.profile_picture.present? ?
             placeholder: "締切日時を選んでね",
             class: "w-full border rounded-lg p-2.5 pr-10 transition-all duration-300 datetime-picker",
             data: {
+              controller: "flatpickr",
               form_animation_target: "input",
               action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
             } %>

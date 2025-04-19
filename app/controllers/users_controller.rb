@@ -39,6 +39,7 @@ class UsersController < ApplicationController
     end
 
     if @user.update(user_params_for_update)
+      update_user_tags(@user, params[:user][:tag_names])
       redirect_to mypage_path, notice: "ユーザー情報が更新されました。"
     else
       render :edit, status: :unprocessable_entity
@@ -106,4 +107,34 @@ class UsersController < ApplicationController
   def user_params_for_update
     params.require(:user).permit(:name, :github_uid, :github_token, :profile_picture, :uploaded_picture)
   end
+
+  def update_user_tags(user, tag_names_param)
+    return unless tag_names_param.is_a?(Array)
+
+    tag_names = tag_names_param.reject(&:blank?)
+
+    user.user_tags.destroy_all
+    tag_names.each do |name|
+      tag = Tag.find_or_create_by(name: name)
+      user.user_tags.create(tag: tag)
+    end
+  end
+
+  def update_user_tags(user, tag_names_param)
+    tag_names = Array(tag_names_param).reject(&:blank?).map(&:strip).uniq
+  
+    current_tags = user.tags.pluck(:name)
+    to_remove = current_tags - tag_names
+    to_add    = tag_names - current_tags
+  
+    # タグ削除
+    user.user_tags.joins(:tag).where(tags: { name: to_remove }).destroy_all
+  
+    # タグ追加（必要なら新規作成）
+    to_add.each do |name|
+      tag = Tag.find_or_create_by(name: name)
+      user.user_tags.find_or_create_by(tag: tag)
+    end
+  end
+
 end

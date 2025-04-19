@@ -61,6 +61,17 @@
     </div>
   </div>
 
+<div
+  data-controller="user-tag-input"
+  data-props="<%= {
+    initialTags: @user.tags.map { |tag| { name: tag.name } },
+    tagCandidates: Tag.left_joins(:user_tags)
+                      .select('tags.name, COUNT(user_tags.id) AS user_count')
+                      .group('tags.id')
+                      .map { |tag| { name: tag.name, user_count: tag.user_count.to_i } }
+  }.to_json %>">
+</div>
+
   <!-- hidden fields -->
   <%= form.hidden_field :github_uid %>
   <%= form.hidden_field :github_token %>

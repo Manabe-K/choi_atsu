@@ -41,6 +41,7 @@ function initializeFlatpickr() {
     flatpickr(startInput, {
       ...baseOptions,
       minDate: oneHourLater,
+      appendTo: startInput.parentElement,
       onChange(selectedDates) {
         if (selectedDates.length > 0) {
           const start = selectedDates[0]

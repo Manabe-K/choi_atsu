@@ -51,7 +51,7 @@ const UserTagInput = ({ initialTags = [], tagCandidates = [] }) => {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="例：Rails、React、FPなど"
+        placeholder="例：野球好き、飲み会、カラオケなど"
         className="w-full border p-2 rounded-lg text-sm"
       />
 

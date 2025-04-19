@@ -1,2 +1,16 @@
 @import "flatpickr/dist/themes/material_orange";
 @import "tailwindcss";
+
+body::before {
+  content: "";
+  background-image: url("/assets/bg_pattern.png");
+  background-repeat: repeat;
+  background-size: cover;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  opacity: 0.9; /* ここで透明度を調整 */
+}

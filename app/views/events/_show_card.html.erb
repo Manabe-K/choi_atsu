@@ -16,47 +16,51 @@
   <div class="p-6 relative w-full">
 
     <!-- アクションボタン -->
-<div id="show_<%= dom_id(event, :actions) %>" class="absolute top-4 right-4 flex flex-col justify-center gap-2 p-4 w-50 text-center min-h-[4.5rem] z-10">
-  <% curious_count = event.curious_users.count %>
+    <div id="show_<%= dom_id(event, :actions) %>" class="absolute top-4 right-4 flex flex-col justify-center gap-2 p-4 w-50 text-center min-h-[4.5rem] z-10">
 
-  <% if event.host_user == current_user %>
-    <%= link_to curious_users_event_path(event),
-                class: "block w-full text-white font-bold py-2 rounded bg-blue-500 hover:bg-blue-600 text-m text-center transition" do %>
-      気になってた<%= event.curious_users.count %>人
-    <% end %>
-  <% else %>
-    <% if status == "開催済み" %>
-      <% message =
-        if is_joined
-          "ご参加ありがと！\nまた、集まりましょ"
-        else
-          "ぜひ！また今度！\n集まりましょ"
-        end
-      %>
-      <p class="whitespace-pre-line text-base font-bold text-white text-center leading-tight"><%= message %></p>
+      <% if event.host_user == current_user %>
+        <%# ✅ 主催者 %>
+        <% if status == "開催済み" %>
+          <p class="whitespace-pre-line text-base font-bold text-white text-center leading-tight">
+            幹事お疲れ様！
+            また、企画してね
+          </p>
+          <%= link_to curious_users_event_path(event),
+                      class: "block w-full text-white font-bold py-2 rounded bg-blue-500 hover:bg-blue-600 text-m text-center transition mt-1" do %>
+            気になってた<%= event.curious_users.count %>人
+          <% end %>
+        <% else %>
+          <%= link_to curious_users_event_path(event),
+                      class: "block w-full text-white font-bold py-2 rounded bg-blue-500 hover:bg-blue-600 text-m text-center transition" do %>
+            気になってる<%= event.curious_users.count %>人
+          <% end %>
+        <% end %>
 
-      <%# ✅ 開催済みでも気になる人がいたら表示 %>
-      <%= link_to curious_users_event_path(event),
-                  class: "block w-full text-white font-bold py-2 rounded bg-blue-400 hover:bg-blue-500 text-m text-center transition mt-1" do %>
-        気になってた<%= event.curious_users.count %>人
-      <% end %>
-    <% else %>
-      <% if %w[満員 締切終了].include?(status) && !is_joined %>
-        <p class="block w-full text-white font-bold py-2 rounded bg-gray-600 text-m text-center transition cursor-not-allowed">
-          <%= status %>
-        </p>
       <% else %>
-        <%= participation_button(event, current_user) %>
-      <% end %>
+        <%# ✅ 主催者以外 %>
+        <% if status == "開催済み" %>
+          <% message =
+            if is_joined
+              "ご参加ありがと！\nまた、集まりましょ"
+            else
+              "ぜひ！また今度！\n集まりましょ"
+            end
+          %>
+          <p class="whitespace-pre-line text-base font-bold text-white text-center leading-tight"><%= message %></p>
+        <% else %>
+          <%# 参加・気になるボタン（Turbo） %>
+          <% if %w[満員 締切終了].include?(status) && !is_joined %>
+            <p class="block w-full text-white font-bold py-2 rounded bg-gray-600 text-m text-center transition cursor-not-allowed">
+              <%= status %>
+            </p>
+          <% else %>
+            <%= participation_button(event, current_user) %>
+          <% end %>
 
-      <%# ✅ 募集中/満員/締切終了のときも常に表示 %>
-      <%= link_to curious_users_event_path(event),
-                  class: "block w-full text-white font-bold py-2 rounded bg-blue-400 hover:bg-blue-500 text-m text-center transition" do %>
-        気になってる<%= event.curious_users.count %>人
+          <%= curious_button(event, current_user) %>
+        <% end %>
       <% end %>
-    <% end %>
-  <% end %>
-</div>
+    </div>
 
     <!-- ステータス -->
     <div class="mb-2" id="show_status_event_<%= event.id %>">

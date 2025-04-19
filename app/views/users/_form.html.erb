@@ -1,36 +1,95 @@
-<%= form_with(model: @user, class: "contents") do |form| %>
+<%= form_with(model: @user, local: true, multipart: true, id: "edit_user_form", data: { controller: "profile-image" }, class: "bg-white rounded-xl shadow-md p-10 space-y-6 max-w-3xl mx-auto") do |form| %>
   <% if @user.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
-
-      <ul class="list-disc ml-6">
-        <% @user.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+    <div class="bg-red-100 border border-red-400 text-red-700 p-4 rounded">
+      <h2 class="font-bold mb-2">
+        <%= pluralize(@user.errors.count, "件のエラー") %>があります
+      </h2>
+      <ul class="list-disc pl-5 text-sm">
+        <% @user.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :name %>
-    <%= form.text_field :name, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": @user.errors[:name].none?, "border-red-400 focus:outline-red-600": @user.errors[:name].any?}] %>
+  <!-- 名前 -->
+  <div class="flex items-start gap-4">
+    <label class="w-32 text-sm font-semibold text-gray-700 pt-2">
+      <i class="fas fa-user mr-1 text-gray-500"></i>名前
+    </label>
+    <div class="flex-1">
+      <%= form.text_field :name, placeholder: "表示名を入力",
+          class: "w-full border rounded-lg p-2.5 transition-all duration-300 #{'border-red-400' if @user.errors[:name].any?}" %>
+    </div>
   </div>
 
-  <!-- GitHub_uid は hidden で渡す -->
-  <%= form.hidden_field :github_uid, value: @user.github_uid %> 
+  <!-- プロフィール画像 -->
+  <div class="flex items-start gap-4" data-profile-image-target="container">
+    <label class="w-32 text-sm font-semibold text-gray-700 pt-2">
+      <i class="fas fa-image mr-1 text-gray-500"></i>プロフィール画像
+    </label>
 
-<div class="my-5">
-  <%= form.label :profile_picture, "Profile Picture" %>
-  <div class="flex items-center">
-    <%= image_tag(@user.profile_picture, alt: 'Profile Picture', class: 'w-16 h-16 rounded-full object-cover mr-4') if @user.profile_picture.present? %>
-    <%= form.text_field :profile_picture, class: "block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", value: @user.profile_picture, readonly: true %>
+    <div class="flex-1 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <!-- プレビュー -->
+      <div class="flex flex-col items-center gap-2">
+<%= image_tag(@user.profile_picture_url, data: { profile_image_target: "preview" }, class: "w-16 h-16 rounded-full object-cover border", alt: "プロフィール画像") %>
+
+<%= hidden_field_tag :profile_picture_url, @user.profile_picture_url,
+      data: {
+        profile_image_target: "profilePictureUrl",
+        fallback_url: (
+          if @user.profile_picture&.start_with?("http")
+            @user.profile_picture
+          elsif @user.profile_picture&.start_with?("demo_image_")
+            image_path("demo_images/#{@user.profile_picture}")
+          else
+            image_path("demo_images/default.png")
+          end
+        )
+      } %>
+<button type="button"
+        data-profile-image-target="removeButton"
+        data-action="profile-image#clearImage"
+        class="text-xs text-red-600 underline <%= @user.uploaded_picture.attached? ? '' : 'hidden' %>">
+  削除
+</button>
+      </div>
+
+      <!-- アップロード入力 -->
+      <div class="flex-1 w-full">
+        <!-- GitHub画像URL -->
+        <%= form.label :profile_picture, "GitHub画像URL", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.text_field :profile_picture,
+              class: "border rounded-lg p-2.5 bg-gray-50 w-full mb-2",
+              readonly: true %>
+
+        <!-- アップロードフィールド -->
+        <%= form.label :uploaded_picture, "画像をアップロード（任意）", class: "block text-sm font-medium text-gray-700 mt-2" %>
+        <%= form.file_field :uploaded_picture, data: { action: "change->profile-image#previewImage" },
+            class: "block w-full text-sm text-gray-700 file:mr-3 file:px-4 file:py-2 file:border file:rounded-md file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" %>
+      </div>
+    </div>
   </div>
+
+<div
+  data-controller="user-tag-input"
+  data-props="<%= {
+    initialTags: @user.tags.map { |tag| { name: tag.name } },
+    tagCandidates: Tag.left_joins(:user_tags)
+                      .select('tags.name, COUNT(user_tags.id) AS user_count')
+                      .group('tags.id')
+                      .map { |tag| { name: tag.name, user_count: tag.user_count.to_i } }
+  }.to_json %>">
 </div>
 
-  <!-- GitHub Token は hidden で渡す -->
+  <!-- hidden fields -->
+  <%= form.hidden_field :github_uid %>
   <%= form.hidden_field :github_token %>
+  <%= form.hidden_field :remove_uploaded_picture, value: "false", data: { profile_image_target: "removeFlag" } %>
 
-  <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+  <!-- 送信ボタン -->
+  <div class="text-center pt-6">
+    <%= form.submit "プロフィールを更新",
+          class: "bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-full shadow transition duration-200" %>
   </div>
 <% end %>

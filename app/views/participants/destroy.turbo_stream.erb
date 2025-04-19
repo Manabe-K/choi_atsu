@@ -32,3 +32,9 @@
 <%= turbo_stream.replace "show_#{dom_id(@event, :participants)}" do %>
   <%= render partial: "events/participants", locals: { event: @event } %>
 <% end %>
+
+<%= turbo_stream.append "scripts" do %>
+  <script>
+    window.bindEventCardClicks && window.bindEventCardClicks();
+  </script>
+<% end %>

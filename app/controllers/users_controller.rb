@@ -1,28 +1,28 @@
 class UsersController < ApplicationController
+  include Rails.application.routes.url_helpers
+
   before_action :set_user, only: %i[show destroy]
   before_action :require_login, only: %i[edit update destroy]
 
-  # 管理者以外はアクセス不可（今はコメントアウト）
-  # def index
-  #   @users = User.all
-  # end
-
-  def show;end
+  def show; end
 
   def new
-    redirect_to root_path, alert: "不正なアクセスです。" and return unless session[:user_registration]
+    unless session[:user_registration]
+      redirect_to root_path, alert: "不正なアクセスです。" and return
+    end
+
     @user = User.new(session[:user_registration])
   end
 
   def create
-    @user = User.new(user_params)
+    @user = User.new(user_params_for_create)
 
     if @user.save
       session.delete(:user_registration)
       session[:user_id] = @user.id
       redirect_to events_path, notice: "ユーザー登録が完了しました。"
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -31,10 +31,18 @@ class UsersController < ApplicationController
   end
 
   def update
-    if current_user.update(user_params)
-      redirect_to current_user, notice: "ユーザー情報が更新されました。"
+    @user = current_user
+
+    # アップロード画像の削除処理
+    if params[:user][:remove_uploaded_picture] == "true"
+      @user.uploaded_picture.purge if @user.uploaded_picture.attached?
+    end
+
+    if @user.update(user_params_for_update)
+      update_user_tags(@user, params[:user][:tag_names])
+      redirect_to mypage_path, notice: "ユーザー情報が更新されました。"
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -49,26 +57,35 @@ class UsersController < ApplicationController
     return render json: [] if query.blank?
 
     users = User.where("name ILIKE ?", "%#{query}%")
-
-    # 検索したのが demo ユーザーなら、通常ユーザーを除外
-    if current_user.github_uid&.start_with?("demo_")
-      users = users.where("github_uid LIKE ?", "demo_%")
-    else
-      # 検索したのが通常ユーザーなら、demoユーザーを除外
-      users = users.where.not("github_uid LIKE ?", "demo_%")
-    end
-
+    users = current_user.github_uid&.start_with?("demo_") ? users.where("github_uid LIKE ?", "demo_%") : users.where.not("github_uid LIKE ?", "demo_%")
     users = users.where.not(id: current_user.id).limit(10)
 
     results = users.map do |user|
-    {
-    id: user.id,
-    name: user.name,
-    profile_picture: user.profile_picture.present? ? helpers.asset_url(user.profile_picture) : nil
-    }
-end
+      {
+        id: user.id,
+        name: user.name,
+        profile_picture: user.profile_picture_url # ✅ これに変更！
+      }
+    end
 
-render json: results
+    render json: results
+  end
+
+  def delete_uploaded_picture
+    user = User.find(params[:id])
+
+    if user == current_user && user.uploaded_picture.attached?
+      user.uploaded_picture.purge
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to edit_user_path(user), notice: "アップロード画像を削除しました" }
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream { head :not_found }
+        format.html { redirect_to edit_user_path(user), alert: "画像が見つかりません" }
+      end
+    end
   end
 
   private
@@ -81,7 +98,42 @@ render json: results
     redirect_to root_path, alert: "ログインしてください。" unless current_user
   end
 
-  def user_params
-    params.require(:user).permit(:name, :github_uid, :github_token, :profile_picture)
+  # create専用（remove_uploaded_pictureは含まない）
+  def user_params_for_create
+    params.require(:user).permit(:name, :github_uid, :github_token, :profile_picture, :uploaded_picture)
+  end
+
+  # update専用（remove_uploaded_pictureは処理済みなので除外）
+  def user_params_for_update
+    params.require(:user).permit(:name, :github_uid, :github_token, :profile_picture, :uploaded_picture)
+  end
+
+  def update_user_tags(user, tag_names_param)
+    return unless tag_names_param.is_a?(Array)
+
+    tag_names = tag_names_param.reject(&:blank?)
+
+    user.user_tags.destroy_all
+    tag_names.each do |name|
+      tag = Tag.find_or_create_by(name: name)
+      user.user_tags.create(tag: tag)
+    end
+  end
+
+  def update_user_tags(user, tag_names_param)
+    tag_names = Array(tag_names_param).reject(&:blank?).map(&:strip).uniq
+
+    current_tags = user.tags.pluck(:name)
+    to_remove = current_tags - tag_names
+    to_add    = tag_names - current_tags
+
+    # タグ削除
+    user.user_tags.joins(:tag).where(tags: { name: to_remove }).destroy_all
+
+    # タグ追加（必要なら新規作成）
+    to_add.each do |name|
+      tag = Tag.find_or_create_by(name: name)
+      user.user_tags.find_or_create_by(tag: tag)
+    end
   end
 end

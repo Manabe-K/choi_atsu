@@ -13,13 +13,13 @@
     <div class="relative inline-block">
       <!-- プロフィール画像 -->
       <button id="profile-button" class="w-8 h-8 rounded-full overflow-hidden">
-        <%= image_tag(current_user.profile_picture, alt: 'Profile Picture', class: 'object-cover w-full h-full') %>
+        <%= image_tag(current_user.profile_picture_url, alt: 'Profile Picture', class: 'object-cover w-full h-full') %>
       </button>
 
       <!-- ドロップダウンメニュー -->
       <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg">
         <ul>
-          <li><%= link_to 'プロフィール', edit_user_path(current_user), class: 'block px-4 py-2 text-sm' %></li>
+          <li><%= link_to 'マイページ', mypage_path(clear_return_to: true), class: 'block px-4 py-2 text-sm' %></li>
           <li><%= link_to '設定', "#", class: 'block px-4 py-2 text-sm' %></li>
           <li><%= button_to 'ログアウト', logout_path, method: :delete, class: 'block px-4 py-2 text-sm text-red-500 hover:bg-gray-200' %></li>
         </ul>

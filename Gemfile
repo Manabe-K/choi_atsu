@@ -66,3 +66,6 @@ gem "omniauth-rails_csrf_protection"
 gem "omniauth-github", "~> 2.0.0"
 
 gem "activerecord-session_store", "~> 2.2"
+
+gem "cloudinary"
+gem "activestorage-cloudinary-service"

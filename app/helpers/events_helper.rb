@@ -76,8 +76,10 @@ module EventsHelper
   def safe_return_to_path
     return_to = params[:return_to]
 
-    # ホスト名を含まない相対パスだけを許可
-    if return_to.present? && URI.parse(return_to).host.nil?
+    if return_to.present? &&
+       URI.parse(return_to).host.nil? &&
+       return_to.start_with?("/") &&
+       !return_to.include?("/participant") # 👈 ここ重要
       return_to
     else
       events_path

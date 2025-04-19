@@ -1,17 +1,15 @@
-<% content_for :title, "Showing user" %>
+<div class="flex items-center justify-between max-w-2xl mx-auto mt-10 mb-8 px-4">
+  <button onclick="history.back()"
+          class="bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300">
+    ← 戻る
+  </button>
 
-<div class="md:w-2/3 w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
+  <h1 class="text-2xl font-bold text-gray-800 text-center flex-1">
+    <%= "#{@user.name} さんのプロフィール" %>
+  </h1>
 
-  <h1 class="font-bold text-4xl">Showing user</h1>
-
-  <%= render @user %>
-
-  <%= link_to "Edit this user", edit_user_path(@user), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to users", users_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <div class="sm:inline-block mt-2 sm:mt-0 sm:ml-2">
-    <%= button_to "Destroy this user", @user, method: :delete, class: "w-full rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
-  </div>
+  <!-- 空divでバランス調整（戻るボタンとh1を中央に見せるため） -->
+  <div class="w-[100px]"></div>
 </div>
+
+<%= render partial: "shared/user_profile", locals: { user: @user, current_user: current_user } %>

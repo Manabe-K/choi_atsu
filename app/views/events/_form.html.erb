@@ -87,9 +87,12 @@
         initialUsers: initial_users.map { |user| {
           id: user.id,
           name: user.name,
-          profile_picture: user.profile_picture.present? ?
-            (user.profile_picture.starts_with?("http") ? user.profile_picture : image_path(user.profile_picture)) :
-            asset_path("default.png")
+profile_picture: user.profile_picture.present? ?
+  (
+    user.profile_picture.starts_with?("http") ? user.profile_picture :
+    image_path("demo_images/#{user.profile_picture}")
+  ) :
+  image_path("demo_images/default.png")
         }},
         capacity: @event.capacity
       }.to_json %>"

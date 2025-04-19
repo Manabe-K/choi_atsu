@@ -15,26 +15,26 @@
         end
       %>
 
-      <!-- ✅ カード全体を clickable に -->
       <div id="<%= dom_id(event, :card) %>"
            class="event-card relative flex items-stretch <%= card_classes %> rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 cursor-pointer"
            data-url="<%= event_path(event, return_to: request.fullpath) %>">
 
         <!-- 左：アイコン -->
         <div class="flex-shrink-0 p-4 flex flex-col items-center justify-center">
-<% if event.host_user == current_user %>
-  <% path = request.referer&.include?("/events/") ? mypage_path(return_to: request.fullpath) : mypage_path %>
-  <%= link_to path, class: "hover:opacity-80 transition text-center block" do %>
-    <%= image_tag event.host_user.profile_picture, alt: event.host_user.name, class: "w-16 h-16 rounded-full border border-gray-300 mx-auto" %>
-    <p class="text-xs text-gray-600 mt-1">マイページ</p>
-  <% end %>
-<% else %>
-  <%= link_to user_path(event.host_user, return_to: request.fullpath),
-              class: "hover:opacity-80 transition text-center block" do %>
-    <%= image_tag event.host_user.profile_picture, alt: event.host_user.name, class: "w-16 h-16 rounded-full border border-gray-300 mx-auto" %>
-    <p class="text-xs text-gray-600 mt-1"><%= event.host_user.name %></p>
-  <% end %>
-<% end %>
+          <% if event.host_user == current_user %>
+            <% path = request.referer&.include?("/events/") ? mypage_path(return_to: request.fullpath) : mypage_path %>
+            <%= link_to path, class: "hover:opacity-80 transition text-center block" do %>
+              <%= image_tag event.host_user.profile_picture_url, alt: event.host_user.name, class: "w-16 h-16 rounded-full border border-gray-300 mx-auto" %>
+              <p class="text-xs text-gray-600 mt-1">マイページ</p>
+            <% end %>
+          <% else %>
+            <%= link_to user_path(event.host_user, return_to: request.fullpath),
+                        class: "hover:opacity-80 transition text-center block" do %>
+              <%= image_tag event.host_user.profile_picture_url, alt: event.host_user.name, class: "w-16 h-16 rounded-full border border-gray-300 mx-auto" %>
+              <p class="text-xs text-gray-600 mt-1"><%= event.host_user.name %></p>
+            <% end %>
+          <% end %>
+
           <p class="text-xs font-semibold text-white text-center mt-2 px-2 py-1 rounded <%= status_class %>">
             <%= status %>
           </p>
@@ -59,7 +59,6 @@
             <i class="fas fa-hourglass-half mr-1"></i><%= event.deadline&.strftime('%Y-%m-%d') %>まで
           </p>
 
-          <!-- ✅ タグ（クリック可能） -->
           <% if event.tags.any? %>
             <div class="flex flex-wrap gap-1 mt-2">
               <% event.tags.each do |tag| %>

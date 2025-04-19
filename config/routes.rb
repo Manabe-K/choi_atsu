@@ -10,7 +10,11 @@ Rails.application.routes.draw do
 
   # リソース系（必要なアクションだけ許可）
   get "/users/search", to: "users#search"
-  resources :users, except: [ :index ]
+  resources :users, except: [:index] do
+    member do
+      delete :delete_uploaded_picture
+    end
+  end
   resources :events do
     collection do
       get :participating

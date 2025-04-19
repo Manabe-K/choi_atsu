@@ -13,7 +13,7 @@
     <div class="relative inline-block">
       <!-- プロフィール画像 -->
       <button id="profile-button" class="w-8 h-8 rounded-full overflow-hidden">
-        <%= image_tag(current_user.profile_picture, alt: 'Profile Picture', class: 'object-cover w-full h-full') %>
+        <%= image_tag(current_user.profile_picture_url, alt: 'Profile Picture', class: 'object-cover w-full h-full') %>
       </button>
 
       <!-- ドロップダウンメニュー -->

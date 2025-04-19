@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_one_attached :uploaded_picture
   has_many :hosted_events, class_name: "Event", foreign_key: :host_user_id, dependent: :destroy
 
   has_many :participants, dependent: :destroy
@@ -16,5 +17,15 @@ class User < ApplicationRecord
   # Methods
   def demo?
     github_uid&.start_with?("demo_")
+  end
+
+  def profile_picture_url
+    if uploaded_picture.attached?
+      Rails.application.routes.url_helpers.rails_blob_url(uploaded_picture, only_path: true)
+    elsif profile_picture&.start_with?("demo_image_")
+      ActionController::Base.helpers.image_path("demo_image/#{profile_picture}")
+    else
+      profile_picture.presence || ActionController::Base.helpers.image_path("default.png")
+    end
   end
 end

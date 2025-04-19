@@ -75,7 +75,7 @@ module EventsHelper
 
   def safe_return_to_path
     return_to = params[:return_to]
-  
+
     if return_to.present? &&
        URI.parse(return_to).host.nil? &&
        return_to.start_with?("/") &&

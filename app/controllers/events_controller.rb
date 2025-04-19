@@ -24,11 +24,11 @@ class EventsController < ApplicationController
   def create
     @event = Event.new(parsed_event_params)
     @event.host_user = current_user
-  
+
     # ✅ capacity のログをここに入れる
     puts "🎯 event_params[:capacity] = #{event_params[:capacity].inspect}"
     puts "🎯 parsed_event_params[:capacity] = #{parsed_event_params[:capacity].inspect}"
-  
+
     if @event.save
       Participant.create!(user: current_user, event: @event)
       update_participants(@event)
@@ -43,7 +43,7 @@ class EventsController < ApplicationController
   def update
     puts "🎯 event_params[:capacity] = #{event_params[:capacity].inspect}"
     puts "🎯 parsed_event_params[:capacity] = #{parsed_event_params[:capacity].inspect}"
-  
+
     if @event.update(parsed_event_params)
       update_participants(@event)
       redirect_to @event, notice: "イベントを更新しました"
@@ -108,23 +108,23 @@ class EventsController < ApplicationController
   def update_participants(event)
     user_ids = params[:event][:user_ids].to_a.reject(&:blank?).map(&:to_i)
     user_ids -= [ event.host_user_id ]
-  
+
     current_ids = event.participant_users.where.not(id: event.host_user_id).pluck(:id)
-  
+
     to_remove = current_ids - user_ids
     to_add = user_ids - current_ids
-  
+
     capacity = event.capacity.to_i
     capacity = 999 if capacity == 0  # 念のためフォールバック
-  
+
     if (event.participant_users.count - to_remove.size + to_add.size + 1) > capacity
       flash[:alert] = "参加者数が上限を超えています"
       return false
     end
-  
+
     event.participants.where(user_id: to_remove).destroy_all
     to_add.each { |uid| event.participants.find_or_create_by(user_id: uid) }
-  
+
     true
   end
 end

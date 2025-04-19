@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   # リソース系（必要なアクションだけ許可）
   get "/users/search", to: "users#search"
-  resources :users, except: [:index] do
+  resources :users, except: [ :index ] do
     member do
       delete :delete_uploaded_picture
     end
@@ -23,7 +23,7 @@ Rails.application.routes.draw do
     resource :participant, only: [ :create, :destroy ]
     resource :curious_list, only: [ :create, :destroy ]
   end
-  resources :user_tags, only: [:create, :destroy]
+  resources :user_tags, only: [ :create, :destroy ]
   resources :tags, only: [ :index, :show ] # 必要に応じて :new, :create, :edit, :update, :destroy を追加
   get "/mypage", to: "my_pages#show"
 

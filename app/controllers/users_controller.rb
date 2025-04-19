@@ -55,11 +55,11 @@ class UsersController < ApplicationController
   def search
     query = params[:q].to_s.strip
     return render json: [] if query.blank?
-  
+
     users = User.where("name ILIKE ?", "%#{query}%")
     users = current_user.github_uid&.start_with?("demo_") ? users.where("github_uid LIKE ?", "demo_%") : users.where.not("github_uid LIKE ?", "demo_%")
     users = users.where.not(id: current_user.id).limit(10)
-  
+
     results = users.map do |user|
       {
         id: user.id,
@@ -67,7 +67,7 @@ class UsersController < ApplicationController
         profile_picture: user.profile_picture_url # ✅ これに変更！
       }
     end
-  
+
     render json: results
   end
 
@@ -122,19 +122,18 @@ class UsersController < ApplicationController
 
   def update_user_tags(user, tag_names_param)
     tag_names = Array(tag_names_param).reject(&:blank?).map(&:strip).uniq
-  
+
     current_tags = user.tags.pluck(:name)
     to_remove = current_tags - tag_names
     to_add    = tag_names - current_tags
-  
+
     # タグ削除
     user.user_tags.joins(:tag).where(tags: { name: to_remove }).destroy_all
-  
+
     # タグ追加（必要なら新規作成）
     to_add.each do |name|
       tag = Tag.find_or_create_by(name: name)
       user.user_tags.find_or_create_by(tag: tag)
     end
   end
-
 end

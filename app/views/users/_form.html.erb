@@ -34,9 +34,19 @@
       <div class="flex flex-col items-center gap-2">
 <%= image_tag(@user.profile_picture_url, data: { profile_image_target: "preview" }, class: "w-16 h-16 rounded-full object-cover border", alt: "プロフィール画像") %>
 
-<%= hidden_field_tag :profile_picture_fallback_url, @user.profile_picture,
-      data: { profile_image_target: "profilePictureUrl" } %>
-
+<%= hidden_field_tag :profile_picture_url, @user.profile_picture_url,
+      data: {
+        profile_image_target: "profilePictureUrl",
+        fallback_url: (
+          if @user.profile_picture&.start_with?("http")
+            @user.profile_picture
+          elsif @user.profile_picture&.start_with?("demo_image_")
+            image_path("demo_images/#{@user.profile_picture}")
+          else
+            image_path("demo_images/default.png")
+          end
+        )
+      } %>
 <button type="button"
         data-profile-image-target="removeButton"
         data-action="profile-image#clearImage"

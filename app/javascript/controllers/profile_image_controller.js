@@ -5,10 +5,7 @@ export default class extends Controller {
 
   connect() {
     this.originalSrc = this.previewTarget.src
-    const raw = this.profilePictureUrlTarget?.value || this.originalSrc
-    this.fallbackSrc = raw.startsWith("demo_image_")
-      ? `/demo_images/${raw}`
-      : raw
+    this.fallbackSrc = this.profilePictureUrlTarget?.value || this.originalSrc
   }
 
   previewImage(event) {
@@ -28,13 +25,14 @@ export default class extends Controller {
 
   clearImage() {
     this.removeFlagTarget.value = "true"
-
+  
     const input = this.element.querySelector("input[type='file']")
     if (input) input.value = ""
-
-    // 👇 fallback（GitHub URLやデモ画像）に戻す
-    this.previewTarget.src = this.fallbackSrc
-
+  
+    const fallback = this.profilePictureUrlTarget.dataset.fallbackUrl
+    this.previewTarget.src = fallback
+    this.profilePictureUrlTarget.value = fallback
+  
     if (this.hasRemoveButtonTarget) {
       this.removeButtonTarget.classList.add("hidden")
     }

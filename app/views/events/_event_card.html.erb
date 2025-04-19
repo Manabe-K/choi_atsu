@@ -25,7 +25,7 @@
             <% path = request.referer&.include?("/events/") ? mypage_path(return_to: request.fullpath) : mypage_path %>
             <%= link_to path, class: "hover:opacity-80 transition text-center block" do %>
               <%= image_tag event.host_user.profile_picture_url, alt: event.host_user.name, class: "w-16 h-16 rounded-full border border-gray-300 mx-auto" %>
-              <p class="text-xs text-gray-600 mt-1">マイページ</p>
+              <p class="text-xs text-gray-600 mt-1"><%= event.host_user.name %></p>
             <% end %>
           <% else %>
             <%= link_to user_path(event.host_user, return_to: request.fullpath),

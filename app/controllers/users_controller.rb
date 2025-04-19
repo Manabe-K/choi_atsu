@@ -55,19 +55,19 @@ class UsersController < ApplicationController
   def search
     query = params[:q].to_s.strip
     return render json: [] if query.blank?
-
+  
     users = User.where("name ILIKE ?", "%#{query}%")
     users = current_user.github_uid&.start_with?("demo_") ? users.where("github_uid LIKE ?", "demo_%") : users.where.not("github_uid LIKE ?", "demo_%")
     users = users.where.not(id: current_user.id).limit(10)
-
+  
     results = users.map do |user|
       {
         id: user.id,
         name: user.name,
-        profile_picture: user.uploaded_picture.attached? ? url_for(user.uploaded_picture) : user.profile_picture
+        profile_picture: user.profile_picture_url # ✅ これに変更！
       }
     end
-
+  
     render json: results
   end
 

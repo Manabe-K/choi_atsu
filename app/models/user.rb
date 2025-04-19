@@ -22,10 +22,12 @@ class User < ApplicationRecord
   def profile_picture_url
     if uploaded_picture.attached?
       Rails.application.routes.url_helpers.rails_blob_url(uploaded_picture, only_path: true)
+    elsif profile_picture&.start_with?("http")
+      profile_picture
     elsif profile_picture&.start_with?("demo_image_")
-      ActionController::Base.helpers.image_path("demo_image/#{profile_picture}")
+      ActionController::Base.helpers.image_path("demo_images/#{profile_picture}")
     else
-      profile_picture.presence || ActionController::Base.helpers.image_path("default.png")
+      ActionController::Base.helpers.image_path("demo_images/default.png")
     end
   end
 end

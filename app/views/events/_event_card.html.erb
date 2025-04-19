@@ -25,13 +25,17 @@
             <% path = request.referer&.include?("/events/") ? mypage_path(return_to: request.fullpath) : mypage_path %>
             <%= link_to path, class: "hover:opacity-80 transition text-center block" do %>
               <%= image_tag event.host_user.profile_picture_url, alt: event.host_user.name, class: "w-16 h-16 rounded-full border border-gray-300 mx-auto" %>
-              <p class="text-xs text-gray-600 mt-1"><%= event.host_user.name %></p>
+              <p class="text-xs text-gray-600 mt-1" title="<%= event.host_user.name %>">
+  <%= truncate(event.host_user.name, length: 6, omission: "…") %>
+</p>
             <% end %>
           <% else %>
             <%= link_to user_path(event.host_user, return_to: request.fullpath),
                         class: "hover:opacity-80 transition text-center block" do %>
               <%= image_tag event.host_user.profile_picture_url, alt: event.host_user.name, class: "w-16 h-16 rounded-full border border-gray-300 mx-auto" %>
-              <p class="text-xs text-gray-600 mt-1"><%= event.host_user.name %></p>
+              <p class="text-xs text-gray-600 mt-1" title="<%= event.host_user.name %>">
+  <%= truncate(event.host_user.name, length: 6, omission: "…") %>
+</p>
             <% end %>
           <% end %>
 
@@ -73,13 +77,27 @@
         </div>
 
         <!-- 右：アクション -->
-        <% unless event.host_user == current_user %>
-          <div class="flex flex-col justify-center gap-2 p-4 w-50 text-center min-h-[4.5rem]">
+       <div class="flex flex-col justify-center gap-2 p-4 w-50 text-center min-h-[4.5rem]">
+          <% if event.host_user == current_user %>
+            <% if status == "開催済み" %>
+<p class="whitespace-pre-line text-base font-bold text-white text-center leading-tight">
+  幹事お疲れ様！
+  また企画してね
+</p>
+<%= link_to curious_users_event_path(event),
+            class: "block w-full text-white font-bold py-2 rounded bg-blue-500 hover:bg-blue-600 text-m text-center transition" do %>
+  気になってた<%= event.curious_users.count %>人
+<% end %>
+            <% else %>
+              <%= link_to curious_users_event_path(event),
+                          class: "block w-full text-white font-bold py-2 rounded bg-blue-500 hover:bg-blue-600 text-m text-center transition" do %>
+                気になってる<%= event.curious_users.count %>人
+              <% end %>
+            <% end %>
+          <% else %>
             <% if status == "開催済み" %>
               <% message =
-                if event.host_user == current_user
-                  "幹事お疲れ様！\nまた企画してね"
-                elsif is_joined
+                if is_joined
                   "ご参加ありがと！\nまた、集まりましょ"
                 else
                   "ぜひ！また今度！\n集まりましょ"
@@ -101,8 +119,8 @@
                 <%= curious_button(event, current_user) %>
               <% end %>
             <% end %>
-          </div>
-        <% end %>
+          <% end %>
+        </div>
       </div>
     <% end %>
   <% else %>

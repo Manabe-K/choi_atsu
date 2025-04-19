@@ -20,8 +20,11 @@ Rails.application.routes.draw do
       get :participating
       get :interested
     end
-    resource :participant, only: [ :create, :destroy ]
-    resource :curious_list, only: [ :create, :destroy ]
+    member do
+      get :curious_users
+    end
+    resource :participant, only: [:create, :destroy]
+    resource :curious_list, only: [:create, :destroy]
   end
   resources :user_tags, only: [ :create, :destroy ]
   resources :tags, only: [ :index, :show ] # 必要に応じて :new, :create, :edit, :update, :destroy を追加

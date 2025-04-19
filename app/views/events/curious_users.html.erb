@@ -1,0 +1,28 @@
+<% content_for :title, "気になってる人一覧" %>
+
+<div class="max-w-3xl mx-auto px-4 py-8">
+  <h2 class="text-xl font-bold text-center mb-6">
+    「<%= @event.title %>」を気になってる人一覧
+  </h2>
+
+  <% if @users.any? %>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+      <% @users.each do |user| %>
+        <div class="flex flex-col items-center text-center space-y-2">
+          <%= link_to user_path(user), class: "hover:opacity-80 transition" do %>
+            <%= image_tag user.profile_picture_url, class: "w-16 h-16 rounded-full border" %>
+            <p class="text-sm text-gray-800 truncate w-full" title="<%= user.name %>">
+              <%= truncate(user.name, length: 10) %>
+            </p>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-center text-gray-500 mt-8">まだ誰も気になっていません。</p>
+  <% end %>
+
+  <div class="text-center mt-10">
+    <%= link_to "イベント詳細に戻る", event_path(@event), class: "inline-block text-orange-600 hover:underline" %>
+  </div>
+</div>

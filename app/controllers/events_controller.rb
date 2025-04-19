@@ -70,6 +70,11 @@ class EventsController < ApplicationController
     render :interested
   end
 
+  def curious_users
+    @event = Event.find(params[:id])
+    @users = @event.curious_users.includes(:tags)
+  end
+
   private
 
   def set_event

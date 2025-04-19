@@ -1,5 +1,6 @@
 <div class="container mx-auto px-4 py-8">
-  <div class="flex justify-between items-center mb-8">
+  <!-- 上部：タイトル + 企画ボタン -->
+  <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
     <h1 class="text-3xl font-bold">イベント一覧</h1>
 
     <%= link_to "イベントを企画する",
@@ -7,6 +8,22 @@
                 class: "bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2.5 rounded-lg shadow transition duration-200" %>
   </div>
 
+  <!-- 並び替えセレクト -->
+  <%= render "sort_select" %>
+
+  <!-- 👇 絞り込み中のタグ表示（あれば） -->
+  <% if @current_tag %>
+    <div class="mb-6 flex items-center gap-2 text-sm">
+      <span class="text-gray-700 font-medium">絞り込みタグ：</span>
+      <span class="inline-flex items-center bg-gray-200 text-gray-800 px-3 py-1 rounded-full">
+        <i class="fas fa-tag text-xs mr-1"></i><%= @current_tag.name %>
+        <%= link_to "×", events_path(sort: params[:sort]),
+                    class: "ml-2 text-gray-500 hover:text-red-500 transition font-bold" %>
+      </span>
+    </div>
+  <% end %>
+
+  <!-- イベント一覧 -->
   <%= render partial: "event_card", locals: {
         events: @events,
         current_user: current_user,

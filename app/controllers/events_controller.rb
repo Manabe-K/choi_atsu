@@ -3,14 +3,27 @@ class EventsController < ApplicationController
   before_action :require_login
 
   def index
-    @events = current_user.demo? ? Event.demo_visible_to(current_user) : Event.exclude_demo_users
+    base_scope = current_user.demo? ? Event.demo_visible_to(current_user) : Event.exclude_demo_users
 
     if params[:tag].present?
-      @events = @events.joins(:tags).where(tags: { name: params[:tag] })
+      @current_tag = Tag.find_by(name: params[:tag])
+      base_scope = base_scope.joins(:tags).where(tags: { name: params[:tag] })
     end
 
-    @events = @events.includes(:host_user, :participant_users).distinct
+    @events = sort_with_upcoming_last(base_scope)
     @tags = Tag.all
+  end
+
+  def participating
+    hosted = current_user.hosted_events
+    joined = current_user.joined_events.where.not(id: hosted.pluck(:id))
+
+    @hosted_events = sort_with_upcoming_last(hosted)
+    @joined_events = sort_with_upcoming_last(joined)
+  end
+
+  def interested
+    @events = sort_with_upcoming_last(current_user.curious_events)
   end
 
   def show; end
@@ -25,10 +38,6 @@ class EventsController < ApplicationController
     @event = Event.new(parsed_event_params)
     @event.host_user = current_user
 
-    # ✅ capacity のログをここに入れる
-    puts "🎯 event_params[:capacity] = #{event_params[:capacity].inspect}"
-    puts "🎯 parsed_event_params[:capacity] = #{parsed_event_params[:capacity].inspect}"
-
     if @event.save
       Participant.create!(user: current_user, event: @event)
       update_participants(@event)
@@ -41,9 +50,6 @@ class EventsController < ApplicationController
   end
 
   def update
-    puts "🎯 event_params[:capacity] = #{event_params[:capacity].inspect}"
-    puts "🎯 parsed_event_params[:capacity] = #{parsed_event_params[:capacity].inspect}"
-
     if @event.update(parsed_event_params)
       update_participants(@event)
       redirect_to @event, notice: "イベントを更新しました"
@@ -59,17 +65,6 @@ class EventsController < ApplicationController
     redirect_to events_path, notice: "イベントを削除しました", status: :see_other
   end
 
-  def participating
-    @hosted_events = current_user.hosted_events
-    @joined_events = current_user.joined_events.where.not(id: @hosted_events.pluck(:id))
-    render :participating
-  end
-
-  def interested
-    @events = current_user.curious_events.includes(:host_user)
-    render :interested
-  end
-
   def curious_users
     @event = Event.find(params[:id])
     @users = @event.curious_users.includes(:tags)
@@ -79,6 +74,18 @@ class EventsController < ApplicationController
 
   def set_event
     @event = Event.find(params[:id])
+  end
+
+  def event_params
+    params.require(:event).permit(
+      :title,
+      :start_time,
+      :end_time,
+      :deadline,
+      :location,
+      :description,
+      :capacity
+    )
   end
 
   def parsed_event_params
@@ -92,18 +99,6 @@ class EventsController < ApplicationController
   def parse_datetime(str)
     return nil if str.blank?
     DateTime.strptime(str, "%m月%d日 %H:%M") rescue nil
-  end
-
-  def event_params
-    params.require(:event).permit(
-      :title,
-      :start_time,
-      :end_time,
-      :deadline,
-      :location,
-      :description,
-      :capacity,
-    )
   end
 
   def require_login
@@ -120,7 +115,7 @@ class EventsController < ApplicationController
     to_add = user_ids - current_ids
 
     capacity = event.capacity.to_i
-    capacity = 999 if capacity == 0  # 念のためフォールバック
+    capacity = 999 if capacity == 0
 
     if (event.participant_users.count - to_remove.size + to_add.size + 1) > capacity
       flash[:alert] = "参加者数が上限を超えています"
@@ -131,5 +126,23 @@ class EventsController < ApplicationController
     to_add.each { |uid| event.participants.find_or_create_by(user_id: uid) }
 
     true
+  end
+
+  def sort_with_upcoming_last(scope)
+    now = Time.current
+
+    sort_order =
+      case params[:sort]
+      when "start_asc"     then { start_time: :asc }
+      when "start_desc"    then { start_time: :desc }
+      when "deadline_asc"  then { deadline: :asc }
+      when "created_desc"  then { created_at: :desc }
+      else                      { start_time: :asc }
+      end
+
+    upcoming = scope.where("end_time >= ?", now).order(**sort_order)
+    past     = scope.where("end_time < ?", now).order(**sort_order)
+
+    (upcoming + past).uniq
   end
 end

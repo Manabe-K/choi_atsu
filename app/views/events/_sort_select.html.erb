@@ -1,0 +1,17 @@
+<div class="flex justify-end mb-4">
+  <%= form_with url: (params[:tab] == "hosted" ? participating_events_path(tab: "hosted") : request.path), method: :get, local: true, class: "text-sm" do %>
+    <div class="flex items-center gap-2">
+      <label for="sort" class="text-gray-700">並び替え：</label>
+      <%= select_tag :sort,
+            options_for_select([
+              ["開催日が近い順", "start_asc"],
+              ["開催日が遠い順", "start_desc"],
+              ["締切が近い順", "deadline_asc"],
+              ["新着順", "created_desc"]
+            ], selected: params[:sort]),
+            class: "border-gray-300 rounded px-2 py-1 text-sm",
+            onchange: "this.form.submit()" %>
+      <%= hidden_field_tag :tab, params[:tab] if params[:tab].present? %>
+    </div>
+  <% end %>
+</div>

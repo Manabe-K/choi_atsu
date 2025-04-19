@@ -16,6 +16,7 @@
 
   <!-- コンテンツ -->
   <% if params[:tab] == 'hosted' %>
+    <%= render "sort_select" %>
     <%= render partial: "event_card", locals: {
       events: @hosted_events,
       current_user: current_user,
@@ -24,6 +25,7 @@
       empty_message: "企画中のイベントはありません。"
     } %>
   <% else %>
+    <%= render "sort_select" %>
     <%= render partial: "event_card", locals: {
       events: @joined_events,
       current_user: current_user,

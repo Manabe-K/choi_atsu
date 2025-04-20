@@ -103,7 +103,7 @@
         <h2 class="text-lg font-semibold text-gray-800 mb-2">タグ</h2>
         <div class="flex flex-wrap gap-1 mt-1 mb-2">
           <% event.tags.each do |tag| %>
-            <%= link_to events_path(tag: tag.name),
+            <%= link_to events_path(tag: tag.name, interested: 1, available: 1),
                         class: "inline-flex items-center text-xs px-2 py-1 rounded-full bg-gray-500 text-white hover:opacity-80" do %>
               <i class="fas fa-tag mr-1 text-[10px]"></i><%= tag.name %>
             <% end %>

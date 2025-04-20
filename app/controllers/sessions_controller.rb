@@ -12,7 +12,7 @@ class SessionsController < ApplicationController
 
     if user
       login(user)
-      redirect_to events_path, notice: "ログインしました。"
+      redirect_to events_path(interested: 1, available: 1), notice: "ログインしました。"
     else
       prepare_user_registration(auth)
       redirect_to new_user_path, notice: "ユーザー登録を完了してください。"
@@ -86,7 +86,7 @@ class SessionsController < ApplicationController
     end
   
     login(demo_user)
-    redirect_to events_path, notice: "デモモードでログインしました"
+    redirect_to events_path(interested: 1, available: 1), notice: "デモモードでログインしました"
   end
 
   def destroy

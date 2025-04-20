@@ -15,23 +15,30 @@
   </div>
 
   <!-- コンテンツ -->
-  <% if params[:tab] == 'hosted' %>
+<% if params[:tab] == 'hosted' %>
+  <% if @hosted_events.any? %>
     <%= render "sort_select" %>
-    <%= render partial: "event_card", locals: {
-      events: @hosted_events,
-      current_user: current_user,
-      show_participation_button: false,
-      show_curious_button: false,
-      empty_message: "企画中のイベントはありません。"
-    } %>
-  <% else %>
-    <%= render "sort_select" %>
-    <%= render partial: "event_card", locals: {
-      events: @joined_events,
-      current_user: current_user,
-      show_participation_button: true,
-      show_curious_button: true,
-      empty_message: "参加中のイベントはありません。"
-    } %>
   <% end %>
+
+  <%= render partial: "event_card", locals: {
+    events: @hosted_events,
+    current_user: current_user,
+    show_participation_button: false,
+    show_curious_button: false,
+    empty_message: "企画中のイベントはありません。"
+  } %>
+
+<% else %>
+  <% if @joined_events.any? %>
+    <%= render "sort_select" %>
+  <% end %>
+
+  <%= render partial: "event_card", locals: {
+    events: @joined_events,
+    current_user: current_user,
+    show_participation_button: true,
+    show_curious_button: true,
+    empty_message: "参加中のイベントはありません。"
+  } %>
+<% end %>
 </div>

@@ -1,16 +1,41 @@
 class EventsController < ApplicationController
+  include EventsHelper
+
   before_action :set_event, only: %i[ show edit update destroy ]
   before_action :require_login
 
   def index
-    base_scope = current_user.demo? ? Event.demo_visible_to(current_user) : Event.exclude_demo_users
-
+    base = Event.for_user(current_user)
+  
     if params[:tag].present?
       @current_tag = Tag.find_by(name: params[:tag])
-      base_scope = base_scope.joins(:tags).where(tags: { name: params[:tag] })
+      base = base.joins(:tags).where(tags: { name: @current_tag.name }) if @current_tag
     end
-
-    @events = sort_with_upcoming_last(base_scope)
+  
+    if params[:interested] == "1"
+      if current_user.tags.any?
+        base = base.joins(:tags).where(tags: { id: current_user.tags.ids }).distinct
+      else
+        base = base.none
+      end
+    end
+  
+    if params[:available] == "1"
+      base = base.where("deadline IS NULL OR deadline >= ?", Time.current)
+    end
+  
+    base = base.includes(:host_user, :participant_users)
+    puts "🔍 イベント一覧: #{base.size}件（フィルタ前）"
+base.each do |event|
+  puts "📝 イベントID: #{event.id}, 主催者: #{event.host_user.name}, UID: #{event.host_user.github_uid}"
+end
+    events = base.to_a
+  
+    if params[:available] == "1"
+      events = events.reject { |e| event_full?(e) || e.host_user_id == current_user.id }
+    end
+  
+    @events = sort_with_upcoming_last(events)
     @tags = Tag.all
   end
 
@@ -23,7 +48,7 @@ class EventsController < ApplicationController
   end
 
   def interested
-    @events = sort_with_upcoming_last(current_user.curious_events)
+    @events = sort_with_upcoming_last(current_user.curious_events.includes(:host_user))
   end
 
   def show; end
@@ -62,7 +87,7 @@ class EventsController < ApplicationController
 
   def destroy
     @event.destroy
-    redirect_to events_path, notice: "イベントを削除しました", status: :see_other
+    redirect_to events_path(interested: 1, available: 1), notice: "イベントを削除しました", status: :see_other
   end
 
   def curious_users
@@ -78,13 +103,7 @@ class EventsController < ApplicationController
 
   def event_params
     params.require(:event).permit(
-      :title,
-      :start_time,
-      :end_time,
-      :deadline,
-      :location,
-      :description,
-      :capacity
+      :title, :start_time, :end_time, :deadline, :location, :description, :capacity
     )
   end
 
@@ -107,7 +126,7 @@ class EventsController < ApplicationController
 
   def update_participants(event)
     user_ids = params[:event][:user_ids].to_a.reject(&:blank?).map(&:to_i)
-    user_ids -= [ event.host_user_id ]
+    user_ids -= [event.host_user_id]
 
     current_ids = event.participant_users.where.not(id: event.host_user_id).pluck(:id)
 
@@ -115,7 +134,7 @@ class EventsController < ApplicationController
     to_add = user_ids - current_ids
 
     capacity = event.capacity.to_i
-    capacity = 999 if capacity == 0
+    capacity = 999 if capacity.zero?
 
     if (event.participant_users.count - to_remove.size + to_add.size + 1) > capacity
       flash[:alert] = "参加者数が上限を超えています"
@@ -128,7 +147,7 @@ class EventsController < ApplicationController
     true
   end
 
-  def sort_with_upcoming_last(scope)
+  def sort_with_upcoming_last(events)
     now = Time.current
 
     sort_order =
@@ -140,9 +159,12 @@ class EventsController < ApplicationController
       else                      { start_time: :asc }
       end
 
-    upcoming = scope.where("end_time >= ?", now).order(**sort_order)
-    past     = scope.where("end_time < ?", now).order(**sort_order)
+    upcoming = events.select { |e| e.end_time >= now }
+                     .sort_by { |e| e.attributes.slice(*sort_order.keys.map(&:to_s)).values }
 
-    (upcoming + past).uniq
+    past = events.select { |e| e.end_time < now }
+                 .sort_by { |e| e.attributes.slice(*sort_order.keys.map(&:to_s)).values }
+
+    upcoming + past
   end
 end

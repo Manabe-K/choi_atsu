@@ -7,7 +7,7 @@ class CuriousListsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_back fallback_location: events_path, notice: "気になるに追加しました" }
+      format.html { redirect_back fallback_location: redirect_to events_path(interested: 1, available: 1), notice: "気になるに追加しました" }
     end
   end
 
@@ -18,7 +18,7 @@ class CuriousListsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_back fallback_location: events_path, notice: "気になるを解除しました" }
+      format.html { redirect_back fallback_location: events_path(interested: 1, available: 1), notice: "気になるを解除しました" }
     end
   end
 

@@ -20,7 +20,7 @@ class UsersController < ApplicationController
     if @user.save
       session.delete(:user_registration)
       session[:user_id] = @user.id
-      redirect_to events_path, notice: "ユーザー登録が完了しました。"
+      redirect_to events_path(interested: 1, available: 1), notice: "ユーザー登録が完了しました。"
     else
       render :new, status: :unprocessable_entity
     end

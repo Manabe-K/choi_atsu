@@ -11,7 +11,13 @@
             ], selected: params[:sort]),
             class: "border-gray-300 rounded px-2 py-1 text-sm",
             onchange: "this.form.submit()" %>
+
+      <!-- ✅ 他パラメータを引き継ぐ -->
       <%= hidden_field_tag :tab, params[:tab] if params[:tab].present? %>
+      <%= hidden_field_tag :interested, params[:interested] if params[:interested].present? %>
+      <%= hidden_field_tag :available, params[:available] if params[:available].present? %>
+      <%= hidden_field_tag :exclude_hosted, params[:exclude_hosted] if params[:exclude_hosted].present? %>
+      <%= hidden_field_tag :tag, params[:tag] if params[:tag].present? %>
     </div>
   <% end %>
 </div>

@@ -6,4 +6,10 @@
     <%= render "sort_select" %>
   <% end %>
   <%= render partial: "event_card", locals: { events: @events, current_user: current_user, hide_buttons: true, empty_message: "気になるイベントはまだありません" } %>
+
+    <% if @events.total_pages > 1 %>
+      <div class="mt-6">
+        <%= render partial: "kaminari/paginator", locals: { paginated: @events, param_key: :page } %>
+      </div>
+    <% end %>
 </div>

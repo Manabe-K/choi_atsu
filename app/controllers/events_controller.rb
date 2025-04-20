@@ -1,41 +1,40 @@
 class EventsController < ApplicationController
   include EventsHelper
 
-  before_action :set_event, only: %i[ show edit update destroy ]
+  before_action :set_event, only: %i[show edit update destroy]
   before_action :require_login
 
   def index
     base = Event.for_user(current_user)
-  
+
     if params[:tag].present?
       @current_tag = Tag.find_by(name: params[:tag])
       base = base.joins(:tags).where(tags: { name: @current_tag.name }) if @current_tag
     end
-  
+
     if params[:interested] == "1"
-      if current_user.tags.any?
-        base = base.joins(:tags).where(tags: { id: current_user.tags.ids }).distinct
-      else
-        base = base.none
-      end
+      base =
+        if current_user.tags.any?
+          base.joins(:tags).where(tags: { id: current_user.tags.ids }).distinct
+        else
+          base.none
+        end
     end
-  
+
     if params[:available] == "1"
       base = base.where("deadline IS NULL OR deadline >= ?", Time.current)
     end
-  
+
     base = base.includes(:host_user, :participant_users)
-    puts "🔍 イベント一覧: #{base.size}件（フィルタ前）"
-base.each do |event|
-  puts "📝 イベントID: #{event.id}, 主催者: #{event.host_user.name}, UID: #{event.host_user.github_uid}"
-end
-    events = base.to_a
-  
+    all_events = base.to_a
+
+    # Ruby側のフィルタ（満員・主催者除外）
     if params[:available] == "1"
-      events = events.reject { |e| event_full?(e) || e.host_user_id == current_user.id }
+      all_events = all_events.reject { |e| event_full?(e) || e.host_user_id == current_user.id }
     end
-  
-    @events = sort_with_upcoming_last(events)
+
+    sorted = sort_with_upcoming_last(all_events)
+    @events = Kaminari.paginate_array(sorted).page(params[:page])
     @tags = Tag.all
   end
 
@@ -43,20 +42,18 @@ end
     hosted = current_user.hosted_events
     joined = current_user.joined_events.where.not(id: hosted.pluck(:id))
 
-    @hosted_events = sort_with_upcoming_last(hosted)
-    @joined_events = sort_with_upcoming_last(joined)
+    @hosted_events = Kaminari.paginate_array(sort_with_upcoming_last(hosted)).page(params[:hosted_page])
+    @joined_events = Kaminari.paginate_array(sort_with_upcoming_last(joined)).page(params[:joined_page])
   end
 
   def interested
-    @events = sort_with_upcoming_last(current_user.curious_events.includes(:host_user))
+    events = current_user.curious_events.includes(:host_user)
+    sorted = sort_with_upcoming_last(events)
+    @events = Kaminari.paginate_array(sorted).page(params[:page])
   end
 
   def show; end
-
-  def new
-    @event = Event.new
-  end
-
+  def new; @event = Event.new; end
   def edit; end
 
   def create
@@ -68,8 +65,7 @@ end
       update_participants(@event)
       redirect_to @event, notice: "イベントを作成しました"
     else
-      user_ids = params[:event][:user_ids].to_a.reject(&:blank?)
-      @selected_users = User.where(id: user_ids)
+      @selected_users = load_selected_users
       render :new, status: :unprocessable_entity
     end
   end
@@ -79,8 +75,7 @@ end
       update_participants(@event)
       redirect_to @event, notice: "イベントを更新しました"
     else
-      user_ids = params[:event][:user_ids].to_a.reject(&:blank?)
-      @selected_users = User.where(id: user_ids)
+      @selected_users = load_selected_users
       render :edit, status: :unprocessable_entity
     end
   end
@@ -102,13 +97,11 @@ end
   end
 
   def event_params
-    params.require(:event).permit(
-      :title, :start_time, :end_time, :deadline, :location, :description, :capacity
-    )
+    params.require(:event).permit(:title, :start_time, :end_time, :deadline, :location, :description, :capacity)
   end
 
   def parsed_event_params
-    raw = event_params
+    raw = event_params.to_h
     raw[:start_time] = parse_datetime(raw[:start_time])
     raw[:end_time]   = parse_datetime(raw[:end_time])
     raw[:deadline]   = parse_datetime(raw[:deadline])
@@ -125,7 +118,7 @@ end
   end
 
   def update_participants(event)
-    user_ids = params[:event][:user_ids].to_a.reject(&:blank?).map(&:to_i)
+    user_ids = params[:event][:user_ids].to_a.map(&:to_i).reject(&:zero?)
     user_ids -= [event.host_user_id]
 
     current_ids = event.participant_users.where.not(id: event.host_user_id).pluck(:id)
@@ -149,22 +142,31 @@ end
 
   def sort_with_upcoming_last(events)
     now = Time.current
-
-    sort_order =
+  
+    sort_key =
       case params[:sort]
-      when "start_asc"     then { start_time: :asc }
-      when "start_desc"    then { start_time: :desc }
-      when "deadline_asc"  then { deadline: :asc }
-      when "created_desc"  then { created_at: :desc }
-      else                      { start_time: :asc }
+      when "start_asc", "start_desc" then :start_time
+      when "deadline_asc"           then :deadline
+      when "created_desc"           then :created_at
+      else                                 :start_time
       end
-
-    upcoming = events.select { |e| e.end_time >= now }
-                     .sort_by { |e| e.attributes.slice(*sort_order.keys.map(&:to_s)).values }
-
-    past = events.select { |e| e.end_time < now }
-                 .sort_by { |e| e.attributes.slice(*sort_order.keys.map(&:to_s)).values }
-
+  
+    sort_attr = sort_key.to_s
+    descending = params[:sort]&.include?("desc")
+  
+    upcoming = events.select { |e| e.end_time && e.end_time >= now }
+                     .sort_by { |e| e.attributes[sort_attr] || Time.at(0) }
+    upcoming.reverse! if descending
+  
+    past = events.reject { |e| e.end_time && e.end_time >= now }
+                 .sort_by { |e| e.attributes[sort_attr] || Time.at(0) }
+    past.reverse! if descending
+  
     upcoming + past
+  end
+
+  def load_selected_users
+    ids = params[:event][:user_ids].to_a.map(&:to_i).reject(&:zero?)
+    User.where(id: ids)
   end
 end

@@ -70,4 +70,10 @@
         hide_buttons: false,
         empty_message: "現在、イベントはありません"
       } %>
+  
+<% if @events.total_pages > 1 %>
+  <div class="mt-6">
+    <%= render partial: "kaminari/paginator", locals: { paginated: @events, param_key: :page } %>
+  </div>
+<% end %>
 </div>

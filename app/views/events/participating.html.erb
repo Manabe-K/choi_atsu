@@ -6,39 +6,51 @@
   <!-- タブ切り替え -->
   <div class="flex space-x-4 mb-6">
     <%= link_to "企画イベント", participating_events_path(tab: "hosted"),
-      class: "tab-btn px-4 py-2 rounded-full font-semibold transition #{params[:tab] == 'hosted' ? 'bg-teal-800 text-white' : ''}",
-      "aria-selected": params[:tab] == 'hosted' %>
+                class: "tab-btn px-4 py-2 rounded-full font-semibold transition #{params[:tab] == 'hosted' ? 'bg-teal-800 text-white' : ''}",
+                "aria-selected": params[:tab] == 'hosted' %>
 
     <%= link_to "参加イベント", participating_events_path(tab: "joined"),
-      class: "tab-btn px-4 py-2 rounded-full font-semibold transition #{params[:tab] != 'hosted' ? 'bg-green-600 text-white' : ''}",
-      "aria-selected": params[:tab] != 'hosted' %>
+                class: "tab-btn px-4 py-2 rounded-full font-semibold transition #{params[:tab] != 'hosted' ? 'bg-green-600 text-white' : ''}",
+                "aria-selected": params[:tab] != 'hosted' %>
   </div>
 
   <!-- コンテンツ -->
-<% if params[:tab] == 'hosted' %>
-  <% if @hosted_events.any? %>
-    <%= render "sort_select" %>
+  <% if params[:tab] == 'hosted' %>
+    <% if @hosted_events.any? %>
+      <%= render "sort_select" %>
+    <% end %>
+
+    <%= render partial: "event_card", locals: {
+          events: @hosted_events,
+          current_user: current_user,
+          show_participation_button: false,
+          show_curious_button: false,
+          empty_message: "企画中のイベントはありません。"
+        } %>
+
+    <% if @hosted_events.total_pages > 1 %>
+      <div class="mt-6">
+        <%= render partial: "kaminari/paginator", locals: { paginated: @hosted_events, param_key: :hosted_page } %>
+      </div>
+    <% end %>
+
+  <% else %>
+    <% if @joined_events.any? %>
+      <%= render "sort_select" %>
+    <% end %>
+
+    <%= render partial: "event_card", locals: {
+          events: @joined_events,
+          current_user: current_user,
+          show_participation_button: true,
+          show_curious_button: true,
+          empty_message: "参加中のイベントはありません。"
+        } %>
+
+    <% if @joined_events.total_pages > 1 %>
+      <div class="mt-6">
+        <%= render partial: "kaminari/paginator", locals: { paginated: @joined_events, param_key: :joined_page } %>
+      </div>
+    <% end %>
   <% end %>
-
-  <%= render partial: "event_card", locals: {
-    events: @hosted_events,
-    current_user: current_user,
-    show_participation_button: false,
-    show_curious_button: false,
-    empty_message: "企画中のイベントはありません。"
-  } %>
-
-<% else %>
-  <% if @joined_events.any? %>
-    <%= render "sort_select" %>
-  <% end %>
-
-  <%= render partial: "event_card", locals: {
-    events: @joined_events,
-    current_user: current_user,
-    show_participation_button: true,
-    show_curious_button: true,
-    empty_message: "参加中のイベントはありません。"
-  } %>
-<% end %>
 </div>

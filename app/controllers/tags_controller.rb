@@ -57,6 +57,11 @@ class TagsController < ApplicationController
     end
   end
 
+  def users
+    @tag = Tag.find(params[:id])
+    @users = @tag.users.includes(:tags) # 必要に応じてincludes追加
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_tag

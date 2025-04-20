@@ -27,7 +27,9 @@ Rails.application.routes.draw do
     resource :curious_list, only: [:create, :destroy]
   end
   resources :user_tags, only: [ :create, :destroy ]
-  resources :tags, only: [ :index, :show ] # 必要に応じて :new, :create, :edit, :update, :destroy を追加
+  resources :tags, only: [ :index, :show ] do
+    get :users, on: :member
+  end
   get "/mypage", to: "my_pages#show"
 
   # sessionの定期的な削除

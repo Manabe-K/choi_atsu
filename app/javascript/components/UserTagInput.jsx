@@ -67,10 +67,16 @@ const UserTagInput = ({ initialTags = [], tagCandidates = [] }) => {
               }`}
             >
               <span>{tag.name}</span>
-              <span className="text-gray-400 text-xs">{tag.user_count}人</span>
+              <span className="text-gray-400 text-xs">{tag.user_count}人が登録済</span>
             </li>
           ))}
         </ul>
+      )}
+
+      {input && filteredSuggestions.length === 0 && (
+        <div className="mt-1 text-sm text-red-500 px-2">
+          このタグは登録されてないよ〜
+        </div>
       )}
 
       <div className="flex flex-wrap gap-1 mt-2">
@@ -83,7 +89,7 @@ const UserTagInput = ({ initialTags = [], tagCandidates = [] }) => {
               onClick={() => removeTag(tag.name)}
               className="text-white hover:text-red-500"
             >
-            ×
+              ×
             </button>
             <input type="hidden" name="user[tag_names][]" value={tag.name} />
           </div>

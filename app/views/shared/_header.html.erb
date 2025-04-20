@@ -1,10 +1,10 @@
-<header class="bg-teal-950 text-white py-4 fixed top-0 left-0 w-full z-50">
-  <div class="container mx-auto px-4">
+<header class="bg-teal-950 text-white py-3 fixed top-0 left-0 w-full z-50">
+  <div class="container mx-auto px-1">
     <div class="flex justify-between items-center">
       <!-- 左側: アイコン -->
       <div class="flex items-center space-x-4">
         <%= link_to root_path, class: "block hover:opacity-80 transition" do %>
-          <%= image_tag "header_icon.png", alt: "ちょいあつ", class: "h-10" %>
+          <%= image_tag "header_icon.png", alt: "ちょいあつ", class: "h-12" %>
         <% end %>
       </div>
 
@@ -14,7 +14,7 @@
     <!-- プロフィール画像とドロップダウンメニュー -->
     <div class="relative inline-block">
       <!-- プロフィール画像 -->
-      <button id="profile-button" class="w-8 h-8 rounded-full overflow-hidden">
+      <button id="profile-button" class="w-10 h-10 rounded-full overflow-hidden">
         <%= image_tag(current_user.profile_picture_url, alt: 'Profile Picture', class: 'object-cover w-full h-full') %>
       </button>
 

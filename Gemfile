@@ -69,4 +69,4 @@ gem "activerecord-session_store", "~> 2.2"
 
 gem "cloudinary"
 gem "activestorage-cloudinary-service"
-gem 'kaminari'
+gem "kaminari"

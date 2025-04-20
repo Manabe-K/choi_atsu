@@ -23,8 +23,8 @@ Rails.application.routes.draw do
     member do
       get :curious_users
     end
-    resource :participant, only: [:create, :destroy]
-    resource :curious_list, only: [:create, :destroy]
+    resource :participant, only: [ :create, :destroy ]
+    resource :curious_list, only: [ :create, :destroy ]
   end
   resources :user_tags, only: [ :create, :destroy ]
   resources :tags, only: [ :index, :show ] do

@@ -1,28 +1,42 @@
-<div class="bg-gray-100 flex flex-col justify-center items-center min-h-screen px-4 py-8">
-  <!-- メインメッセージ -->
-  <div class="text-center mb-8">
-    <h1 class="text-4xl font-bold text-gray-800 mb-4">ようこそ！</h1>
-    <p class="text-lg text-gray-600">このサイトではGitHubアカウントを使ってログインできます。</p>
+<div class="bg-gray-100 flex flex-col justify-center items-center min-h-screen px-4 pt-8 pb-12 text-center">
+  <!-- メインビジュアル -->
+  <div class="mb-6">
+    <!-- 手書き風タイトル -->
+    <div class="mb-4">
+      <%= image_tag "welcome_text.png", alt: "ちょいとあつまりませんか？", class: "mx-auto w-full max-w-md h-auto" %>
+    </div>
+
+    <!-- サブテキスト -->
+    <p class="text-lg text-gray-600 max-w-md mx-auto leading-relaxed">
+      友だちと、仲間と、ちょっとした集まりを。<br>
+      GitHubでログインするだけで、イベントの企画も参加もすぐに始められます。
+    </p>
   </div>
 
-  <!-- GitHubでログインボタン -->
-  <div class="mb-8">
-    <%= link_to "/auth/github", class: "uk-button uk-button-primary", data: { turbo: false } do %>
-      <i class="fa-brands fa-github"></i>
-      <span class="normal-case">GitHubでログイン</span>
+  <!-- イメージ画像 -->
+  <div class="mb-10">
+    <%= image_tag "welcome_illustration.png", alt: "集まるイラスト", class: "w-100 h-auto mx-auto" %>
+  </div>
+
+  <!-- アクションボタン -->
+  <div class="flex flex-col md:flex-row gap-4 justify-center items-center mb-12">
+    <%= link_to "/auth/github", class: "bg-gray-900 text-white font-semibold px-6 py-3 rounded-lg hover:bg-gray-800 shadow transition flex items-center gap-2", data: { turbo: false } do %>
+      <i class="fab fa-github text-lg"></i> GitHubでログイン
+    <% end %>
+
+    <%= link_to demo_login_path, class: "bg-white text-gray-700 border border-gray-300 font-semibold px-6 py-3 rounded-lg hover:bg-gray-50 shadow transition flex items-center gap-2" do %>
+      <i class="fas fa-flask text-lg text-teal-600"></i> デモモードで試す
     <% end %>
   </div>
 
-  <div class="mb-8">
-    <%= link_to demo_login_path, class: "uk-button uk-button-default" do %>
-      <i class="fa-solid fa-flask"></i>
-      <span class="normal-case">デモモードで試す</span>
-    <% end %>
+  <!-- 使い方 -->
+  <div class="w-full max-w-xl p-6 bg-white rounded-xl shadow-md text-left">
+    <h2 class="text-xl font-semibold text-gray-800 mb-3">このサイトの使い方</h2>
+    <ul class="list-disc list-inside text-gray-600 leading-relaxed">
+      <li>GitHubアカウントでログイン</li>
+      <li>イベントを企画・参加してつながる</li>
+      <li>まずはデモモードで試してみるのもおすすめ</li>
+    </ul>
   </div>
 
-  <!-- 使い方の枠 -->
-  <div class="w-full max-w-lg p-6 bg-white shadow-lg rounded-lg border-none">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4">使い方</h2>
-    <p class="text-gray-600">1. GitHubでログインします。<br>2. 必要な操作を行います。<br>3. ログアウト後も安全にご利用いただけます。</p>
-  </div>
 </div>

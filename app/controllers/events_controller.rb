@@ -119,7 +119,7 @@ class EventsController < ApplicationController
 
   def update_participants(event)
     user_ids = params[:event][:user_ids].to_a.map(&:to_i).reject(&:zero?)
-    user_ids -= [event.host_user_id]
+    user_ids -= [ event.host_user_id ]
 
     current_ids = event.participant_users.where.not(id: event.host_user_id).pluck(:id)
 
@@ -142,7 +142,7 @@ class EventsController < ApplicationController
 
   def sort_with_upcoming_last(events)
     now = Time.current
-  
+
     sort_key =
       case params[:sort]
       when "start_asc", "start_desc" then :start_time
@@ -150,18 +150,18 @@ class EventsController < ApplicationController
       when "created_desc"           then :created_at
       else                                 :start_time
       end
-  
+
     sort_attr = sort_key.to_s
     descending = params[:sort]&.include?("desc")
-  
+
     upcoming = events.select { |e| e.end_time && e.end_time >= now }
                      .sort_by { |e| e.attributes[sort_attr] || Time.at(0) }
     upcoming.reverse! if descending
-  
+
     past = events.reject { |e| e.end_time && e.end_time >= now }
                  .sort_by { |e| e.attributes[sort_attr] || Time.at(0) }
     past.reverse! if descending
-  
+
     upcoming + past
   end
 

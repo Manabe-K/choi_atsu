@@ -5,6 +5,15 @@ class EventsController < ApplicationController
   before_action :require_login
 
   def index
+    if request.path == "/events" && request.query_parameters.blank?
+      redirect_to events_path(
+        sort: "",
+        tag: "",
+        interested: [ "0", "1" ],
+        available: [ "0", "1" ]
+      ) and return
+    end
+
     base = Event.for_user(current_user)
 
     if params[:tag].present?
@@ -12,7 +21,8 @@ class EventsController < ApplicationController
       base = base.joins(:tags).where(tags: { name: @current_tag.name }) if @current_tag
     end
 
-    if params[:interested] == "1"
+    interested_values = Array(params[:interested])
+    if interested_values.include?("1")
       base =
         if current_user.tags.any?
           base.joins(:tags).where(tags: { id: current_user.tags.ids }).distinct
@@ -21,14 +31,15 @@ class EventsController < ApplicationController
         end
     end
 
-    if params[:available] == "1"
+    available_values = Array(params[:available])
+    if available_values.include?("1")
       base = base.where("deadline IS NULL OR deadline >= ?", Time.current)
     end
 
     base = base.includes(:host_user, :participant_users)
     all_events = base.to_a
 
-    if params[:available] == "1"
+    if available_values.include?("1")
       all_events = all_events.reject { |e| event_full?(e) || e.host_user_id == current_user.id }
     end
 

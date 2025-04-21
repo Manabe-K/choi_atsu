@@ -4,6 +4,7 @@ module EventsHelper
   end
 
   def event_full?(event)
+    return false if event.capacity.blank? # capacityがnilなら満員ではない扱い
     joined_count(event) >= event.capacity.to_i
   end
 

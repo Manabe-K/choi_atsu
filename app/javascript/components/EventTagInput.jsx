@@ -1,48 +1,67 @@
 import React, { useState, useEffect, useRef } from "react"
+import axios from "axios"
 
 const normalize = (str) =>
   str.toLowerCase().normalize("NFKC")
 
-const UserTagInput = ({ initialTags = [], tagCandidates = [] }) => {
+const EventTagInput = ({ initialTags = [] }) => {
   const [input, setInput] = useState("")
   const [tags, setTags] = useState(initialTags)
+  const [suggestions, setSuggestions] = useState([])
   const [highlightIndex, setHighlightIndex] = useState(0)
   const inputRef = useRef(null)
 
-  const filteredSuggestions = tagCandidates
-    .filter((tag) =>
-      normalize(tag.name).includes(normalize(input)) &&
-      !tags.some((t) => t.name === tag.name)
-    )
+  console.log("🟦 initialTags (props):", initialTags)
+  console.log("🟩 tags (state):", tags)
+
+  useEffect(() => {
+    if (input.trim().length > 0) {
+      axios.get(`/tags/search?q=${input.trim()}`).then((res) => {
+        const normalizedInput = normalize(input)
+
+        const filtered = res.data.filter((tag) =>
+          normalize(tag.name).includes(normalizedInput)
+        )
+
+        setSuggestions(filtered)
+        setHighlightIndex(0)
+      })
+    } else {
+      setSuggestions([])
+    }
+  }, [input])
 
   const addTag = (tagName) => {
-    if (tagName && !tags.some(t => t.name === tagName)) {
-      setTags([...tags, { name: tagName }])
-    }
+    if (!tagName || tags.some(t => t.name === tagName)) return
+    setTags([...tags, { name: tagName }])
     setInput("")
+    setSuggestions([])
     setHighlightIndex(0)
+    setTimeout(() => inputRef.current?.focus(), 0)
   }
 
   const removeTag = (name) => {
-    setTags(tags.filter(t => t.name !== name))
+    setTags(tags.filter((t) => t.name !== name))
   }
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.nativeEvent.isComposing) {
       e.preventDefault()
-      const targetTag = filteredSuggestions[highlightIndex]
-      addTag(targetTag ? targetTag.name : input)
+      const selected = suggestions[highlightIndex]
+      if (selected) {
+        addTag(selected.name)
+      }
     } else if (e.key === "ArrowDown") {
-      setHighlightIndex((i) => (i + 1 < filteredSuggestions.length ? i + 1 : 0))
+      setHighlightIndex((i) => (i + 1 < suggestions.length ? i + 1 : 0))
     } else if (e.key === "ArrowUp") {
-      setHighlightIndex((i) => (i - 1 >= 0 ? i - 1 : filteredSuggestions.length - 1))
+      setHighlightIndex((i) => (i - 1 >= 0 ? i - 1 : suggestions.length - 1))
     }
   }
 
   return (
     <div className="space-y-2">
       <label className="block text-sm font-semibold text-gray-700">
-        <i className="fas fa-tags mr-1 text-gray-500"></i>興味タグ
+        <i className="fas fa-tags mr-1 text-gray-500"></i>タグ（最大5つ）
       </label>
 
       <input
@@ -51,13 +70,13 @@ const UserTagInput = ({ initialTags = [], tagCandidates = [] }) => {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="例：野球好き、飲み会、カラオケなど"
+        placeholder="既存タグから選択（例：もくもく会、懇親会）"
         className="w-full border p-2 rounded-lg text-sm"
       />
 
-      {input && filteredSuggestions.length > 0 && (
+      {input && suggestions.length > 0 && (
         <ul className="mt-1 bg-white border rounded shadow max-h-48 overflow-auto z-10 relative">
-          {filteredSuggestions.map((tag, index) => (
+          {suggestions.map((tag, index) => (
             <li
               key={tag.name}
               onClick={() => addTag(tag.name)}
@@ -73,25 +92,25 @@ const UserTagInput = ({ initialTags = [], tagCandidates = [] }) => {
         </ul>
       )}
 
-      {input && filteredSuggestions.length === 0 && (
-        <div className="mt-1 text-sm text-red-500 px-2">
-          このタグは登録されてないよ〜
+      {input && suggestions.length === 0 && (
+        <div className="mt-1 text-sm text-gray-400 px-2">
+          ※登録済みのタグから選んでください
         </div>
       )}
 
       <div className="flex flex-wrap gap-1 mt-2">
         {tags.map((tag) => (
-          <div key={tag.name} className="bg-gray-500 text-white px-3 py-2 rounded-full text-sm flex items-center gap-2 shadow-sm">
-            <i className="fas fa-tag mr-1 text-[10px]"></i>
+          <div key={tag.name} className="bg-teal-600 text-white px-3 py-2 rounded-full text-sm flex items-center gap-2 shadow-sm">
+            <i className="fas fa-tag text-xs"></i>
             <span>{tag.name}</span>
             <button
               type="button"
               onClick={() => removeTag(tag.name)}
-              className="text-white hover:text-red-500"
+              className="text-white hover:text-orange-300"
             >
               ×
             </button>
-            <input type="hidden" name="user[tag_names][]" value={tag.name} />
+            <input type="hidden" name="event[tag_names][]" value={tag.name} />
           </div>
         ))}
       </div>
@@ -99,4 +118,4 @@ const UserTagInput = ({ initialTags = [], tagCandidates = [] }) => {
   )
 }
 
-export default UserTagInput
+export default EventTagInput

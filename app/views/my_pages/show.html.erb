@@ -1,30 +1,29 @@
+<% content_for :title, "マイページ | ちょいあつ" %>
 <div class="flex items-center justify-between max-w-2xl mx-auto mt-10 mb-8 px-4">
-  <% if @safe_return_to.present? %>
-    <%= link_to "← 戻る",
-                @safe_return_to,
-                class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md transition duration-300" %>
-  <% else %>
-    <!-- バランスを保つための空スペース -->
-    <div class="w-[110px]"></div>
-  <% end %>
+  <div class="w-[110px]">
+    <% if @safe_return_to.present? %>
+      <%= link_to "← 戻る",
+                  @safe_return_to,
+                  class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md transition duration-300 block text-center" %>
+    <% end %>
+  </div>
 
   <h1 class="text-2xl font-bold text-gray-800 text-center flex-1">
     マイページ
   </h1>
-
-  <!-- 右側にダミーで同じ幅確保 -->
   <div class="w-[110px]"></div>
 </div>
 
 <%= render "shared/user_profile", user: @user %>
 
-  <!-- 参加イベントへのリンク -->
-<div class="max-w-2xl mx-auto">
-  <!-- 参加イベントへのリンク -->
+<div class="max-w-5xl mx-auto mt-6">
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <%= link_to "企画・参加リスト", participating_events_path, class: "text-center bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-3 rounded-md text-sm shadow-sm transition" %>
-    <%= link_to "気になるリスト", interested_events_path, class: "text-center bg-yellow-500 hover:bg-yellow-400 text-white px-4 py-3 rounded-md text-sm shadow-sm transition" %>
-  </div>
-</div>
+    <%= link_to "企画・参加リスト",
+                participating_events_path,
+                class: "text-center bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-3 rounded-md text-sm shadow-sm transition" %>
 
+    <%= link_to "気になるリスト",
+                interested_events_path,
+                class: "text-center bg-yellow-500 hover:bg-yellow-400 text-white px-4 py-3 rounded-md text-sm shadow-sm transition" %>
+  </div>
 </div>

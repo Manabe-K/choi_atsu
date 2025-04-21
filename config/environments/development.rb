@@ -80,4 +80,12 @@ Rails.application.configure do
   # config.generators.apply_rubocop_autocorrect_after_generate!
   config.assets.compile = true
   Rails.application.routes.default_url_options[:host] = "localhost:3000"
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.alert = true             # ブラウザでJavaScriptアラート出す
+    Bullet.bullet_logger = true     # log/bullet.logに出力
+    Bullet.console = true           # consoleに出力
+    Bullet.rails_logger = true      # Railsのログにも出力
+    Bullet.add_footer = true        # HTMLの下部に警告表示（必要に応じて）
+  end
 end

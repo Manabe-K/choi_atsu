@@ -2,6 +2,7 @@ import "@hotwired/turbo-rails"
 import "./controllers"
 import "./menu_toggle"
 import "./event_card_click"
+import { setupFlashMessageAutoDismiss } from "./flash_message"
 
 import flatpickr from "flatpickr"
 import "flatpickr/dist/themes/material_orange.css"
@@ -37,30 +38,47 @@ function initializeFlatpickr() {
     }
   }
 
+  function parseJapaneseDatetime(str) {
+    const match = str.match(/(\d{1,2})月(\d{1,2})日\s+(\d{1,2}):(\d{2})/)
+    if (!match) return null
+    const [, month, day, hour, minute] = match.map(Number)
+    const now = new Date()
+    return new Date(now.getFullYear(), month - 1, day, hour, minute)
+  }
+
   if (startInput) {
+    const parsedStart = startInput.value ? parseJapaneseDatetime(startInput.value) : null
+    const minStart = parsedStart && parsedStart < oneHourLater ? parsedStart : oneHourLater
+
     flatpickr(startInput, {
       ...baseOptions,
-      minDate: oneHourLater,
+      minDate: minStart,
+      defaultDate: parsedStart,
       onChange(selectedDates) {
-        if (selectedDates.length > 0) {
-          const start = selectedDates[0]
-          if (endPicker) endPicker.set("minDate", start)
-          if (deadlinePicker) deadlinePicker.set("maxDate", start)
-        }
+        const start = selectedDates[0]
+        if (endPicker) endPicker.set("minDate", start)
+        if (deadlinePicker) deadlinePicker.set("maxDate", start)
       }
     })
   }
 
   if (endInput) {
+    const parsedEnd = endInput.value ? parseJapaneseDatetime(endInput.value) : null
     endPicker = flatpickr(endInput, {
-      ...baseOptions
+      ...baseOptions,
+      defaultDate: parsedEnd
     })
   }
 
   if (deadlineInput) {
+    const parsedDeadline = deadlineInput.value ? parseJapaneseDatetime(deadlineInput.value) : null
+    const parsedStart = startInput.value ? parseJapaneseDatetime(startInput.value) : null
+
     deadlinePicker = flatpickr(deadlineInput, {
       ...baseOptions,
-      minDate: oneHourLater
+      defaultDate: parsedDeadline,
+      minDate: parsedDeadline && parsedDeadline < oneHourLater ? parsedDeadline : oneHourLater,
+      maxDate: parsedStart || null
     })
   }
 }
@@ -68,8 +86,7 @@ function initializeFlatpickr() {
 // ✅ Turboページ遷移時に各種初期化
 document.addEventListener("turbo:load", () => {
   initializeFlatpickr()
-
-  // イベントカードクリック再バインド
+  setupFlashMessageAutoDismiss()
   window.bindEventCardClicks && window.bindEventCardClicks()
 
   // プロフィールメニューのトグル
@@ -89,3 +106,11 @@ document.addEventListener("turbo:load", () => {
   }
 })
 
+// ✅ Turbo Streams 経由で flash が置き換わった直後に再実行
+document.addEventListener("turbo:after-stream-render", (e) => {
+  if (e.target?.id === "flash-area" || e.target?.closest("#flash-area")) {
+    setupFlashMessageAutoDismiss()
+  }
+})
+// ✅ 明示的に Turbo Stream script から使いたいときのために window に公開
+window.setupFlashMessageAutoDismiss = setupFlashMessageAutoDismiss

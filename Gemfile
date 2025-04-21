@@ -52,6 +52,7 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+  gem "bullet"
 end
 
 group :test do
@@ -69,3 +70,4 @@ gem "activerecord-session_store", "~> 2.2"
 
 gem "cloudinary"
 gem "activestorage-cloudinary-service"
+gem "kaminari"

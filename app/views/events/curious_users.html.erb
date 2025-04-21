@@ -1,0 +1,35 @@
+<% content_for :title, "気になる人 | ちょいあつ" %>
+
+<div class="max-w-3xl mx-auto px-4 py-10">
+  <% status = event_status(@event) %>
+  <% heading_prefix = %w[開催済み].include?(status) ? "気になってた" : "気になってる" %>
+  <% user_count = @users.size %>
+
+  <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">
+    「<%= @event.title %>」を<%= heading_prefix %><%= user_count %>人
+  </h2>
+
+  <% if @users.any? %>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+      <% @users.each do |user| %>
+        <div class="bg-white rounded-xl shadow text-center px-4 py-6 hover:shadow-md transition">
+          <%= link_to user_path(user), class: "flex flex-col items-center space-y-2 hover:opacity-90 transition" do %>
+            <%= image_tag user.profile_picture_url,
+                class: "w-16 h-16 rounded-full border border-gray-300 shadow-sm mx-auto" %>
+            <p class="text-sm font-semibold text-gray-800 truncate w-full text-center" title="<%= user.name %>">
+              <%= truncate(user.name, length: 6, omission: "…") %>
+            </p>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-center text-gray-500 mt-10">まだ誰も気になっていません🥺</p>
+  <% end %>
+
+  <div class="text-center mt-12">
+    <%= link_to "イベント詳細に戻る",
+                event_path(@event),
+                class: "rounded-md px-4 py-2 bg-gray-200 hover:bg-gray-300 text-center font-medium" %>
+  </div>
+</div>

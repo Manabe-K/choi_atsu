@@ -20,7 +20,7 @@ class UsersController < ApplicationController
     if @user.save
       session.delete(:user_registration)
       session[:user_id] = @user.id
-      redirect_to events_path, notice: "ユーザー登録が完了しました。"
+      redirect_to events_path(interested: 1, available: 1), notice: "ユーザー登録が完了しました。"
     else
       render :new, status: :unprocessable_entity
     end
@@ -64,7 +64,7 @@ class UsersController < ApplicationController
       {
         id: user.id,
         name: user.name,
-        profile_picture: user.profile_picture_url # ✅ これに変更！
+        profile_picture: user.profile_picture_url
       }
     end
 
@@ -98,26 +98,12 @@ class UsersController < ApplicationController
     redirect_to root_path, alert: "ログインしてください。" unless current_user
   end
 
-  # create専用（remove_uploaded_pictureは含まない）
   def user_params_for_create
     params.require(:user).permit(:name, :github_uid, :github_token, :profile_picture, :uploaded_picture)
   end
 
-  # update専用（remove_uploaded_pictureは処理済みなので除外）
   def user_params_for_update
     params.require(:user).permit(:name, :github_uid, :github_token, :profile_picture, :uploaded_picture)
-  end
-
-  def update_user_tags(user, tag_names_param)
-    return unless tag_names_param.is_a?(Array)
-
-    tag_names = tag_names_param.reject(&:blank?)
-
-    user.user_tags.destroy_all
-    tag_names.each do |name|
-      tag = Tag.find_or_create_by(name: name)
-      user.user_tags.create(tag: tag)
-    end
   end
 
   def update_user_tags(user, tag_names_param)
@@ -127,10 +113,8 @@ class UsersController < ApplicationController
     to_remove = current_tags - tag_names
     to_add    = tag_names - current_tags
 
-    # タグ削除
     user.user_tags.joins(:tag).where(tags: { name: to_remove }).destroy_all
 
-    # タグ追加（必要なら新規作成）
     to_add.each do |name|
       tag = Tag.find_or_create_by(name: name)
       user.user_tags.find_or_create_by(tag: tag)

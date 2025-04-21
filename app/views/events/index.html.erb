@@ -1,16 +1,80 @@
+<% content_for :title, "ちょいあつ一覧 | ちょいあつ" %>
 <div class="container mx-auto px-4 py-8">
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold">イベント一覧</h1>
-
-    <%= link_to "イベントを企画する",
-                new_event_path,
-                class: "bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2.5 rounded-lg shadow transition duration-200" %>
+  <!-- タイトルと「企画する」ボタン -->
+  <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+    <h1 class="text-3xl font-bold">ちょいあつ一覧</h1>
+    <%= link_to "イベントを企画する", new_event_path,
+        class: "bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2.5 rounded-lg shadow transition duration-200" %>
   </div>
 
+  <!-- 並び替えセレクト -->
+  <%= render "sort_select" %>
+
+  <!-- ✅ 絞り込みオプション -->
+  <div class="mb-6">
+    <%= form_with url: events_path, method: :get, local: true,
+          class: "flex flex-wrap items-center gap-3 text-sm bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 shadow-sm" do %>
+
+      <!-- 保持用パラメータ -->
+      <%= hidden_field_tag :sort, params[:sort] %>
+      <%= hidden_field_tag :tag, params[:tag] %>
+
+      <% interested_checked = params[:interested] != "0" %>
+      <% available_checked  = params[:available]  != "0" %>
+
+      <!-- 興味あるイベント -->
+      <div class="relative">
+        <%= hidden_field_tag :interested, "0" %>
+        <%= check_box_tag :interested, "1", interested_checked,
+              id: "filter_interested", class: "peer hidden", onchange: "this.form.submit()" %>
+        <label for="filter_interested"
+               class="flex items-center gap-2 px-3 py-1 rounded-full border font-medium cursor-pointer
+                      peer-checked:bg-teal-500 peer-checked:text-white peer-checked:border-teal-500
+                      bg-white text-gray-700 border-gray-300 transition">
+          <i class="fas fa-heart peer-checked:text-white text-gray-400"></i>
+          興味あるイベント
+        </label>
+      </div>
+
+      <!-- 参加できるイベント -->
+      <div class="relative">
+        <%= hidden_field_tag :available, "0" %>
+        <%= check_box_tag :available, "1", available_checked,
+              id: "filter_available", class: "peer hidden", onchange: "this.form.submit()" %>
+        <label for="filter_available"
+               class="flex items-center gap-2 px-3 py-1 rounded-full border font-medium cursor-pointer
+                      peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-green-500
+                      bg-white text-gray-700 border-gray-300 transition">
+          <i class="fas fa-door-open peer-checked:text-white text-gray-400"></i>
+          参加できるイベント
+        </label>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- 絞り込み中のタグ -->
+  <% if @current_tag %>
+    <div class="mb-6 flex items-center gap-2 text-sm">
+      <span class="text-gray-700 font-medium">絞り込みタグ：</span>
+      <span class="inline-flex items-center bg-gray-200 text-gray-800 px-3 py-1 rounded-full">
+        <i class="fas fa-tag text-xs mr-1"></i><%= @current_tag.name %>
+        <%= link_to "×", events_path(sort: params[:sort]),
+                    class: "ml-2 text-gray-500 hover:text-red-500 transition font-bold" %>
+      </span>
+    </div>
+  <% end %>
+
+  <!-- イベント一覧 -->
   <%= render partial: "event_card", locals: {
         events: @events,
         current_user: current_user,
         hide_buttons: false,
         empty_message: "現在、イベントはありません"
       } %>
+  
+<% if @events.total_pages > 1 %>
+  <div class="mt-6">
+    <%= render partial: "kaminari/paginator", locals: { paginated: @events, param_key: :page } %>
+  </div>
+<% end %>
 </div>

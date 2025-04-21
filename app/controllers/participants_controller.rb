@@ -7,7 +7,7 @@ class ParticipantsController < ApplicationController
     if @event.participant_users.exists?(current_user.id)
       respond_to do |format|
         format.turbo_stream { head :conflict }
-        format.html { redirect_to events_path, alert: "すでに参加済みです" }
+        format.html { redirect_to events_path(interested: 1, available: 1), alert: "すでに参加済みです" }
       end
       return
     end
@@ -15,7 +15,7 @@ class ParticipantsController < ApplicationController
     if @event.participant_users.count + 1 > @event.capacity
       respond_to do |format|
         format.turbo_stream { head :unprocessable_entity }
-        format.html { redirect_to events_path, alert: "このイベントは満席です" }
+        format.html { redirect_to events_path(interested: 1, available: 1), alert: "このイベントは満席です" }
       end
       return
     end
@@ -26,7 +26,7 @@ class ParticipantsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_to events_path, notice: "イベントに参加しました！" }
+      format.html { redirect_to events_path(interested: 1, available: 1), notice: "イベントに参加しました！" }
     end
   end
 
@@ -36,7 +36,7 @@ class ParticipantsController < ApplicationController
     if @event.host_user == current_user
       respond_to do |format|
         format.turbo_stream { head :forbidden }
-        format.html { redirect_to events_path, alert: "主催者はキャンセルできません" }
+        format.html { redirect_to events_path(interested: 1, available: 1), alert: "主催者はキャンセルできません" }
       end
       return
     end
@@ -50,12 +50,12 @@ class ParticipantsController < ApplicationController
 
       respond_to do |format|
         format.turbo_stream
-        format.html { redirect_to events_path, notice: "参加をキャンセルしました" }
+        format.html { redirect_to events_path(interested: 1, available: 1), notice: "参加をキャンセルしました" }
       end
     else
       respond_to do |format|
         format.turbo_stream { head :not_found }
-        format.html { redirect_to events_path, alert: "参加情報が見つかりません" }
+        format.html { redirect_to events_path(interested: 1, available: 1), alert: "参加情報が見つかりません" }
       end
     end
   end

@@ -19,11 +19,11 @@ class Event < ApplicationRecord
   before_validation :set_default_deadline
 
   scope :exclude_demo_users, -> {
-    joins(:host_user).where.not("users.github_uid LIKE ?", "demo_seed_user%")
+    joins(:host_user).where.not("users.github_uid LIKE ?", "demo_%")
   }
 
   scope :demo_visible_to, ->(user) {
-    joins(:host_user).where("users.github_uid LIKE ? OR events.host_user_id = ?", "demo_seed_user%", user.id)
+    joins(:host_user).where("users.github_uid LIKE ? OR events.host_user_id = ?", "demo_%", user.id)
   }
 
   scope :for_user, ->(user) {

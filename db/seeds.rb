@@ -143,4 +143,16 @@ else
   end
 
   puts "🎉 合計 #{created_events.size}件のデモイベントが作成されました"
+
+  puts "🧩 デモユーザーにタグをランダム登録します"
+
+demo_users.each do |user|
+  assigned_tags = sample_tags.sample(rand(2..5)) # 各ユーザーに2〜5個のタグを割り当て
+
+  assigned_tags.each do |tag_id|
+    UserTag.find_or_create_by!(user_id: user.id, tag_id: tag_id)
+  end
+
+  puts "🔖 #{user.name} に #{assigned_tags.size} 件のタグを登録しました"
+end
 end

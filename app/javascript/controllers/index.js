@@ -1,5 +1,8 @@
 import { application } from "./application"
 
+import FlatpickrController from "./flatpickr_controller"
+application.register("flatpickr", FlatpickrController)
+
 import FormAnimationController from "./form_animation_controller"
 application.register("form-animation", FormAnimationController)
 
@@ -14,3 +17,6 @@ application.register("profile-image", ProfileImageController)
 
 import UserTagInputController from "./user_tag_input_controller"
 application.register("user-tag-input", UserTagInputController)
+
+import EventTagInputController from "./event_tag_input_controller"
+application.register("event-tag-input", EventTagInputController)

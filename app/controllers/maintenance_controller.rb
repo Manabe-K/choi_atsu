@@ -10,10 +10,7 @@ class MaintenanceController < ApplicationController
     User.where("github_uid LIKE ?", "demo_%")
         .where.not(github_uid: demo_seed_user_ids)
         .where(id: expired_user_ids)
-        .find_each do |user|
-      user.hosted_events.destroy_all
-      user.destroy
-    end
+        .find_each(&:destroy)
 
     render plain: "✅ 期限切れセッション & demoユーザーを削除しました"
   end

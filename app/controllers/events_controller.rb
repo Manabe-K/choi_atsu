@@ -58,7 +58,7 @@ class EventsController < ApplicationController
   def create
     @event = Event.new(parsed_event_params)
     @event.host_user = current_user
-  
+
     if valid_tag_names?(params[:event][:tag_names]) && @event.save
       update_event_tags(@event, params[:event][:tag_names])
       Participant.create!(user: current_user, event: @event)
@@ -144,15 +144,13 @@ class EventsController < ApplicationController
 
   def update_event_tags(event, tag_names_param)
     tag_names = Array(tag_names_param).reject(&:blank?).map(&:strip).uniq
-  
+
     current_tags = event.tags.pluck(:name)
     to_remove = current_tags - tag_names
     to_add    = tag_names - current_tags
-  
-    # タグ削除
+
     event.event_tags.joins(:tag).where(tags: { name: to_remove }).destroy_all
-  
-    # タグ追加（既存タグのみ使用）
+
     valid_tags = Tag.where(name: to_add)
     valid_tags.each do |tag|
       event.event_tags.find_or_create_by(tag: tag)

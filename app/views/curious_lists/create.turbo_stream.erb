@@ -1,3 +1,15 @@
 <%= turbo_stream.replace "curious_button_#{@event.id}" do %>
   <%= curious_button(@event, current_user) %>
 <% end %>
+
+<%= turbo_stream.remove ".flash-message" %>
+
+<%= turbo_stream.append "flash-container" do %>
+  <%= render "shared/flash", notice: "気になるに追加しました" %>
+<% end %>
+
+<%= turbo_stream.append "scripts" do %>
+  <script>
+    window.setupFlashMessageAutoDismiss && window.setupFlashMessageAutoDismiss()
+  </script>
+<% end %>

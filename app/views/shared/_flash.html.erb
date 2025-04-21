@@ -1,0 +1,26 @@
+<% if notice.present? || alert.present? %>
+  <% type = notice.present? ? :notice : :alert %>
+  <% message = notice || alert %>
+
+  <% case type
+     when :notice
+       border_color = "green-400"
+       icon_class = "fas fa-check-circle"
+       icon_color = "green-500"
+     when :alert
+       border_color = "red-400"
+       icon_class = "fas fa-exclamation-triangle"
+       icon_color = "red-500"
+     else
+       border_color = "gray-400"
+       icon_class = "fas fa-info-circle"
+       icon_color = "gray-500"
+     end %>
+
+  <div id="flash_message" class="flash-message opacity-100 transition-opacity duration-500">
+    <div class="inline-flex items-center gap-2 px-4 py-2 border-l-4 rounded-full shadow bg-white/90 backdrop-blur-sm border-<%= border_color %>">
+      <i class="<%= icon_class %> text-<%= icon_color %> text-m"></i>
+      <p class="text-sm text-gray-800 font-medium"><%= message %></p>
+    </div>
+  </div>
+<% end %>

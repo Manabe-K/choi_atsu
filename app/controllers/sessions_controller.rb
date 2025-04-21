@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
     is_member = GithubOrgMemberCheckService.new(github_username: github_username).member?
 
     unless is_member
-      redirect_to root_path, alert: "RunTeqメンバーのみ登録可能です。" and return
+      redirect_to root_path, alert: "RUNTEQメンバーのみ登録可能です。" and return
     end
 
     user = User.find_by(github_uid: auth.uid)
@@ -98,7 +98,7 @@ class SessionsController < ApplicationController
 
   def back_to_users
     session.delete(:user_registration)
-    redirect_to root_path, notice: "ユーザー登録をキャンセルしました。"
+    redirect_to root_path, alert: "ユーザー登録をキャンセルしました。"
   end
 
   private

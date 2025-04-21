@@ -2,6 +2,7 @@ import "@hotwired/turbo-rails"
 import "./controllers"
 import "./menu_toggle"
 import "./event_card_click"
+import { setupFlashMessageAutoDismiss } from "./flash_message"
 
 import flatpickr from "flatpickr"
 import "flatpickr/dist/themes/material_orange.css"
@@ -85,8 +86,7 @@ function initializeFlatpickr() {
 // ✅ Turboページ遷移時に各種初期化
 document.addEventListener("turbo:load", () => {
   initializeFlatpickr()
-
-  // イベントカードクリック再バインド
+  setupFlashMessageAutoDismiss()
   window.bindEventCardClicks && window.bindEventCardClicks()
 
   // プロフィールメニューのトグル
@@ -106,3 +106,11 @@ document.addEventListener("turbo:load", () => {
   }
 })
 
+// ✅ Turbo Streams 経由で flash が置き換わった直後に再実行
+document.addEventListener("turbo:after-stream-render", (e) => {
+  if (e.target?.id === "flash-area" || e.target?.closest("#flash-area")) {
+    setupFlashMessageAutoDismiss()
+  }
+})
+// ✅ 明示的に Turbo Stream script から使いたいときのために window に公開
+window.setupFlashMessageAutoDismiss = setupFlashMessageAutoDismiss

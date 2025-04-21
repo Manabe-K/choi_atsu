@@ -1,11 +1,18 @@
+<!-- ヘッダー -->
 <header class="bg-teal-950 text-white py-3 fixed top-0 left-0 w-full z-50">
   <div class="container mx-auto px-1">
     <div class="flex justify-between items-center">
-      <!-- 左側: アイコン -->
+
+      <!-- ヘッダー左側 -->
       <div class="flex items-center space-x-4">
         <%= link_to root_path, class: "block hover:opacity-80 transition" do %>
           <%= image_tag "header_icon.png", alt: "ちょいあつ", class: "h-12" %>
         <% end %>
+
+        <!-- ✅ 通常リクエスト時のフラッシュ -->
+        <div id="flash-container" class="ml-2">
+          <%= render "shared/flash", notice: flash[:notice], alert: flash[:alert] %>
+        </div>
       </div>
 
       <!-- 右側: ログイン/ログアウト -->
@@ -19,7 +26,7 @@
       </button>
 
       <!-- ドロップダウンメニュー -->
-      <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg">
+      <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg z-[60]">
         <ul>
           <li><%= link_to 'マイページ', mypage_path(clear_return_to: true), class: 'block px-4 py-2 text-sm' %></li>
           <li><%= link_to '設定', "#", class: 'block px-4 py-2 text-sm' %></li>

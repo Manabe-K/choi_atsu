@@ -1,6 +1,10 @@
 ja:
   activerecord:
     attributes:
+      user:
+        name: "名前"
+        github_uid: "GitHub UID"
+        profile_picture: "プロフィール画像"
       event:
         title: "タイトル"
         start_time: "開始日時"
@@ -9,3 +13,21 @@ ja:
         location: "場所"
         description: "内容"
         capacity: "上限人数"
+      participant:
+        user_id: "ユーザー"
+        event_id: "イベント"
+      curious_list:
+        user_id: "ユーザー"
+        event_id: "イベント"
+      tag:
+        name: "タグ名"
+      event_tag:
+        event_id: "イベント"
+        tag_id: "タグ"
+      user_tag:
+        user_id: "ユーザー"
+        tag_id: "タグ"
+        notify_enabled: "通知設定"
+      session:
+        session_id: "セッションID"
+        data: "データ"

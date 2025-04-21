@@ -1,4 +1,6 @@
 ja:
+  home:
+    title: "ちょいあつ"
   header:
     icon: "アイコン"
     login: "ログイン"
@@ -9,7 +11,7 @@ ja:
     privacy_policy: "プライバシーポリシー"
   application:
     menu: "メニュー"
-    index: "オフ会一覧"
+    index: "ちょいあつ一覧"
     new: "企画する"
     plan&participation_list: "企画・参加リスト"
     interested_list: "気になるリスト"
@@ -29,3 +31,17 @@ ja:
     back_to_index: "一覧に戻る"
   edit:
     back_to_show: "詳細に戻る"
+  users:
+    profile_heading: "%{name} さんのプロフィール"
+    new:
+      title: "ユーザー登録"
+    edit:
+      title: "プロフィール編集"
+    form:
+      submit: "プロフィールを更新"
+  tags:
+    users:
+      title: "登録してる人"
+      heading: "「%{tag}」を登録している%{count}人"
+      to_events: "「%{tag}」のイベント一覧を見る →"
+      empty: "このタグを登録しているユーザーはいません。"

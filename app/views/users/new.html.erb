@@ -1,13 +1,13 @@
 <% content_for :title, "ユーザー登録 | ちょいあつ" %>
 
 <div class="max-w-3xl w-full mx-auto px-4 pt-10">
-  <h1 class="font-bold text-4xl mb-6">ユーザー登録</h1>
+  <h1 class="font-bold text-4xl mb-6"><%= t("users.new.title") %></h1>
 
   <%= render "form", user: @user %>
 
   <div class="mt-6">
     <%= form_tag(back_to_users_path, method: :post) do %>
-      <%= submit_tag '戻る',
+      <%= submit_tag t("buttons.back"),
           class: "rounded-md px-4 py-2 bg-gray-200 hover:bg-gray-300 text-center font-medium" %>
     <% end %>
   </div>

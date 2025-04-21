@@ -1,13 +1,13 @@
-<% content_for :title, "登録してる人 | ちょいあつ" %>
+<% content_for :title, t("tags.users.title") + " | t("home.title")" %>
 <div class="container mx-auto px-4 py-8">
   <!-- 中央揃えタイトル -->
   <h1 class="text-2xl font-bold text-center mb-6">
-    「<%= @tag.name %>」を登録している<%= @users.count %>人
+    <%= t("tags.users.heading", tag: @tag.name, count: @users.count) %>
   </h1>
 
   <!-- タグ名のイベント一覧へのボタンリンク -->
   <div class="flex justify-center mb-8">
-    <%= link_to "「#{@tag.name}」のイベント一覧を見る →",
+    <%= link_to t("tags.users.to_events", tag: @tag.name),
                 events_path(tag: @tag.name, interested: 1, available: 1),
                 class: "bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold px-5 py-2 rounded-lg shadow transition" %>
   </div>
@@ -19,6 +19,6 @@
       <% end %>
     </div>
   <% else %>
-    <p class="text-gray-500 text-center">このタグを登録しているユーザーはいません。</p>
+    <p class="text-gray-500 text-center"><%= t("tags.users.empty") %></p>
   <% end %>
 </div>

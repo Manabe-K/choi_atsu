@@ -1,17 +1,17 @@
-<% content_for :title, "プロフィール編集 | ちょいあつ" %>
+<% content_for :title, t("users.edit.title") + " | t("home.title")" %>
 
 <div class="max-w-3xl w-full mx-auto px-4 pt-10">
-  <h1 class="font-bold text-4xl mb-6">プロフィール編集</h1>
+  <h1 class="font-bold text-4xl mb-6"><%= t("users.edit.title") %></h1>
 
   <%= render "form", user: @user %>
 
 <div class="flex flex-wrap gap-4 mt-6">
   <% if session[:mypage_return_to].present? %>
-    <%= link_to "← 戻る",
+    <%= link_to "← #{t("buttons.back")}",
             mypage_path(return_to: session[:mypage_return_to]),
             class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
   <% else %>
-    <%= link_to "← 戻る",
+    <%= link_to "← #{t("buttons.back")}",
                 mypage_path,
                 class: "rounded-md px-4 py-2 bg-gray-200 hover:bg-gray-300 text-center font-medium" %>
   <% end %>

@@ -12,7 +12,6 @@
     </div>
   <% end %>
 
-  <!-- 名前 -->
   <div class="flex items-start gap-4">
     <label class="w-32 text-sm font-semibold text-gray-700 pt-2">
       <i class="fas fa-user mr-1 text-gray-500"></i>名前
@@ -23,14 +22,12 @@
     </div>
   </div>
 
-  <!-- プロフィール画像 -->
   <div class="flex items-start gap-4" data-profile-image-target="container">
     <label class="w-32 text-sm font-semibold text-gray-700 pt-2">
       <i class="fas fa-image mr-1 text-gray-500"></i>プロフ画像
     </label>
 
     <div class="flex-1 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-      <!-- プレビュー -->
       <div class="flex flex-col items-center gap-2">
 <%= image_tag(@user.profile_picture_url, data: { profile_image_target: "preview" }, class: "w-16 h-16 rounded-full object-cover border", alt: "プロフィール画像") %>
 
@@ -55,15 +52,11 @@
 </button>
       </div>
 
-      <!-- アップロード入力 -->
       <div class="flex-1 w-full">
-        <!-- GitHub画像URL -->
         <%= form.label :profile_picture, "GitHub画像URL", class: "block text-sm font-medium text-gray-700" %>
         <%= form.text_field :profile_picture,
               class: "border rounded-lg p-2.5 bg-gray-50 w-full mb-2",
               readonly: true %>
-
-        <!-- アップロードフィールド -->
         <%= form.label :uploaded_picture, "画像をアップロード（任意）", class: "block text-sm font-medium text-gray-700 mt-2" %>
         <%= form.file_field :uploaded_picture, data: { action: "change->profile-image#previewImage" },
             class: "block w-full text-sm text-gray-700 file:mr-3 file:px-4 file:py-2 file:border file:rounded-md file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" %>
@@ -82,12 +75,10 @@
   }.to_json %>">
 </div>
 
-  <!-- hidden fields -->
   <%= form.hidden_field :github_uid %>
   <%= form.hidden_field :github_token %>
   <%= form.hidden_field :remove_uploaded_picture, value: "false", data: { profile_image_target: "removeFlag" } %>
 
-  <!-- 送信ボタン -->
   <div class="text-center pt-6">
     <%= form.submit "プロフィールを更新",
           class: "bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-full shadow transition duration-200" %>

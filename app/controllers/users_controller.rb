@@ -109,18 +109,6 @@ class UsersController < ApplicationController
   end
 
   def update_user_tags(user, tag_names_param)
-    return unless tag_names_param.is_a?(Array)
-
-    tag_names = tag_names_param.reject(&:blank?)
-
-    user.user_tags.destroy_all
-    tag_names.each do |name|
-      tag = Tag.find_or_create_by(name: name)
-      user.user_tags.create(tag: tag)
-    end
-  end
-
-  def update_user_tags(user, tag_names_param)
     tag_names = Array(tag_names_param).reject(&:blank?).map(&:strip).uniq
 
     current_tags = user.tags.pluck(:name)

@@ -28,7 +28,6 @@ class EventsController < ApplicationController
     base = base.includes(:host_user, :participant_users)
     all_events = base.to_a
 
-    # Ruby側のフィルタ（満員・主催者除外）
     if params[:available] == "1"
       all_events = all_events.reject { |e| event_full?(e) || e.host_user_id == current_user.id }
     end
@@ -59,12 +58,14 @@ class EventsController < ApplicationController
   def create
     @event = Event.new(parsed_event_params)
     @event.host_user = current_user
-
-    if @event.save
+  
+    if valid_tag_names?(params[:event][:tag_names]) && @event.save
+      update_event_tags(@event, params[:event][:tag_names])
       Participant.create!(user: current_user, event: @event)
       update_participants(@event)
       redirect_to @event, notice: "イベントを作成しました"
     else
+      @event.errors.add(:base, "登録済みのタグのみ使用できます") unless valid_tag_names?(params[:event][:tag_names])
       @selected_users = load_selected_users
       render :new, status: :unprocessable_entity
     end
@@ -72,6 +73,7 @@ class EventsController < ApplicationController
 
   def update
     if @event.update(parsed_event_params)
+      update_event_tags(@event, params[:event][:tag_names])
       update_participants(@event)
       redirect_to @event, notice: "イベントを更新しました"
     else
@@ -140,6 +142,23 @@ class EventsController < ApplicationController
     true
   end
 
+  def update_event_tags(event, tag_names_param)
+    tag_names = Array(tag_names_param).reject(&:blank?).map(&:strip).uniq
+  
+    current_tags = event.tags.pluck(:name)
+    to_remove = current_tags - tag_names
+    to_add    = tag_names - current_tags
+  
+    # タグ削除
+    event.event_tags.joins(:tag).where(tags: { name: to_remove }).destroy_all
+  
+    # タグ追加（既存タグのみ使用）
+    valid_tags = Tag.where(name: to_add)
+    valid_tags.each do |tag|
+      event.event_tags.find_or_create_by(tag: tag)
+    end
+  end
+
   def sort_with_upcoming_last(events)
     now = Time.current
 
@@ -168,5 +187,10 @@ class EventsController < ApplicationController
   def load_selected_users
     ids = params[:event][:user_ids].to_a.map(&:to_i).reject(&:zero?)
     User.where(id: ids)
+  end
+
+  def valid_tag_names?(tag_names_param)
+    tag_names = Array(tag_names_param).reject(&:blank?).map(&:strip).uniq
+    Tag.where(name: tag_names).count == tag_names.count
   end
 end

@@ -62,6 +62,28 @@ class TagsController < ApplicationController
     @users = @tag.users.includes(:tags) # 必要に応じてincludes追加
   end
 
+  def search
+    query = params[:q].to_s.strip
+    return render json: [] if query.blank?
+
+    tags = Tag
+             .left_joins(:user_tags) # ← user_tags 経由でユーザー数をカウント！
+             .where("tags.name ILIKE ?", "%#{query}%")
+             .group("tags.id")
+             .select("tags.name, COUNT(user_tags.id) AS user_count")
+             .order("tags.name")
+             .limit(10)
+
+    results = tags.map do |tag|
+      {
+        name: tag.name,
+        user_count: tag.user_count.to_i
+      }
+    end
+
+    render json: results
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_tag

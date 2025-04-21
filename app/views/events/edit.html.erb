@@ -3,8 +3,8 @@
 
 <%= render 'form' %>
 
-<div class="text-center mt-4">
+<div class="text-center mt-6">
   <%= link_to t('edit.back_to_show'),
               event_path(@event, return_to: safe_return_to_path),
-              class: "text-blue-500 hover:underline" %>
+              class: "rounded-md px-4 py-2 bg-gray-200 hover:bg-gray-300 text-center font-medium" %>
 </div>

@@ -27,6 +27,7 @@ Rails.application.routes.draw do
     resource :curious_list, only: [ :create, :destroy ]
   end
   resources :user_tags, only: [ :create, :destroy ]
+  get "tags/search", to: "tags#search"
   resources :tags, only: [ :index, :show ] do
     get :users, on: :member
   end

@@ -71,6 +71,7 @@ Rails.application.configure do
   # Allow requests only from specified domains
   config.hosts << "choi-atsu.com"
   config.hosts << "www.choi-atsu.com"
+  config.hosts << "choi-atsu.onrender.com"
 
   # Set default URL options for mailers and helpers
   Rails.application.routes.default_url_options[:host] = "www.choi-atsu.com"

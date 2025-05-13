@@ -69,11 +69,11 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Allow requests only from specified domains
-
-
+  config.hosts << "choi-atsu.com"
+  config.hosts << "www.choi-atsu.com"
 
   # Set default URL options for mailers and helpers
-  Rails.application.routes.default_url_options[:host] = "choi-atsu.onrender.com"
+  Rails.application.routes.default_url_options[:host] = "www.choi-atsu.com"
 
   # Allow cookies across domains if needed
   config.action_dispatch.cookies_same_site_protection = :none

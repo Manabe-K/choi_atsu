@@ -36,4 +36,12 @@ Rails.application.routes.draw do
   # sessionの定期的な削除
   get "/clear_sessions/:token", to: "maintenance#clear_sessions", as: :secure_clear_sessions
   get "/reset_demo_data/:token", to: "maintenance#reset_demo_data", as: :reset_demo_data
+
+  namespace :howto do
+    get "profile", to: "pages#profile"
+    get "plan", to: "pages#plan"
+    get "offline", to: "pages#offline"
+    get "curious", to: "pages#curious"
+    get "notification", to: "pages#notification"
+  end
 end

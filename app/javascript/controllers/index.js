@@ -1,7 +1,10 @@
 import { application } from "./application"
 
-import FlatpickrController from "./flatpickr_controller"
-application.register("flatpickr", FlatpickrController)
+import FlatpickrEventController from "./flatpickr_event_controller"
+application.register("flatpickr-event", FlatpickrEventController)
+
+import FlatpickrDeadlineController from "./flatpickr_deadline_controller"
+application.register("flatpickr-deadline", FlatpickrDeadlineController)
 
 import FormAnimationController from "./form_animation_controller"
 application.register("form-animation", FormAnimationController)

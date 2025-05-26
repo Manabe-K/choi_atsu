@@ -25,14 +25,14 @@ export default class extends Controller {
 
   clearImage() {
     this.removeFlagTarget.value = "true"
-  
+
     const input = this.element.querySelector("input[type='file']")
     if (input) input.value = ""
-  
+
     const fallback = this.profilePictureUrlTarget.dataset.fallbackUrl
     this.previewTarget.src = fallback
     this.profilePictureUrlTarget.value = fallback
-  
+
     if (this.hasRemoveButtonTarget) {
       this.removeButtonTarget.classList.add("hidden")
     }

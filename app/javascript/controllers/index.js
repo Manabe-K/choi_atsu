@@ -23,3 +23,12 @@ application.register("user-tag-input", UserTagInputController)
 
 import EventTagInputController from "./event_tag_input_controller"
 application.register("event-tag-input", EventTagInputController)
+
+import EventCardController from "./event_card_controller"
+application.register("event-card", EventCardController)
+
+import MenuToggleController from "./menu_toggle_controller"
+application.register("menu-toggle", MenuToggleController)
+
+import FlashMessageController from "./flash_message_controller"
+application.register("flash-message", FlashMessageController)

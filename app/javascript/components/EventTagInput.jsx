@@ -60,9 +60,6 @@ const EventTagInput = ({ initialTags = [] }) => {
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-semibold text-gray-700">
-        <i className="fas fa-tags mr-1 text-gray-500"></i>タグ（最大5つ）
-      </label>
 
       <input
         ref={inputRef}

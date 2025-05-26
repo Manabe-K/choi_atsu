@@ -8,10 +8,6 @@ import flatpickr from "flatpickr"
 import "flatpickr/dist/themes/material_orange.css"
 import { Japanese } from "flatpickr/dist/l10n/ja.js"
 
-import React from "react"
-import ReactDOM from "react-dom/client"
-import FormUserSearch from "./components/FormUserSearch"
-
 flatpickr.localize(Japanese)
 
 function initializeFlatpickr() {

@@ -2,7 +2,17 @@
 class ThreadPostsController < ApplicationController
   before_action :require_login
   before_action :set_event
-  before_action :set_thread_post, only: [:edit, :update, :destroy]
+  before_action :set_thread_post, only: [:edit, :update, :destroy, :show]
+
+  def show
+    @event = Event.find(params[:event_id])
+    @thread_post = @event.thread_posts.find(params[:id])
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { head :not_acceptable }
+    end
+  end
 
   def create
     @thread_post = @event.thread_posts.new(thread_post_params)

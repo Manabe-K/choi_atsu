@@ -49,10 +49,13 @@
     <div class="relative flex flex-col md:flex-row items-stretch bg-white rounded-lg shadow-md overflow-hidden transition duration-300">
       <div id="thread_posts_container"
           data-controller="thread-scroll"
-          data-thread-scroll-target="container"
           data-action="turbo:after-stream-render@window->thread-scroll#scrollToBottom"
           class="p-6 relative w-full max-h-[500px] overflow-y-auto">
-        <div id="thread_posts" class="space-y-4">
+
+        <!-- ✅ スクロール対象（ここが Stimulus の containerTarget） -->
+        <div id="thread_posts"
+            data-thread-scroll-target="container"
+            class="space-y-4">
           <% if @thread_posts.any? %>
             <%= render partial: "thread_posts/thread_post",
                       collection: @thread_posts,

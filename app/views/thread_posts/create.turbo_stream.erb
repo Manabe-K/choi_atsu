@@ -1,3 +1,4 @@
+<!-- app/views/thread_posts/create.turbo_stream.erb -->
 <%= turbo_stream.remove "no_thread_message" %>
 
 <%= turbo_stream.append "thread_posts" do %>
@@ -6,4 +7,10 @@
 
 <%= turbo_stream.replace "new_thread_post" do %>
   <%= render partial: "thread_posts/form", locals: { thread_post: ThreadPost.new, event: @event } %>
+<% end %>
+
+<%= turbo_stream.append "thread_posts" do %>
+  <turbo-frame id="scroll_trigger">
+    <div data-controller="thread-scroll" data-thread-scroll-target="container"></div>
+  </turbo-frame>
 <% end %>

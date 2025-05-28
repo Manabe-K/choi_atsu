@@ -1,5 +1,5 @@
-@import "flatpickr_material_orange";
-@import "daisyui";
+@import "./tailwind.css";
+@import "./flatpickr_material_orange";
 
 @tailwind base;
 @tailwind components;

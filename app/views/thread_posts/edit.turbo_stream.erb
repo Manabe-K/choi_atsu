@@ -1,0 +1,19 @@
+<!-- app/views/thread_posts/edit.turbo_stream.erb -->
+<%= turbo_stream.replace "thread_post_#{@thread_post.id}" do %>
+  <turbo-frame id="thread_post_<%= @thread_post.id %>">
+    <%= form_with(model: [@event, @thread_post],
+                  local: false,
+                  data: { turbo_frame: "thread_post_#{@thread_post.id}" }) do |form| %>
+      <div class="mb-2">
+        <%= form.text_area :content, rows: 3, class: "w-full border rounded resize-none" %>
+      </div>
+      <div class="flex gap-2">
+        <%= form.submit "更新", class: "btn btn-primary btn-sm", data: { disable_with: "送信中…" } %>
+        <%= link_to "キャンセル",
+                    event_thread_post_path(@event, @thread_post),
+                    data: { turbo_frame: "thread_post_#{@thread_post.id}" },
+                    class: "btn btn-secondary btn-sm" %>
+      </div>
+    <% end %>
+  </turbo-frame>
+<% end %>

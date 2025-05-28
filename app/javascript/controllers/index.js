@@ -32,3 +32,6 @@ application.register("menu-toggle", MenuToggleController)
 
 import FlashMessageController from "./flash_message_controller"
 application.register("flash-message", FlashMessageController)
+
+import ThreadScrollController from "./thread_scroll_controller"
+application.register("thread-scroll", ThreadScrollController)

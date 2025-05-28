@@ -11,6 +11,8 @@ class User < ApplicationRecord
   has_many :user_tags, dependent: :destroy
   has_many :tags, through: :user_tags
 
+  has_many :thread_posts, dependent: :destroy
+
   validates :github_uid, presence: true, uniqueness: true
   validates :name, :profile_picture, presence: true
 

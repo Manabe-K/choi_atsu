@@ -62,7 +62,11 @@ class EventsController < ApplicationController
     @events = Kaminari.paginate_array(sorted).page(params[:page])
   end
 
-  def show; end
+  def show
+    @event = Event.find(params[:id])
+    @thread_posts = @event.thread_posts.includes(:user).order(created_at: :asc)
+  end
+
   def new; @event = Event.new; end
   def edit; end
 
@@ -124,10 +128,6 @@ class EventsController < ApplicationController
   def parse_datetime(str)
     return nil if str.blank?
     DateTime.strptime(str, "%m月%d日 %H:%M") rescue nil
-  end
-
-  def require_login
-    redirect_to root_path, alert: "ログインが必要です" unless current_user
   end
 
   def update_participants(event)

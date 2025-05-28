@@ -18,80 +18,81 @@
     <%= javascript_include_tag "application", type: "module", "data-turbo-track": "reload" %>
   </head>
 
-  <body class="flex">
+  <body class="flex overflow-x-hidden">
+
     <%= render 'shared/header' %>
 
     <% unless controller.controller_name == 'static_pages' && controller.action_name == 'top' %>
-      <div class="w-48 bg-teal-950 text-white h-screen fixed top-5 left-0 p-4 pt-20 shadow-lg rounded-lg">
+      <div class="w-48 bg-teal-950 text-white h-screen fixed top-5 left-0 p-4 pt-20 shadow-lg rounded-lg z-10">
         <h2 class="text-2xl font-extrabold text-center text-white mb-8"><%= t('application.menu') %></h2>
-<ul class="space-y-6 text-sm">
-  <li>
-    <%= link_to events_path(interested: 1, available: 1),
-      class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
-              #{current_page?(events_path(interested: 1, available: 1))? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
-      <i class="fas fa-calendar-alt"></i>
-      <span><%= t('application.index') %></span>
-    <% end %>
-  </li>
+          <ul class="space-y-6 text-sm">
+            <li>
+              <%= link_to events_path(interested: 1, available: 1),
+                class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
+                        #{current_page?(events_path(interested: 1, available: 1))? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
+                <i class="fas fa-calendar-alt"></i>
+                <span><%= t('application.index') %></span>
+              <% end %>
+            </li>
 
-  <li>
-    <%= link_to new_event_path,
-      class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
-              #{current_page?(new_event_path) ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
-      <i class="fas fa-plus-circle"></i>
-      <span><%= t('application.new') %></span>
-    <% end %>
-  </li>
+            <li>
+              <%= link_to new_event_path,
+                class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
+                        #{current_page?(new_event_path) ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
+                <i class="fas fa-plus-circle"></i>
+                <span><%= t('application.new') %></span>
+              <% end %>
+            </li>
 
-  <li>
-    <%= link_to participating_events_path,
-      class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
-              #{request.path == participating_events_path ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
-      <i class="fas fa-list-ul"></i>
-      <span><%= t('application.plan&participation_list') %></span>
-    <% end %>
-  </li>
+            <li>
+              <%= link_to participating_events_path,
+                class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
+                        #{request.path == participating_events_path ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
+                <i class="fas fa-list-ul"></i>
+                <span><%= t('application.plan&participation_list') %></span>
+              <% end %>
+            </li>
 
-  <li>
-    <%= link_to interested_events_path,
-      class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
-              #{request.path == interested_events_path ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
-      <i class="fas fa-heart"></i>
-      <span><%= t('application.interested_list') %></span>
-    <% end %>
-  </li>
+            <li>
+              <%= link_to interested_events_path,
+                class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
+                        #{request.path == interested_events_path ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
+                <i class="fas fa-heart"></i>
+                <span><%= t('application.interested_list') %></span>
+              <% end %>
+            </li>
 
-  <li>
-    <%= link_to mypage_path(clear_return_to: true),
-      class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
-              #{request.path == mypage_path ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
-      <i class="fas fa-user"></i>
-      <span><%= t('application.my_page') %></span>
-    <% end %>
-  </li>
-<li>
-  <%= link_to howto_profile_path,
-    class: "w-full text-left flex items-center space-x-3 rounded-md p-2 transition-all duration-300 #{request.path.start_with?('/howto') ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
-    <i class="fas fa-question-circle"></i>
-    <span><%= t('application.how_to_use') %></span>
-  <% end %>
+            <li>
+              <%= link_to mypage_path(clear_return_to: true),
+                class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
+                        #{request.path == mypage_path ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
+                <i class="fas fa-user"></i>
+                <span><%= t('application.my_page') %></span>
+              <% end %>
+            </li>
+          <li>
+            <%= link_to howto_profile_path,
+              class: "w-full text-left flex items-center space-x-3 rounded-md p-2 transition-all duration-300 #{request.path.start_with?('/howto') ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
+              <i class="fas fa-question-circle"></i>
+              <span><%= t('application.how_to_use') %></span>
+            <% end %>
 
-  <% if request.path.start_with?('/howto') %>
-    <ul class="ml-8 mt-3 space-y-2 text-sm text-gray-300">
-      <li><%= link_to 'プロフィール編集しよう！', howto_profile_path, class: "#{current_page?(howto_profile_path) ? 'text-orange-400 font-semibold' : 'hover:text-orange-300'}" %></li>
-      <li><%= link_to '企画のやり方', howto_plan_path, class: "#{current_page?(howto_plan_path) ? 'text-orange-400 font-semibold' : 'hover:text-orange-300'}" %></li>
-      <li><%= link_to 'オフ会参加のやり方', howto_offline_path, class: "#{current_page?(howto_offline_path) ? 'text-orange-400 font-semibold' : 'hover:text-orange-300'}" %></li>
-      <li><%= link_to '「気になる」とは？', howto_curious_path, class: "#{current_page?(howto_curious_path) ? 'text-orange-400 font-semibold' : 'hover:text-orange-300'}" %></li>
-      <li><%= link_to '通知設定', howto_notification_path, class: "#{current_page?(howto_notification_path) ? 'text-orange-400 font-semibold' : 'hover:text-orange-300'}" %></li>
-    </ul>
-  <% end %>
-</li>
+            <% if request.path.start_with?('/howto') %>
+              <ul class="ml-8 mt-3 space-y-2 text-sm text-gray-300">
+                <li><%= link_to 'プロフィール編集しよう！', howto_profile_path, class: "#{current_page?(howto_profile_path) ? 'text-orange-400 font-semibold' : 'hover:text-orange-300'}" %></li>
+                <li><%= link_to '企画のやり方', howto_plan_path, class: "#{current_page?(howto_plan_path) ? 'text-orange-400 font-semibold' : 'hover:text-orange-300'}" %></li>
+                <li><%= link_to 'オフ会参加のやり方', howto_offline_path, class: "#{current_page?(howto_offline_path) ? 'text-orange-400 font-semibold' : 'hover:text-orange-300'}" %></li>
+                <li><%= link_to '「気になる」とは？', howto_curious_path, class: "#{current_page?(howto_curious_path) ? 'text-orange-400 font-semibold' : 'hover:text-orange-300'}" %></li>
+                <li><%= link_to '通知設定', howto_notification_path, class: "#{current_page?(howto_notification_path) ? 'text-orange-400 font-semibold' : 'hover:text-orange-300'}" %></li>
+              </ul>
+            <% end %>
+          </li>
         </ul>
       </div>
     <% end %>
 
     <!-- メインコンテンツ -->
-    <div class="flex-1 <%= 'ml-64' unless controller.controller_name == 'static_pages' && controller.action_name == 'top' %> pt-15 pb-24">
+    <div class="flex-1 relative z-20 <%= 'ml-64' unless controller.controller_name == 'static_pages' && controller.action_name == 'top' %> pt-15 pb-24">
       <%= yield %>
       <div id="scripts"></div>
     </div>

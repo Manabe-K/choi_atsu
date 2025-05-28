@@ -73,10 +73,4 @@ class TagsController < ApplicationController
     def tag_params
       params.require(:tag).permit(:name)
     end
-
-    def require_login
-      unless current_user
-        redirect_to root_path, alert: "ログインが必要です"
-      end
-    end
 end

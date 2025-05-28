@@ -1,3 +1,4 @@
+<!-- app/views/events/show.html.erb -->
 <% content_for :title, "#{@event.title} | ちょいあつ" %>
 <% content_for :title, @event.title %>
 
@@ -38,3 +39,32 @@
 <%= turbo_frame_tag "show_#{dom_id(@event, :participants)}" do %>
   <%= render partial: "events/participants", locals: { event: @event } %>
 <% end %>
+
+<div class="container mx-auto px-4 mt-10">
+  <h2 class="text-xl font-semibold mb-4">スレッド</h2>
+
+  <% if current_user && @event.participant_users.include?(current_user) %>
+    <%= render "thread_posts/form", event: @event, thread_post: ThreadPost.new %>
+
+    <div class="relative flex flex-col md:flex-row items-stretch bg-white rounded-lg shadow-md overflow-hidden transition duration-300">
+      <div id="thread_posts_container"
+          data-controller="thread-scroll"
+          data-thread-scroll-target="container"
+          data-action="turbo:after-stream-render@window->thread-scroll#scrollToBottom"
+          class="p-6 relative w-full max-h-[500px] overflow-y-auto">
+        <div id="thread_posts" class="space-y-4">
+          <% if @thread_posts.any? %>
+            <%= render partial: "thread_posts/thread_post",
+                      collection: @thread_posts,
+                      as: :thread_post,
+                      locals: { event: @event } %>
+          <% else %>
+            <p id="no_thread_message" class="text-gray-500 text-center">まだ投稿はありません。最初のメッセージを送ってみよう！</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <p class="text-gray-500">参加者のみスレッドを閲覧できます。</p>
+  <% end %>
+</div>

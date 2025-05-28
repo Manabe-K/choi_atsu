@@ -1,0 +1,9 @@
+<%= turbo_stream.remove "no_thread_message" %>
+
+<%= turbo_stream.append "thread_posts" do %>
+  <%= render partial: "thread_posts/thread_post", locals: { thread_post: @thread_post, event: @event } %>
+<% end %>
+
+<%= turbo_stream.replace "new_thread_post" do %>
+  <%= render partial: "thread_posts/form", locals: { thread_post: ThreadPost.new, event: @event } %>
+<% end %>

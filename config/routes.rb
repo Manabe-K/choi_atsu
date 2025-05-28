@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     end
     resource :participant, only: [ :create, :destroy ]
     resource :curious_list, only: [ :create, :destroy ]
+    resources :thread_posts, only: [ :create, :edit, :update, :destroy ]
   end
   resources :user_tags, only: [ :create, :destroy ]
   get "tags/search", to: "tags#search"

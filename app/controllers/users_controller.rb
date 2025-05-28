@@ -94,10 +94,6 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
-  def require_login
-    redirect_to root_path, alert: "ログインしてください。" unless current_user
-  end
-
   def user_params_for_create
     params.require(:user).permit(:name, :github_uid, :github_token, :profile_picture, :uploaded_picture)
   end

@@ -7,8 +7,11 @@
 
     <% if current_user == thread_post.user %>
       <%= link_to "編集",
-                  edit_event_thread_post_path(event, thread_post, format: :turbo_stream),  # ←ここ！
-                  data: { turbo_frame: "thread_post_#{thread_post.id}" },
+                  edit_event_thread_post_path(event, thread_post, format: :turbo_stream),
+                  data: {
+                    turbo_frame: "thread_post_#{thread_post.id}",
+                    turbo_prefetch: false
+                  },
                   class: "text-blue-600 text-xs hover:underline" %>
 
       <%= link_to "削除",

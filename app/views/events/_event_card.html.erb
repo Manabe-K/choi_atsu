@@ -17,7 +17,8 @@
 
       <div id="<%= dom_id(event, :card) %>"
            class="event-card relative flex items-stretch <%= card_classes %> rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 cursor-pointer"
-           data-url="<%= event_path(event, return_to: request.fullpath) %>">
+           data-controller="event-card"
+           data-event-card-url-value="<%= event_path(event, return_to: request.fullpath) %>">
 
         <!-- 左：アイコン -->
         <div class="flex-shrink-0 p-4 flex flex-col items-center justify-center">
@@ -26,16 +27,16 @@
             <%= link_to path, class: "hover:opacity-80 transition text-center block" do %>
               <%= image_tag event.host_user.profile_picture_url, alt: event.host_user.name, class: "w-16 h-16 rounded-full border border-gray-300 mx-auto" %>
               <p class="text-xs text-gray-600 mt-1" title="<%= event.host_user.name %>">
-  <%= truncate(event.host_user.name, length: 6, omission: "…") %>
-</p>
+                <%= truncate(event.host_user.name, length: 6, omission: "…") %>
+              </p>
             <% end %>
           <% else %>
             <%= link_to user_path(event.host_user, return_to: request.fullpath),
                         class: "hover:opacity-80 transition text-center block" do %>
               <%= image_tag event.host_user.profile_picture_url, alt: event.host_user.name, class: "w-16 h-16 rounded-full border border-gray-300 mx-auto" %>
               <p class="text-xs text-gray-600 mt-1" title="<%= event.host_user.name %>">
-  <%= truncate(event.host_user.name, length: 6, omission: "…") %>
-</p>
+                <%= truncate(event.host_user.name, length: 6, omission: "…") %>
+              </p>
             <% end %>
           <% end %>
 
@@ -77,17 +78,17 @@
         </div>
 
         <!-- 右：アクション -->
-       <div class="flex flex-col justify-center gap-2 p-4 w-50 text-center min-h-[4.5rem]">
+        <div class="flex flex-col justify-center gap-2 p-4 w-50 text-center min-h-[4.5rem]">
           <% if event.host_user == current_user %>
             <% if status == "開催済み" %>
-<p class="whitespace-pre-line text-base font-bold text-white text-center leading-tight">
-  幹事お疲れ様！
-  また企画してね
-</p>
-<%= link_to curious_users_event_path(event),
-            class: "block w-full text-white font-bold py-2 rounded bg-blue-500 hover:bg-blue-600 text-m text-center transition" do %>
-  気になってた<%= event.curious_users.count %>人
-<% end %>
+              <p class="whitespace-pre-line text-base font-bold text-white text-center leading-tight">
+                幹事お疲れ様！
+                また企画してね
+              </p>
+              <%= link_to curious_users_event_path(event),
+                          class: "block w-full text-white font-bold py-2 rounded bg-blue-500 hover:bg-blue-600 text-m text-center transition" do %>
+                気になってた<%= event.curious_users.count %>人
+              <% end %>
             <% else %>
               <%= link_to curious_users_event_path(event),
                           class: "block w-full text-white font-bold py-2 rounded bg-blue-500 hover:bg-blue-600 text-m text-center transition" do %>

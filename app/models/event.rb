@@ -7,6 +7,7 @@ class Event < ApplicationRecord
   has_many :participant_users, through: :participants, source: :user
   has_many :curious_lists, dependent: :destroy
   has_many :curious_users, through: :curious_lists, source: :user
+  has_many :thread_posts, dependent: :destroy
 
   validates :title, presence: true
   validates :start_time, presence: true

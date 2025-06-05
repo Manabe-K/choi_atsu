@@ -16,10 +16,4 @@ class MyPagesController < ApplicationController
   rescue URI::InvalidURIError
     @safe_return_to = nil
   end
-
-  private
-
-  def require_login
-    redirect_to root_path, alert: "ログインが必要です" unless current_user
-  end
 end

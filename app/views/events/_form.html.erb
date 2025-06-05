@@ -29,34 +29,37 @@
     </div>
 
     <!-- 開催日時 -->
-    <div data-controller="form-animation" class="flex items-start gap-4 relative">
-      <label class="w-40 text-sm font-semibold text-gray-700 pt-2">
-        <i class="fas fa-calendar-alt mr-2 text-gray-500"></i>開催する時間は？
-      </label>
-      <div class="flex items-center gap-3 flex-1">
-<%= form.text_field :start_time, id: "event_start_time",
-    placeholder: "開始時間をえらんでね",
-    value: @event.start_time&.strftime("%-m月%-d日 %H:%M"),
-    class: "w-full border rounded-lg p-2.5 pr-10 transition-all duration-300 datetime-picker",
-    data: {
-      controller: "flatpickr",
-      form_animation_target: "input",
-      action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
-    } %>
+<div data-controller="flatpickr-event form-animation"
+     class="flex items-start gap-4 relative mb-6">
+  <label class="w-40 text-sm font-semibold text-gray-700 pt-2">
+    <i class="fas fa-calendar-alt mr-2 text-gray-500"></i>開催する時間は？
+  </label>
+  <div class="flex items-center gap-3 flex-1">
+    <%= form.text_field :start_time,
+        id: "event_start_time",
+        placeholder: "開始時間をえらんでね",
+        value: @event.start_time&.strftime("%-m月%-d日 %H:%M"),
+        class: "w-full border rounded-lg p-2.5 pr-10 transition-all duration-300 datetime-picker",
+        data: {
+          flatpickr_event_target: "start",
+          form_animation_target: "input",
+          action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
+        } %>
 
-        <span class="text-gray-500">〜</span>
+    <span class="text-gray-500">〜</span>
 
-<%= form.text_field :end_time, id: "event_end_time",
-    placeholder: "終了時間も忘れずに！",
-    value: @event.end_time&.strftime("%-m月%-d日 %H:%M"),
-    class: "w-full border rounded-lg p-2.5 pr-10 transition-all duration-300 datetime-picker",
-    data: {
-      controller: "flatpickr",
-      form_animation_target: "input",
-      action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
-    } %>
-      </div>
-    </div>
+    <%= form.text_field :end_time,
+        id: "event_end_time",
+        placeholder: "終了時間も忘れずに！",
+        value: @event.end_time&.strftime("%-m月%-d日 %H:%M"),
+        class: "w-full border rounded-lg p-2.5 pr-10 transition-all duration-300 datetime-picker",
+        data: {
+          flatpickr_event_target: "end",
+          form_animation_target: "input",
+          action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
+        } %>
+  </div>
+</div>
 
     <!-- 開催場所 -->
     <div data-controller="form-animation" class="flex items-start gap-4 relative">
@@ -170,22 +173,24 @@ profile_picture: user.profile_picture.present? ?
     </div>
 
     <!-- 締切日時 -->
-    <div data-controller="form-animation" class="flex items-start gap-4 relative">
-      <label class="w-40 text-sm font-semibold text-gray-700 pt-2">
-        <i class="fas fa-calendar-times mr-2 text-gray-500"></i>いつまで申し込める？
-      </label>
-      <div class="relative flex-1">
-<%= form.text_field :deadline, id: "event_deadline",
-    placeholder: "締切日時を選んでね",
-    value: @event.deadline&.strftime("%-m月%-d日 %H:%M"),
-    class: "w-full border rounded-lg p-2.5 pr-10 transition-all duration-300 datetime-picker",
-    data: {
-      controller: "flatpickr",
-      form_animation_target: "input",
-      action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
-    } %>
-      </div>
-    </div>
+<div data-controller="flatpickr-deadline form-animation"
+     class="flex items-start gap-4 relative mb-6">
+  <label class="w-40 text-sm font-semibold text-gray-700 pt-2">
+    <i class="fas fa-calendar-times mr-2 text-gray-500"></i>いつまで申し込める？
+  </label>
+  <div class="relative flex-1">
+    <%= form.text_field :deadline,
+        id: "event_deadline",
+        placeholder: "締切日時を選んでね",
+        value: @event.deadline&.strftime("%-m月%-d日 %H:%M"),
+        class: "w-full border rounded-lg p-2.5 pr-10 transition-all duration-300 datetime-picker",
+        data: {
+          flatpickr_deadline_target: "deadline",
+          form_animation_target: "input",
+          action: "focus->form-animation#handleFocus blur->form-animation#handleBlur input->form-animation#handleInput change->form-animation#handleInput"
+        } %>
+  </div>
+</div>
 
     <!-- タグ入力 -->
 <div class="flex items-start gap-4 relative">

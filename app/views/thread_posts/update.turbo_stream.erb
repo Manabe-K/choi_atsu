@@ -1,0 +1,4 @@
+<!-- app/views/thread_posts/update.turbo_stream.erb -->
+<%= turbo_stream.replace "thread_post_#{@thread_post.id}" do %>
+  <%= render partial: "thread_posts/thread_post", locals: { thread_post: @thread_post, event: @event } %>
+<% end %>

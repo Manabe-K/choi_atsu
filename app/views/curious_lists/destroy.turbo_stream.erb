@@ -7,9 +7,3 @@
 <%= turbo_stream.append "flash-container" do %>
   <%= render "shared/flash", notice: "気になるを解除しました" %>
 <% end %>
-
-<%= turbo_stream.append "scripts" do %>
-  <script>
-    window.setupFlashMessageAutoDismiss && window.setupFlashMessageAutoDismiss()
-  </script>
-<% end %>

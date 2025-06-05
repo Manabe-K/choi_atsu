@@ -34,9 +34,3 @@
 <%= turbo_stream.append "flash-container" do %>
   <%= render "shared/flash", notice: "イベントに参加しました！" %>
 <% end %>
-
-<%= turbo_stream.append "scripts" do %>
-  <script>
-    window.setupFlashMessageAutoDismiss && window.setupFlashMessageAutoDismiss()
-  </script>
-<% end %>

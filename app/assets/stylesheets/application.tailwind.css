@@ -1,5 +1,9 @@
-@import "flatpickr/dist/themes/material_orange";
-@import "tailwindcss";
+@import "./tailwind.css";
+@import "./flatpickr_material_orange";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body::before {
   content: "";

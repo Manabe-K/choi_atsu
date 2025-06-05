@@ -1,7 +1,10 @@
 import { application } from "./application"
 
-import FlatpickrController from "./flatpickr_controller"
-application.register("flatpickr", FlatpickrController)
+import FlatpickrEventController from "./flatpickr_event_controller"
+application.register("flatpickr-event", FlatpickrEventController)
+
+import FlatpickrDeadlineController from "./flatpickr_deadline_controller"
+application.register("flatpickr-deadline", FlatpickrDeadlineController)
 
 import FormAnimationController from "./form_animation_controller"
 application.register("form-animation", FormAnimationController)
@@ -20,3 +23,15 @@ application.register("user-tag-input", UserTagInputController)
 
 import EventTagInputController from "./event_tag_input_controller"
 application.register("event-tag-input", EventTagInputController)
+
+import EventCardController from "./event_card_controller"
+application.register("event-card", EventCardController)
+
+import MenuToggleController from "./menu_toggle_controller"
+application.register("menu-toggle", MenuToggleController)
+
+import FlashMessageController from "./flash_message_controller"
+application.register("flash-message", FlashMessageController)
+
+import ThreadScrollController from "./thread_scroll_controller"
+application.register("thread-scroll", ThreadScrollController)

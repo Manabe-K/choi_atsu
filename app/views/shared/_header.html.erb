@@ -16,29 +16,29 @@
       </div>
 
       <!-- 右側: ログイン/ログアウト -->
-<div class="text-sm space-x-4">
-  <% if current_user %>
-    <!-- プロフィール画像とドロップダウンメニュー -->
-    <div class="relative inline-block">
-      <!-- プロフィール画像 -->
-      <button id="profile-button" class="w-10 h-10 rounded-full overflow-hidden">
-        <%= image_tag(current_user.profile_picture_url, alt: 'Profile Picture', class: 'object-cover w-full h-full') %>
-      </button>
+      <div class="text-sm space-x-4">
+        <% if current_user %>
+          <!-- ✅ Stimulusによるメニュー制御 -->
+          <div data-controller="menu-toggle" class="relative inline-block">
+            <!-- プロフィール画像 -->
+            <button data-action="click->menu-toggle#toggle" class="w-10 h-10 rounded-full overflow-hidden">
+              <%= image_tag(current_user.profile_picture_url, alt: 'Profile Picture', class: 'object-cover w-full h-full') %>
+            </button>
 
-      <!-- ドロップダウンメニュー -->
-      <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg z-[60]">
-        <ul>
-          <li><%= link_to 'マイページ', mypage_path(clear_return_to: true), class: 'block px-4 py-2 text-sm' %></li>
-          <li><%= link_to '設定', "#", class: 'block px-4 py-2 text-sm' %></li>
-          <li><%= button_to 'ログアウト', logout_path, method: :delete, class: 'block px-4 py-2 text-sm text-red-500 hover:bg-gray-200' %></li>
-        </ul>
+            <!-- ドロップダウンメニュー -->
+            <div data-menu-toggle-target="menu"
+                 class="hidden absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg z-[60]">
+              <ul>
+                <li><%= link_to 'マイページ', mypage_path(clear_return_to: true), class: 'block px-4 py-2 text-sm' %></li>
+                <li><%= link_to '設定', "#", class: 'block px-4 py-2 text-sm' %></li>
+                <li><%= button_to 'ログアウト', logout_path, method: :delete, class: 'block px-4 py-2 text-sm text-red-500 hover:bg-gray-200' %></li>
+              </ul>
+            </div>
+          </div>
+        <% else %>
+          <%= link_to t('header.login'), '/auth/github', class: "hover:underline" %>
+        <% end %>
       </div>
-    </div>
-
-  <% else %>
-    <%= link_to t('header.login'), '/auth/github', class: "hover:underline" %>
-  <% end %>
-</div>
     </div>
   </div>
 </header>

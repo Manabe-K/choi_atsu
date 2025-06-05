@@ -1,0 +1,12 @@
+<!-- app/views/thread_posts/destroy.turbo_stream.erb -->
+<turbo-stream action="remove" target="thread_post_<%= @thread_post.id %>"></turbo-stream>
+
+<% if @event.thread_posts.reload.empty? %>
+  <turbo-stream action="append" target="thread_posts">
+    <template>
+      <p id="no_thread_message" class="text-gray-500 text-center">
+        まだ投稿はありません。最初のメッセージを送ってみよう！
+      </p>
+    </template>
+  </turbo-stream>
+<% end %>

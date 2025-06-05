@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_18_103221) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_27_060013) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -100,6 +100,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_18_103221) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "thread_posts", force: :cascade do |t|
+    t.text "content"
+    t.bigint "user_id", null: false
+    t.bigint "event_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_thread_posts_on_event_id"
+    t.index ["user_id"], name: "index_thread_posts_on_user_id"
+  end
+
   create_table "user_tags", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "tag_id", null: false
@@ -129,6 +139,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_18_103221) do
   add_foreign_key "event_tags", "tags"
   add_foreign_key "participants", "events"
   add_foreign_key "participants", "users"
+  add_foreign_key "thread_posts", "events"
+  add_foreign_key "thread_posts", "users"
   add_foreign_key "user_tags", "tags"
   add_foreign_key "user_tags", "users"
 end

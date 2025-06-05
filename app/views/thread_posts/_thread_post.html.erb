@@ -1,0 +1,23 @@
+<!-- app/views/thread_posts/_thread_post.html.erb -->
+<turbo-frame id="thread_post_<%= thread_post.id %>">
+  <div class="border rounded p-3 bg-white shadow-sm relative">
+    <p class="text-sm text-gray-800"><%= thread_post.user.name %></p>
+    <p class="text-gray-600 mt-1 whitespace-pre-line"><%= thread_post.content %></p>
+    <p class="text-xs text-gray-400 mt-2"><%= l(thread_post.created_at, format: :short) %></p>
+
+    <% if current_user == thread_post.user %>
+      <%= link_to "編集",
+                  edit_event_thread_post_path(event, thread_post, format: :turbo_stream),
+                  data: {
+                    turbo_frame: "thread_post_#{thread_post.id}",
+                    turbo_prefetch: false
+                  },
+                  class: "text-blue-600 text-xs hover:underline" %>
+
+      <%= link_to "削除",
+                  event_thread_post_path(event, thread_post),
+                  data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" },
+                  class: "text-red-500 text-xs hover:underline absolute top-2 right-2" %>
+    <% end %>
+  </div>
+</turbo-frame>

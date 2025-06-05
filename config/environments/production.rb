@@ -43,7 +43,7 @@ Rails.application.configure do
 
   # SSL settings
   config.force_ssl = true
-  config.ssl_options = { redirect: false }
+  config.ssl_options = { redirect: true }
 
   # Logging to STDOUT
   config.logger = ActiveSupport::Logger.new(STDOUT)

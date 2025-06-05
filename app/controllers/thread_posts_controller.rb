@@ -2,7 +2,7 @@
 class ThreadPostsController < ApplicationController
   before_action :require_login
   before_action :set_event
-  before_action :set_thread_post, only: [:edit, :update, :destroy, :show]
+  before_action :set_thread_post, only: [ :edit, :update, :destroy, :show ]
 
   def show
     @event = Event.find(params[:event_id])

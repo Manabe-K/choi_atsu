@@ -18,57 +18,57 @@
   </head>
 
   <body class="flex overflow-x-hidden">
-
     <%= render 'shared/header' %>
 
     <% unless controller.controller_name == 'static_pages' && controller.action_name == 'top' %>
       <div class="w-48 bg-teal-950 text-white h-screen fixed top-5 left-0 p-4 pt-20 shadow-lg rounded-lg z-10">
         <h2 class="text-2xl font-extrabold text-center text-white mb-8"><%= t('application.menu') %></h2>
-          <ul class="space-y-6 text-sm">
-            <li>
-              <%= link_to events_path(interested: 1, available: 1),
-                class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
-                        #{current_page?(events_path(interested: 1, available: 1))? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
-                <i class="fas fa-calendar-alt"></i>
-                <span><%= t('application.index') %></span>
-              <% end %>
-            </li>
+        <ul class="space-y-6 text-sm">
+          <li>
+            <%= link_to events_path(interested: 1, available: 1),
+              class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
+                      #{current_page?(events_path(interested: 1, available: 1))? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
+              <i class="fas fa-calendar-alt"></i>
+              <span><%= t('application.index') %></span>
+            <% end %>
+          </li>
 
-            <li>
-              <%= link_to new_event_path,
-                class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
-                        #{current_page?(new_event_path) ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
-                <i class="fas fa-plus-circle"></i>
-                <span><%= t('application.new') %></span>
-              <% end %>
-            </li>
+          <li>
+            <%= link_to new_event_path,
+              class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
+                      #{current_page?(new_event_path) ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
+              <i class="fas fa-plus-circle"></i>
+              <span><%= t('application.new') %></span>
+            <% end %>
+          </li>
 
-            <li>
-              <%= link_to participating_events_path,
-                class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
-                        #{request.path == participating_events_path ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
-                <i class="fas fa-list-ul"></i>
-                <span><%= t('application.plan&participation_list') %></span>
-              <% end %>
-            </li>
+          <li>
+            <%= link_to participating_events_path,
+              class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
+                      #{request.path == participating_events_path ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
+              <i class="fas fa-list-ul"></i>
+              <span><%= t('application.plan&participation_list') %></span>
+            <% end %>
+          </li>
 
-            <li>
-              <%= link_to interested_events_path,
-                class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
-                        #{request.path == interested_events_path ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
-                <i class="fas fa-heart"></i>
-                <span><%= t('application.interested_list') %></span>
-              <% end %>
-            </li>
+          <li>
+            <%= link_to interested_events_path,
+              class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
+                      #{request.path == interested_events_path ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
+              <i class="fas fa-heart"></i>
+              <span><%= t('application.interested_list') %></span>
+            <% end %>
+          </li>
 
-            <li>
-              <%= link_to mypage_path(clear_return_to: true),
-                class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
-                        #{request.path == mypage_path ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
-                <i class="fas fa-user"></i>
-                <span><%= t('application.my_page') %></span>
-              <% end %>
-            </li>
+          <li>
+            <%= link_to mypage_path(clear_return_to: true),
+              class: "flex items-center space-x-3 rounded-md p-2 transition-all duration-300
+                      #{request.path == mypage_path ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
+              <i class="fas fa-user"></i>
+              <span><%= t('application.my_page') %></span>
+            <% end %>
+          </li>
+
           <li>
             <%= link_to howto_profile_path,
               class: "w-full text-left flex items-center space-x-3 rounded-md p-2 transition-all duration-300 #{request.path.start_with?('/howto') ? 'text-white bg-indigo-600' : 'text-gray-300 hover:text-white hover:bg-indigo-600'}" do %>
@@ -91,7 +91,7 @@
     <% end %>
 
     <!-- メインコンテンツ -->
-    <div class="flex-1 relative z-20 <%= 'ml-64' unless controller.controller_name == 'static_pages' && controller.action_name == 'top' %> pt-15 pb-24">
+    <div class="flex-1 relative z-20 pt-15 pb-24 max-w-full overflow-x-hidden <%= 'ml-64' unless controller.controller_name == 'static_pages' && controller.action_name == 'top' %>">
       <%= yield %>
       <div id="scripts"></div>
     </div>

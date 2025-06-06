@@ -1,23 +1,47 @@
-<!-- app/views/thread_posts/_thread_post.html.erb -->
 <turbo-frame id="thread_post_<%= thread_post.id %>">
-  <div class="border rounded p-3 bg-white shadow-sm relative">
-    <p class="text-sm text-gray-800"><%= thread_post.user.name %></p>
-    <p class="text-gray-600 mt-1 whitespace-pre-line"><%= thread_post.content %></p>
-    <p class="text-xs text-gray-400 mt-2"><%= l(thread_post.created_at, format: :short) %></p>
+  <% is_me = thread_post.user == current_user %>
+  <div class="<%= is_me ? 'chat chat-end' : 'chat chat-start' %> text-[12px] my-2 px-2">
 
-    <% if current_user == thread_post.user %>
-      <%= link_to "編集",
-                  edit_event_thread_post_path(event, thread_post, format: :turbo_stream),
-                  data: {
-                    turbo_frame: "thread_post_#{thread_post.id}",
-                    turbo_prefetch: false
-                  },
-                  class: "text-blue-600 text-xs hover:underline" %>
+    <!-- アイコン -->
+    <div class="chat-image avatar">
+      <div class="w-8 rounded-full">
+        <%= image_tag(
+          thread_post.user.profile_picture_url,
+          alt: "#{thread_post.user.name}のプロフィール画像",
+          class: 'object-cover w-full h-full'
+        ) %>
+      </div>
+    </div>
 
-      <%= link_to "削除",
-                  event_thread_post_path(event, thread_post),
-                  data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" },
-                  class: "text-red-500 text-xs hover:underline absolute top-2 right-2" %>
-    <% end %>
+    <!-- 名前 -->
+    <div class="chat-header text-[8px] text-gray-500 mb-1">
+      <%= thread_post.user.name %>
+    </div>
+
+    <!-- 本文＋時間を横並び -->
+    <div class="flex items-end gap-1 max-w-full">
+      <% if is_me %>
+        <!-- 時間（左） -->
+        <div class="text-[8px] text-gray-400">
+          <%= l(thread_post.created_at, format: :short) %>
+        </div>
+      <% end %>
+
+      <!-- 吹き出し -->
+      <div class="chat-bubble <%= is_me ? 'bg-green-200 text-black' : 'bg-gray-100 text-gray-800' %> max-w-xs break-words">
+        <%= simple_format(
+          h(thread_post.content).gsub(%r{(https?://[^\s<]+)}i) do |url|
+            "<a href='#{url}' onclick='window.open(this.href, \"_blank\"); return false;' class='text-blue-600 underline break-words'>#{url}</a>"
+          end.html_safe
+        ) %>
+      </div>
+
+      <% unless is_me %>
+        <!-- 時間（右） -->
+        <div class="text-[8px] text-gray-400">
+          <%= l(thread_post.created_at, format: :short) %>
+        </div>
+      <% end %>
+    </div>
   </div>
 </turbo-frame>

@@ -1,9 +1,7 @@
-@import "./tailwind.css";
+@import "tailwindcss";
 @import "./flatpickr_material_orange";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@plugin "daisyui";
 
 body::before {
   content: "";

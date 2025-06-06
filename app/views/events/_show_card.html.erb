@@ -12,11 +12,11 @@
   end
 %>
 
-<div id="show_card_event_<%= event.id %>" class="relative flex flex-col md:flex-row items-stretch <%= card_classes %> rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+<div id="show_card_event_<%= event.id %>" class="relative flex flex-col md:flex-row items-stretch w-full max-w-full <%= card_classes %> rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
   <div class="p-6 relative w-full">
 
     <!-- アクションボタン -->
-    <div id="show_<%= dom_id(event, :actions) %>" class="absolute top-4 right-4 flex flex-col justify-center gap-2 p-4 w-50 text-center min-h-[4.5rem] z-10">
+    <div id="show_<%= dom_id(event, :actions) %>" class="absolute top-4 right-4 flex flex-col justify-center gap-2 p-4 w-full max-w-[10rem] text-center min-h-[4.5rem] z-10">
 
       <% if event.host_user == current_user %>
         <%# ✅ 主催者 %>
@@ -26,12 +26,12 @@
             また、企画してね
           </p>
           <%= link_to curious_users_event_path(event),
-                      class: "block w-full text-white font-bold py-2 rounded bg-blue-500 hover:bg-blue-600 text-m text-center transition mt-1" do %>
+                      class: "block w-full text-white font-bold py-2 px-2 rounded bg-blue-500 hover:bg-blue-600 text-sm text-center whitespace-nowrap transition mt-1" do %>
             気になってた<%= event.curious_users.count %>人
           <% end %>
         <% else %>
           <%= link_to curious_users_event_path(event),
-                      class: "block w-full text-white font-bold py-2 rounded bg-blue-500 hover:bg-blue-600 text-m text-center transition" do %>
+                      class: "block w-full text-white font-bold py-2 px-2 rounded bg-blue-500 hover:bg-blue-600 text-sm text-center whitespace-nowrap transition" do %>
             気になってる<%= event.curious_users.count %>人
           <% end %>
         <% end %>
@@ -50,7 +50,7 @@
         <% else %>
           <%# 参加・気になるボタン（Turbo） %>
           <% if %w[満員 締切終了].include?(status) && !is_joined %>
-            <p class="block w-full text-white font-bold py-2 rounded bg-gray-600 text-m text-center transition cursor-not-allowed">
+            <p class="block w-full text-white font-bold py-2 px-2 rounded bg-gray-600 text-sm text-center whitespace-nowrap transition cursor-not-allowed">
               <%= status %>
             </p>
           <% else %>

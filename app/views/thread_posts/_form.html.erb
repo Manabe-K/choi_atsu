@@ -1,14 +1,18 @@
 <!-- app/views/thread_posts/_form.html.erb -->
 
 <% if thread_post.new_record? %>
-  <div id="new_thread_post" class="relative z-0 flex flex-col md:flex-row items-stretch bg-white rounded-lg shadow-md overflow-hidden transition duration-300 mb-6">
-    <div class="p-6 w-full">
-      <%= form_with model: [event, thread_post], local: false do |f| %>
-        <div class="flex items-start gap-4">
-          <%= f.text_area :content, placeholder: "内容を入力...", class: "w-full border rounded p-2" %>
-          <%= f.submit "投稿", class: "bg-teal-600 text-white px-4 py-2 rounded" %>
-        </div>
-      <% end %>
-    </div>
+  <div id="new_thread_post" class="p-4 bg-white rounded-xl shadow mb-6">
+    <%= form_with model: [event, thread_post], local: false do |f| %>
+      <div class="flex items-end gap-2">
+<%= f.text_area :content,
+                placeholder: "メッセージを入力...",
+                rows: 2,
+                required: true,
+                class: "textarea textarea-bordered w-full bg-base-100 resize-none focus:outline-none focus:ring-1 focus:ring-teal-700 focus:border-teal-700",
+                oninput: "this.setCustomValidity(this.value.trim() === '' ? '空白だけの投稿はできません' : '')" %>
+
+        <%= f.submit "送信", class: "btn btn-neutral" %>
+      </div>
+    <% end %>
   </div>
 <% end %>

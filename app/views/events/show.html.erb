@@ -1,8 +1,7 @@
-<!-- app/views/events/show.html.erb -->
 <% content_for :title, "#{@event.title} | ちょいあつ" %>
 <% content_for :title, @event.title %>
 
-<div class="container mx-auto px-4 pt-8 flex justify-between items-center">
+<div class="w-full max-w-screen-lg px-4 pt-8 mx-auto flex justify-between items-center">
   <%= link_to t("buttons.back"),
               safe_return_to_path,
               class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
@@ -24,23 +23,25 @@
     <% else %>
       <!-- 終了から30分経過後：感謝メッセージ -->
       <div class="text-sm text-gray-500 font-semibold italic">
-        ※ このイベントは終了から30分以上経過しました。<br>
+        ※ このイベントは終了から30分以上経過しました。
       </div>
     <% end %>
   <% end %>
 </div>
 
 <!-- ✅ Turboで差し替えたいのはこのdiv！ -->
-<div class="container mx-auto px-4 py-4">
-  <%= render partial: "events/show_card", locals: { event: @event, current_user: current_user } %>
-</div>
+<%= turbo_frame_tag "show_#{dom_id(@event, :card)}" do %>
+  <div class="container mx-auto px-4 py-4 max-w-full overflow-x-hidden">
+    <%= render partial: "events/show_card", locals: { event: @event, current_user: current_user } %>
+  </div>
+<% end %>
 
 <!-- 参加者表示（カードの外） -->
 <%= turbo_frame_tag "show_#{dom_id(@event, :participants)}" do %>
   <%= render partial: "events/participants", locals: { event: @event } %>
 <% end %>
 
-<div class="container mx-auto px-4 mt-10">
+<div class="container mx-auto px-4 mt-10 max-w-full overflow-x-hidden">
   <h2 class="text-xl font-semibold mb-4">スレッド</h2>
 
   <% if current_user && @event.participant_users.include?(current_user) %>
@@ -50,12 +51,13 @@
       <div id="thread_posts_container"
           data-controller="thread-scroll"
           data-action="turbo:after-stream-render@window->thread-scroll#scrollToBottom"
-          class="p-6 relative w-full max-h-[500px] overflow-y-auto">
+          class="p-6 relative w-full max-w-full overflow-x-hidden max-h-[500px] overflow-y-auto">
 
         <!-- ✅ スクロール対象（ここが Stimulus の containerTarget） -->
-        <div id="thread_posts"
-            data-thread-scroll-target="container"
-            class="space-y-4">
+          <div id="thread_posts"
+              data-event-id="<%= @event.id %>"
+              data-thread-scroll-target="container"
+              class="space-y-4 px-2">
           <% if @thread_posts.any? %>
             <%= render partial: "thread_posts/thread_post",
                       collection: @thread_posts,

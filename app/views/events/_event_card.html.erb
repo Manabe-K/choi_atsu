@@ -16,9 +16,9 @@
       %>
 
       <div id="<%= dom_id(event, :card) %>"
-           class="event-card relative flex items-stretch <%= card_classes %> rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 cursor-pointer"
-           data-controller="event-card"
-           data-event-card-url-value="<%= event_path(event, return_to: request.fullpath) %>">
+          class="event-card relative flex items-stretch <%= card_classes %> rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 cursor-pointer max-w-full"
+          data-controller="event-card"
+          data-event-card-url-value="<%= event_path(event, return_to: request.fullpath) %>">
 
         <!-- 左：アイコン -->
         <div class="flex-shrink-0 p-4 flex flex-col items-center justify-center">
@@ -46,7 +46,7 @@
         </div>
 
         <!-- 中央：イベント詳細 + タグ -->
-        <div class="flex flex-col justify-between flex-1 p-4">
+        <div class="flex flex-col justify-between flex-1 p-4 min-w-0">
           <div class="flex items-center justify-between min-h-[32px]">
             <h2 class="text-base font-semibold text-gray-900"><%= event.title %></h2>
           </div>
@@ -78,7 +78,7 @@
         </div>
 
         <!-- 右：アクション -->
-        <div class="flex flex-col justify-center gap-2 p-4 w-50 text-center min-h-[4.5rem]">
+        <div class="flex flex-col justify-center gap-2 p-4 w-full max-w-[10rem] text-center flex-shrink-0">
           <% if event.host_user == current_user %>
             <% if status == "開催済み" %>
               <p class="whitespace-pre-line text-base font-bold text-white text-center leading-tight">

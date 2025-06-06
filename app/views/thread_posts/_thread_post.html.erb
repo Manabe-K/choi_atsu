@@ -28,8 +28,12 @@
       <% end %>
 
       <!-- 吹き出し -->
-      <div class="chat-bubble <%= is_me ? 'bg-green-200 text-black' : 'bg-gray-100 text-gray-800' %> max-w-xs">
-        <%= simple_format(h(thread_post.content)) %>
+      <div class="chat-bubble <%= is_me ? 'bg-green-200 text-black' : 'bg-gray-100 text-gray-800' %> max-w-xs break-words">
+        <%= simple_format(
+          h(thread_post.content).gsub(%r{(https?://[^\s<]+)}i) do |url|
+            "<a href='#{url}' onclick='window.open(this.href, \"_blank\"); return false;' class='text-blue-600 underline break-words'>#{url}</a>"
+          end.html_safe
+        ) %>
       </div>
 
       <% unless is_me %>

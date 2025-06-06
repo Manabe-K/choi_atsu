@@ -23,16 +23,18 @@
     <% else %>
       <!-- 終了から30分経過後：感謝メッセージ -->
       <div class="text-sm text-gray-500 font-semibold italic">
-        ※ このイベントは終了から30分以上経過しました。<br>
+        ※ このイベントは終了から30分以上経過しました。
       </div>
     <% end %>
   <% end %>
 </div>
 
 <!-- ✅ Turboで差し替えたいのはこのdiv！ -->
-<div class="container mx-auto px-4 py-4 max-w-full overflow-x-hidden">
-  <%= render partial: "events/show_card", locals: { event: @event, current_user: current_user } %>
-</div>
+<%= turbo_frame_tag "show_#{dom_id(@event, :card)}" do %>
+  <div class="container mx-auto px-4 py-4 max-w-full overflow-x-hidden">
+    <%= render partial: "events/show_card", locals: { event: @event, current_user: current_user } %>
+  </div>
+<% end %>
 
 <!-- 参加者表示（カードの外） -->
 <%= turbo_frame_tag "show_#{dom_id(@event, :participants)}" do %>
@@ -52,9 +54,10 @@
           class="p-6 relative w-full max-w-full overflow-x-hidden max-h-[500px] overflow-y-auto">
 
         <!-- ✅ スクロール対象（ここが Stimulus の containerTarget） -->
-        <div id="thread_posts"
-            data-thread-scroll-target="container"
-            class="space-y-4 px-2">
+          <div id="thread_posts"
+              data-event-id="<%= @event.id %>"
+              data-thread-scroll-target="container"
+              class="space-y-4 px-2">
           <% if @thread_posts.any? %>
             <%= render partial: "thread_posts/thread_post",
                       collection: @thread_posts,

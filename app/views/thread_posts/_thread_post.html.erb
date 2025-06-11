@@ -1,47 +1,50 @@
 <turbo-frame id="thread_post_<%= thread_post.id %>">
-  <% is_me = thread_post.user == current_user %>
-  <div class="<%= is_me ? 'chat chat-end' : 'chat chat-start' %> text-[12px] my-2 px-2">
-
-    <!-- アイコン -->
-    <div class="chat-image avatar">
-      <div class="w-8 rounded-full">
-        <%= image_tag(
-          thread_post.user.profile_picture_url,
-          alt: "#{thread_post.user.name}のプロフィール画像",
-          class: 'object-cover w-full h-full'
-        ) %>
+  <div
+    class="text-[12px] my-2 px-2"
+    data-controller="chat-style"
+    data-chat-style-user-id-value="<%= thread_post.user_id %>"
+  >
+    <div class="chat text-[12px] <%= 'chat-start' %>" data-chat-style-target="wrapper">
+      <!-- アイコン -->
+      <div class="chat-image avatar">
+        <div class="w-8 rounded-full">
+          <%= image_tag(
+            thread_post.user.profile_picture_url,
+            alt: "#{thread_post.user.name}のプロフィール画像",
+            class: 'object-cover w-full h-full'
+          ) %>
+        </div>
       </div>
-    </div>
 
-    <!-- 名前 -->
-    <div class="chat-header text-[8px] text-gray-500 mb-1">
-      <%= thread_post.user.name %>
-    </div>
+      <!-- 名前 -->
+      <div class="chat-header text-[8px] text-gray-500 mb-1">
+        <%= thread_post.user.name %>
+      </div>
 
-    <!-- 本文＋時間を横並び -->
-    <div class="flex items-end gap-1 max-w-full">
-      <% if is_me %>
+      <!-- 本文＋時間を横並び -->
+      <div class="flex items-end gap-1 max-w-full">
         <!-- 時間（左） -->
-        <div class="text-[8px] text-gray-400">
+        <div class="text-[8px] text-gray-400" data-chat-style-target="timeLeft">
           <%= l(thread_post.created_at, format: :short) %>
         </div>
-      <% end %>
 
-      <!-- 吹き出し -->
-      <div class="chat-bubble <%= is_me ? 'bg-green-200 text-black' : 'bg-gray-100 text-gray-800' %> max-w-xs break-words">
-        <%= simple_format(
-          h(thread_post.content).gsub(%r{(https?://[^\s<]+)}i) do |url|
-            "<a href='#{url}' onclick='window.open(this.href, \"_blank\"); return false;' class='text-blue-600 underline break-words'>#{url}</a>"
-          end.html_safe
-        ) %>
-      </div>
+        <!-- 吹き出し -->
+        <div
+          class="chat-bubble max-w-xs break-words bg-gray-100 text-gray-800"
+          data-chat-style-target="bubble"
+        >
+          <%= simple_format(
+            h(thread_post.content).gsub(%r{(https?://[^\s<]+)}i) do |url|
+              "<a href='#{url}' onclick='window.open(this.href, \"_blank\"); return false;' class='text-blue-600 underline break-words'>#{url}</a>"
+            end.html_safe
+          ) %>
+        </div>
 
-      <% unless is_me %>
         <!-- 時間（右） -->
-        <div class="text-[8px] text-gray-400">
+        <div class="text-[8px] text-gray-400" data-chat-style-target="timeRight">
           <%= l(thread_post.created_at, format: :short) %>
         </div>
-      <% end %>
+      </div>
     </div>
   </div>
 </turbo-frame>

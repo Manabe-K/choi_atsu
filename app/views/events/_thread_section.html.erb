@@ -1,5 +1,6 @@
+<%= turbo_stream_from event %>
+
 <%= turbo_frame_tag "thread_section_#{event.id}" do %>
-  <%= turbo_stream_from event %>
   <% if current_user && event.participant_users.include?(current_user) %>
     <%= render "thread_posts/form", event: event, thread_post: ThreadPost.new %>
     <div class="bg-white rounded-lg shadow-md overflow-hidden">

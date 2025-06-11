@@ -17,7 +17,7 @@
     <%= javascript_include_tag "application", type: "module", "data-turbo-track": "reload" %>
   </head>
 
-  <body class="flex overflow-x-hidden">
+  <body class="flex overflow-x-hidden" data-current-user-id="<%= current_user&.id %>">
     <%= render 'shared/header' %>
 
     <% unless controller.controller_name == 'static_pages' && controller.action_name == 'top' %>

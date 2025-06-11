@@ -35,3 +35,6 @@ application.register("flash-message", FlashMessageController)
 
 import ThreadScrollController from "./thread_scroll_controller"
 application.register("thread-scroll", ThreadScrollController)
+
+import ChatStyleController from "./chat_style_controller"
+application.register("chat-style", ChatStyleController)

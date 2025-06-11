@@ -38,8 +38,8 @@ Rails.application.configure do
 
   # Mount Action Cable outside main process or domain.
   # config.action_cable.mount_path = nil
-  # config.action_cable.url = "wss://example.com/cable"
-  # config.action_cable.allowed_request_origins = [ "http://example.com", /http:\/\/example.*/ ]
+  config.action_cable.url = "wss://www.choi-atsu.com/cable"
+  config.action_cable.allowed_request_origins = [ "https://www.choi-atsu.com" ]
 
   # SSL settings
   config.force_ssl = true
@@ -78,4 +78,6 @@ Rails.application.configure do
 
   # Allow cookies across domains if needed
   config.action_dispatch.cookies_same_site_protection = :none
+
+
 end

@@ -14,6 +14,13 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - "6379:6379"
+
   web:
     build:
       context: .
@@ -27,11 +34,14 @@ services:
       - node_modules:/myapp/node_modules
     environment:
       TZ: Asia/Tokyo
+      REDIS_URL: redis://redis:6379/1
     ports:
       - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
 volumes:
   bundle_data:
   postgresql_data:

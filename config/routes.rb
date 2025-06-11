@@ -45,4 +45,6 @@ Rails.application.routes.draw do
     get "curious", to: "pages#curious"
     get "notification", to: "pages#notification"
   end
+
+  mount ActionCable.server => '/cable'
 end

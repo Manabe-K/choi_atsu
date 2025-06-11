@@ -37,6 +37,7 @@
 
   <!-- スレッドセクション -->
   <h2 class="text-xl font-semibold mb-4">スレッド</h2>
+  <%= turbo_stream_from @event %> 
   <%= turbo_frame_tag "thread_section_#{@event.id}" do %>
     <%= render partial: "events/thread_section", locals: { event: @event, current_user: current_user } %>
   <% end %>

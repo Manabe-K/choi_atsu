@@ -1,6 +1,8 @@
 class ThreadPostsChannel < ApplicationCable::Channel
+  include Turbo::Streams::ActionHelper
+
   def subscribed
-    event_id = params[:event_id] # イベントIDを受け取る
-    stream_for "event_#{event_id}_thread_posts"
+    event = Event.find(params[:event_id])
+    stream_for event
   end
 end

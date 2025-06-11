@@ -1,4 +1,3 @@
-# <!-- app/controllers/thread_posts_controller.rb -->
 class ThreadPostsController < ApplicationController
   before_action :require_login
   before_action :set_event

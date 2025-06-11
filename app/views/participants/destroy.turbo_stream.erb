@@ -44,3 +44,7 @@
 <%= turbo_stream.append "flash-container" do %>
   <%= render "shared/flash", notice: "参加をキャンセルしました" %>
 <% end %>
+
+<%= turbo_stream.replace "thread_section_#{@event.id}" do %>
+  <%= render partial: "events/thread_section", locals: { event: @event, current_user: current_user } %>
+<% end %>

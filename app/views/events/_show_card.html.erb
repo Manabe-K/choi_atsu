@@ -1,67 +1,19 @@
-<% status = event_status(event) %>
-<% status_class = event_status_class(status) %>
-<% is_joined = user_joined?(event, current_user) %>
-<% card_classes =
-  case status
-  when "開催済み"
-    "bg-gray-400"
-  when "満員", "締切終了"
-    "bg-gray-200"
-  else
-    "bg-white"
-  end
-%>
+<% status         = event_status(event) %>
+<% status_class   = event_status_class(status) %>
+<% is_joined      = user_joined?(event, current_user) %>
+<% is_host        = event.host_user == current_user %>
+<% curious_count  = event.curious_users.count %>
 
-<div id="show_card_event_<%= event.id %>" class="relative flex flex-col md:flex-row items-stretch w-full max-w-full <%= card_classes %> rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+<% card_classes = case status
+  when "開催済み"         then "bg-gray-400"
+  when "満員", "締切終了" then "bg-gray-200"
+  else                         "bg-white"
+end %>
+
+<div id="show_card_event_<%= event.id %>"
+     class="relative flex mb-8 flex-col md:flex-row items-stretch w-full max-w-screen-lg <%= card_classes %> rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-colors duration-300 break-words min-h-[400px]">
+
   <div class="p-6 relative w-full">
-
-    <!-- アクションボタン -->
-    <div id="show_<%= dom_id(event, :actions) %>" class="absolute top-4 right-4 flex flex-col justify-center gap-2 p-4 w-full max-w-[10rem] text-center min-h-[4.5rem] z-10">
-
-      <% if event.host_user == current_user %>
-        <%# ✅ 主催者 %>
-        <% if status == "開催済み" %>
-          <p class="whitespace-pre-line text-base font-bold text-white text-center leading-tight">
-            幹事お疲れ様！
-            また、企画してね
-          </p>
-          <%= link_to curious_users_event_path(event),
-                      class: "block w-full text-white font-bold py-2 px-2 rounded bg-blue-500 hover:bg-blue-600 text-sm text-center whitespace-nowrap transition mt-1" do %>
-            気になってた<%= event.curious_users.count %>人
-          <% end %>
-        <% else %>
-          <%= link_to curious_users_event_path(event),
-                      class: "block w-full text-white font-bold py-2 px-2 rounded bg-blue-500 hover:bg-blue-600 text-sm text-center whitespace-nowrap transition" do %>
-            気になってる<%= event.curious_users.count %>人
-          <% end %>
-        <% end %>
-
-      <% else %>
-        <%# ✅ 主催者以外 %>
-        <% if status == "開催済み" %>
-          <% message =
-            if is_joined
-              "ご参加ありがと！\nまた、集まりましょ"
-            else
-              "ぜひ！また今度！\n集まりましょ"
-            end
-          %>
-          <p class="whitespace-pre-line text-base font-bold text-white text-center leading-tight"><%= message %></p>
-        <% else %>
-          <%# 参加・気になるボタン（Turbo） %>
-          <% if %w[満員 締切終了].include?(status) && !is_joined %>
-            <p class="block w-full text-white font-bold py-2 px-2 rounded bg-gray-600 text-sm text-center whitespace-nowrap transition cursor-not-allowed">
-              <%= status %>
-            </p>
-          <% else %>
-            <%= participation_button(event, current_user) %>
-          <% end %>
-
-          <%= curious_button(event, current_user) %>
-        <% end %>
-      <% end %>
-    </div>
-
     <!-- ステータス -->
     <div class="mb-2" id="show_status_event_<%= event.id %>">
       <span class="text-lg font-bold text-white px-4 py-1 rounded <%= status_class %>">
@@ -75,20 +27,22 @@
     <!-- 開催情報 -->
     <div class="mb-6">
       <h2 class="text-lg font-semibold text-gray-800 mb-2">開催情報</h2>
-      <p class="text-base text-gray-700 mb-1">
-        <i class="far fa-calendar-alt mr-1"></i>
-        開催日時：<%= event.start_time.strftime('%Y-%m-%d %H:%M') %> 〜 <%= event.end_time.strftime('%H:%M') %>
-      </p>
-      <p class="text-base text-gray-700 mb-1">
-        <i class="fas fa-map-marker-alt mr-1"></i>
-        開催場所：<%= event.location %>
-      </p>
-      <% if event.deadline.present? %>
-        <p class="text-base text-gray-700">
-          <i class="fas fa-hourglass-half mr-1"></i>
-          申込締切：<%= event.deadline.strftime('%Y-%m-%d') %>まで
-        </p>
-      <% end %>
+      <ul class="text-base text-gray-700 space-y-1">
+        <li>
+          <i class="far fa-calendar-alt mr-1"></i>
+          開催日時：<%= event.start_time.strftime('%Y-%m-%d %H:%M') %> 〜 <%= event.end_time.strftime('%H:%M') %>
+        </li>
+        <li>
+          <i class="fas fa-map-marker-alt mr-1"></i>
+          開催場所：<%= event.location %>
+        </li>
+        <% if event.deadline.present? %>
+          <li>
+            <i class="fas fa-hourglass-half mr-1"></i>
+            申込締切：<%= event.deadline.strftime('%Y-%m-%d') %>まで
+          </li>
+        <% end %>
+      </ul>
     </div>
 
     <!-- イベント詳細 -->
@@ -109,6 +63,40 @@
             <% end %>
           <% end %>
         </div>
+      </div>
+    <% end %>
+
+    <!-- アクションボタン（Turbo Frame） -->
+    <%= turbo_frame_tag "event_actions_#{event.id}" do %>
+      <div class="absolute top-4 right-4 flex flex-col justify-center gap-2 p-4 w-full max-w-[10rem] text-center min-h-[9rem] z-10">
+        <% if is_host %>
+          <% if status == "開催済み" %>
+            <p class="whitespace-pre-line text-base font-bold text-white text-center leading-tight">
+              幹事お疲れ様！\nまた、企画してね
+            </p>
+          <% end %>
+
+          <%= link_to curious_users_event_path(event),
+                      class: "block w-full text-white font-bold py-2 px-2 rounded bg-blue-500 hover:bg-blue-600 text-sm text-center whitespace-nowrap transition mt-1" do %>
+            気になって<%= status == "開催済み" ? "た" : "る" %><%= curious_count %>人
+          <% end %>
+
+        <% else %>
+          <% if status == "開催済み" %>
+            <p class="whitespace-pre-line text-base font-bold text-white text-center leading-tight">
+              <%= is_joined ? "ご参加ありがと！\nまた、集まりましょ" : "ぜひ！また今度！\n集まりましょ" %>
+            </p>
+          <% else %>
+            <% if %w[満員 締切終了].include?(status) && !is_joined %>
+              <p class="block w-full text-white font-bold py-2 px-2 rounded bg-gray-600 text-sm text-center whitespace-nowrap transition cursor-not-allowed">
+                <%= status %>
+              </p>
+            <% else %>
+              <%= participation_button(event, current_user) %>
+            <% end %>
+            <%= curious_button(event, current_user) %>
+          <% end %>
+        <% end %>
       </div>
     <% end %>
 

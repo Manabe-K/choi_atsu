@@ -1,11 +1,11 @@
-<div id="show_<%= dom_id(event, :participants) %>" class="container mx-auto px-8 mb-8 max-w-full overflow-x-hidden">
+<div id="show_<%= dom_id(event, :participants) %>" class="container mx-auto mb-8 max-w-full overflow-x-hidden">
   <h2 class="text-lg font-semibold text-gray-800 mb-2">参加者</h2>
 
   <div id="show_<%= dom_id(event, :count) %>" class="text-base font-semibold text-gray-700 mb-3">
     <%= participation_count(event) %>
   </div>
 
-  <div class="flex items-center gap-3 overflow-x-auto max-w-full px-1 py-2 scrollbar-hide">
+  <div class="flex gap-3 overflow-x-auto max-w-full h-18 scrollbar-gutter-stable scrollbar-hide">
     <% host = event.host_user %>
 
     <!-- 主催者 -->
@@ -15,9 +15,6 @@
       <%= image_tag host.profile_picture_url, class: "w-8 h-8 rounded-full border border-pink-300" %>
       <span class="font-semibold text-pink-800 truncate"><%= host.name %>（主催）</span>
     <% end %>
-
-    <!-- 区切り線 -->
-    <div class="w-px bg-gray-300 self-stretch mx-1"></div>
 
     <!-- 参加者 -->
     <% event.participant_users.where.not(id: host.id).each do |user| %>

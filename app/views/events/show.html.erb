@@ -1,75 +1,43 @@
 <% content_for :title, "#{@event.title} | ちょいあつ" %>
 <% content_for :title, @event.title %>
 
-<div class="w-full max-w-screen-lg px-4 pt-8 mx-auto flex justify-between items-center">
-  <%= link_to t("buttons.back"),
-              safe_return_to_path,
-              class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
+<div class="container mx-auto max-w-screen-lg px-4 pt-8">
+  <!-- 上部ナビゲーション -->
+  <div class="flex justify-between items-center mb-6">
+    <%= link_to t("buttons.back"), safe_return_to_path,
+                class: "bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
 
-  <% if @event.host_user == current_user %>
-    <% if @event.end_time.blank? || @event.end_time > 30.minutes.ago %>
-      <!-- 編集・削除ボタン：イベント終了から30分以内 or 未設定の場合 -->
-      <div class="flex gap-3">
-        <%= link_to t('buttons.edit'),
-                    edit_event_path(@event, return_to: request.fullpath),
-                    class: "bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
-
-        <%= button_to t('buttons.delete'),
-                      @event,
-                      method: :delete,
-                      data: { confirm: t('events.confirm_delete') },
-                      class: "bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
-      </div>
-    <% else %>
-      <!-- 終了から30分経過後：感謝メッセージ -->
-      <div class="text-sm text-gray-500 font-semibold italic">
-        ※ このイベントは終了から30分以上経過しました。
-      </div>
-    <% end %>
-  <% end %>
-</div>
-
-<!-- ✅ Turboで差し替えたいのはこのdiv！ -->
-<%= turbo_frame_tag "show_#{dom_id(@event, :card)}" do %>
-  <div class="container mx-auto px-4 py-4 max-w-full overflow-x-hidden">
-    <%= render partial: "events/show_card", locals: { event: @event, current_user: current_user } %>
-  </div>
-<% end %>
-
-<!-- 参加者表示（カードの外） -->
-<%= turbo_frame_tag "show_#{dom_id(@event, :participants)}" do %>
-  <%= render partial: "events/participants", locals: { event: @event } %>
-<% end %>
-
-<div class="container mx-auto px-4 mt-10 max-w-full overflow-x-hidden">
-  <h2 class="text-xl font-semibold mb-4">スレッド</h2>
-
-  <% if current_user && @event.participant_users.include?(current_user) %>
-    <%= render "thread_posts/form", event: @event, thread_post: ThreadPost.new %>
-
-    <div class="relative flex flex-col md:flex-row items-stretch bg-white rounded-lg shadow-md overflow-hidden transition duration-300">
-      <div id="thread_posts_container"
-          data-controller="thread-scroll"
-          data-action="turbo:after-stream-render@window->thread-scroll#scrollToBottom"
-          class="p-6 relative w-full max-w-full overflow-x-hidden max-h-[500px] overflow-y-auto">
-
-        <!-- ✅ スクロール対象（ここが Stimulus の containerTarget） -->
-          <div id="thread_posts"
-              data-event-id="<%= @event.id %>"
-              data-thread-scroll-target="container"
-              class="space-y-4 px-2">
-          <% if @thread_posts.any? %>
-            <%= render partial: "thread_posts/thread_post",
-                      collection: @thread_posts,
-                      as: :thread_post,
-                      locals: { event: @event } %>
-          <% else %>
-            <p id="no_thread_message" class="text-gray-500 text-center">まだ投稿はありません。最初のメッセージを送ってみよう！</p>
-          <% end %>
+    <% if @event.host_user == current_user %>
+      <% if @event.end_time.blank? || @event.end_time > 30.minutes.ago %>
+        <div class="flex gap-3">
+          <%= link_to t('buttons.edit'), edit_event_path(@event, return_to: request.fullpath),
+                      class: "bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
+          <%= button_to t('buttons.delete'), @event,
+                        method: :delete,
+                        data: { confirm: t('events.confirm_delete') },
+                        class: "bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300" %>
         </div>
-      </div>
-    </div>
-  <% else %>
-    <p class="text-gray-500">参加者のみスレッドを閲覧できます。</p>
+      <% else %>
+        <div class="text-sm text-gray-500 font-semibold italic">
+          ※ このイベントは終了から30分以上経過しました。
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <!-- イベントカード -->
+  <%= turbo_frame_tag "show_#{dom_id(@event, :card)}" do %>
+    <%= render partial: "events/show_card", locals: { event: @event, current_user: current_user } %>
+  <% end %>
+
+  <!-- 参加者セクション -->
+  <%= turbo_frame_tag "show_#{dom_id(@event, :participants)}" do %>
+    <%= render partial: "events/participants", locals: { event: @event } %>
+  <% end %>
+
+  <!-- スレッドセクション -->
+  <h2 class="text-xl font-semibold mb-4">スレッド</h2>
+  <%= turbo_frame_tag "thread_section_#{@event.id}" do %>
+    <%= render partial: "events/thread_section", locals: { event: @event, current_user: current_user } %>
   <% end %>
 </div>

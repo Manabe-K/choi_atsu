@@ -19,6 +19,9 @@ document.addEventListener("turbo:load", () => {
         console.log("🔌 Disconnected from ThreadPostsChannel")
       },
       received(data) {
+        if (container && data) {
+          container.insertAdjacentHTML("beforeend", data)
+        }
       }
     }
   )
